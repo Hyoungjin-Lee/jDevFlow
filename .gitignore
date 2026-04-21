@@ -1,0 +1,63 @@
+# ── Secrets & credentials ──────────────────────────────────────────────────
+.env
+*.key
+*.pem
+*.p12
+secrets/
+credentials/
+
+# ── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+pip-log.txt
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Node.js (if applicable) ────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.npm
+
+# ── Data & logs ────────────────────────────────────────────────────────────
+logs/
+*.log
+data/cache/
+data/*.json
+!data/.gitkeep
+
+# ── OS files ───────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# ── IDE ────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# ── jDevFlow runtime outputs ───────────────────────────────────────────────
+# Uncomment the lines below if you do NOT want to commit stage docs to git.
+# By default, docs/ is tracked so that session state is preserved.
+# docs/
+
+# ── Misc ───────────────────────────────────────────────────────────────────
+*.bak
+*.tmp
+.cache/
