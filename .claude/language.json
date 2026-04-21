@@ -1,0 +1,6 @@
+{
+  "_comment": "Set on first run by the setup wizard. Change to 'ko' for Korean.",
+  "language": "en",
+  "available": ["en", "ko"],
+  "configured": false
+}
