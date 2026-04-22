@@ -274,6 +274,36 @@
 
 ---
 
+### Entry 3.13 — Stage 12 QA & Release prep close
+
+- **Stage:** 12 (QA & Release prep, joint per M.6; validation_group = 1).
+- **Owner:** Claude (session 6 continuation — same chat window as Stage 11 validation, per user preference to avoid session proliferation; Stage 12 does not require M.3 fresh-session, so continuing here is consistent with plan_final).
+- **Input:** Stage 11 `docs/notes/final_validation.md` Sec. 3 (the Stage 12 punch list), WORKFLOW Sec. 15, plan_final M.6, Bundle 1 + Bundle 4 technical designs, existing test harnesses.
+- **Output (new):**
+  - `docs/05_qa_release/qa_scenarios.md` + `qa_scenarios.ko.md` — H1–H4 happy paths + F1–F6 failure/edge scenarios; AC coverage mapped per scenario; D4.x2 frontmatter applied (stage: 12, bundle: 1+4, validation_group: 1, status: draft).
+  - `docs/05_qa_release/release_checklist.md` + `release_checklist.ko.md` — authoritative Stage 13 tag gate; 8 sections covering pre-flight, CI matrix, QA sign-off, doc gates, repo hygiene, tag mechanics, post-release, sign-off. D4.x2 frontmatter applied.
+  - `CHANGELOG.md` `[0.3.0]` entry — Keep a Changelog v1.1.0 format; Added/Changed/Fixed sections cover full Bundle 1 + Bundle 4 shipped surface; "Deferred to v0.4" subsection enumerates Stage 11 optional forwards not executed in Stage 12; TBD tag date placeholder.
+  - `prompts/claude/v03/stage12_qa_release_prompt.md` — canonical Stage 12 kickoff prompt (EN, 137 lines) matching the Stage 11 pattern.
+- **Housekeeping discharged on-tree (Stage 11 non-blocking forwards):**
+  - `tests/bundle1/run_bundle1.sh` line 53: `rg '^## [1-8]\. ' "$SKILL"` → `grep -E '^## [1-8]\. ' "$SKILL"`. Removes ripgrep dependency; harness now POSIX-clean end-to-end. Bundle 1: 10/10 PASS after swap.
+  - `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) Stage 9 Bundle 1 verdict table: AC.B1.6 and AC.B1.8 row Notes swapped so labels align with `docs/03_design/bundle1_tool_picker/technical_design.md` definitions (AC.B1.6 = D1.x reference pair; AC.B1.8 = verbatim clause). AC.B1.8 Notes updated to record the SKILL.md verbatim match AND the tech_design Sec. 0 paraphrase-vs-verbatim hygiene flag forwarded to v0.4.
+- **Deferred to v0.4 (optional forwards not executed this stage):**
+  - `.skills/tool-picker/SKILL.md` Sec. 6 worked example refresh onto a live Stage-12 triple.
+  - `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh of D4.x2/x3/x4 (AC.B1.8 tightening; SKILL.md surface is already verbatim-compliant, so tech_design Sec. 0 refresh is doc-hygiene only).
+- **Pre-flight + post-each-edit checks:** `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS. Re-run after every mutation in this session (rg swap, label swap, qa_scenarios authoring, release_checklist authoring, CHANGELOG append).
+- **CI forwards (carried to Stage 13 pre-tag):**
+  - `shellcheck -S style scripts/update_handoff.sh` on mac + Linux.
+  - Full test matrix (`tests/bundle1/run_bundle1.sh`, `tests/run_bundle4.sh`) on mac + Linux.
+  These remain the only pre-tag prerequisites beyond finalising the `[0.3.0]` TBD date.
+- **HANDOFF.md updates recorded:** Status line flipped to Stage 12 complete (Stage 13 gate open); bundles YAML `stage 11→12` (verdicts carried `minor` per Stage 11 APPROVED); new Recent Changes top entries for Stage 11 close commit (`d453ea1`) and Stage 12 QA & Release prep; Key Document Links gained `qa_scenarios.md`, `release_checklist.md`, `CHANGELOG.md` rows; Next Session Prompt block (EN + KO) rewritten for Stage 13 tag. Both EN + KO mirrors updated.
+- **Stage 11 close commit:** `d453ea1` bundled 9 files (+804/−199) just before this Stage 12 work began; used inline `git -c user.name/email` flags to avoid modifying global git config (CLAUDE.md git safety protocol).
+- **Dogfooding note:** Still did not invoke `scripts/update_handoff.sh` — the Stage 12 close touches many more surfaces than the script's two-section contract supports (Status, In Progress, Next, Blockers, Bundles YAML, Recent Changes, Key Document Links, Next Session Prompt, KO mirror). Hand-edited in a single pass; test harnesses re-run green.
+- **Session-close git policy (from CLAUDE.md):** At close of this Stage 12 portion of session 6, the user will be asked whether to commit now or defer. Candidate commit contents: `HANDOFF.md`, `CHANGELOG.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. No new untracked directories beyond those enumerated.
+- **Re-entry:** none required. Stage 12 is not a validation stage; no verdict mechanism to trigger re-entry. Proceed to Stage 13.
+- **Next session:** Stage 13 release tag. Paste block in HANDOFF.md Sec. "📋 Next Session Prompt" (Stage 13 kickoff, now installed).
+
+---
+
 ## Entry template (for future sessions)
 
 ```markdown
@@ -301,3 +331,4 @@
 | 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 close backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 close (Entry 3.10) | Entry 3.9 KO-mirror backfill applied (R4 recovery — EN file already had it) + Entry 3.10 added (Stage 8 + 9 Bundle 1 close, PASS — minor). Both bundles in validation group 1 now closed at Stage 9; next stage = Stage 10/11. KO pair updated alongside. |
 | 2026-04-22 | v1.4 — Stage 11 prep close (Entry 3.11) | Entry 3.11 added (DC.6 dossiers + ko_freshness scratch produced; CLAUDE.md "Session close — git policy" subsection codified; Stage 10 skipped because both bundles PASS — minor). CLAUDE.md edit left uncommitted per user defer choice; HANDOFF.md flags the uncommitted state for Stage 11 session. KO pair updated alongside. |
 | 2026-04-22 | v1.5 — Stage 11 joint validation close (Entry 3.12) | Entry 3.12 added — group verdict APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 both APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted with D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved). Cross-bundle verifications: AC.B4.10 verbatim match verified char-for-char; AC.B4.11 vacuous-by-construction; KO freshness 7 pairs / 0-day delta independently re-verified. 4 Bundle-1 + 3 Bundle-4 non-blocking items forwarded to Stage 12 housekeeping. HANDOFF.md updated (bundles stage 9→11, verdicts carried minor, Recent Changes group-level note, Next Session Prompt flipped to Stage 12 kickoff). KO pair updated alongside. |
+| 2026-04-22 | v1.6 — Stage 12 QA & Release prep close (Entry 3.13) | Entry 3.13 added — Stage 12 closed same session 6 as Stage 11 (continuation, not fresh session; M.3 applies to Stage 11 only). New artefacts: `docs/05_qa_release/qa_scenarios.md` + `.ko.md`, `docs/05_qa_release/release_checklist.md` + `.ko.md`, `CHANGELOG.md [0.3.0]` (TBD date), `prompts/claude/v03/stage12_qa_release_prompt.md`. Discharged: rg→grep -E swap, AC.B1.6/B1.8 label swap. Deferred to v0.4: SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim refresh. Both harnesses re-run green after every edit. Stage 11 close commit `d453ea1` (+804/−199) recorded as prerequisite. HANDOFF updated (bundles stage 11→12, Status line, Recent Changes, Key Document Links, Next Session Prompt → Stage 13 tag). KO pair updated alongside. |
