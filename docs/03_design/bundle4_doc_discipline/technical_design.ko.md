@@ -356,16 +356,32 @@ OPTIONS
 
 ## 6. 오류 처리
 
-| 실패 유형 | 탐지 | 조치 | 종료 |
-|----------|------|------|------|
-| 알 수 없는 플래그 | 인자 파서 | usage 출력, 중단 | 2 |
-| 필수 `--status` 또는 `--change` 누락 | 인자 파서 (`--section` 범위별) | "status/change text required for --section=X" | 2 |
-| 대상 파일 부재 | 단계 2 | "HANDOFF.md not found at <path>" | 3 |
-| 섹션 헤더 부재 | 단계 4 정규식 | "section \`## Status\` not found" | 3 |
-| Recent Changes 표 불량 | 단계 5 | "Recent Changes table missing header row" | 5 |
-| 쓰기 시 디스크 풀 · 권한 오류 | 단계 7 `mv` 실패 | 대상 미변경 (임시 파일 폐기) | 1 |
-| 쓰기 후 검증 불일치 | 단계 8 | 쓰기 이전 백업 `.bak` 복원, "verify mismatch; rolled back" | 4 |
-| 파일 > 10 MB 가드 | 단계 3 | "HANDOFF.md unusually large; aborting"; 사용자 조사 필요 | 1 |
+모든 실패는 **stdout** 에 `error=<key>` 형태의 기계 판별용 단일 행을 출력하고
+(테스트 하네스가 파싱), **stderr** 에는 사람 읽기용 메시지를 출력한 뒤 매핑된
+종료 코드로 종료한다. **아홉 개의 구분되는 `error=<key>` 디스크리미네이터**가
+**열 개의 실패 행**에 걸쳐 존재한다 — "알 수 없는 플래그" 와 "필수 인자 누락"
+은 모두 같은 사용자 도움말 출력으로 수렴하므로 둘 다 `usage_error` 를 공유한다.
+`test_02_update_handoff_failures.sh` 는 모든 행에 대해 종료 코드와 stdout
+키를 함께 검증한다.
+
+| # | 실패 유형 | 탐지 | 조치 | 종료 | stdout 디스크리미네이터 |
+|---|---------|------|------|------|------------------------|
+| 1 | 알 수 없는 플래그 | 인자 파서 | usage 출력, 중단 | 2 | `error=usage_error` |
+| 2 | 필수 `--status` 또는 `--change` 누락 | 인자 파서 (`--section` 범위별) | "status/change text required for --section=X" | 2 | `error=usage_error` |
+| 3 | 입력 길이 가드 초과 | 인자 파서 | 길이 제한 메시지 출력 | 2 | `error=input_too_long` |
+| 4 | 시크릿 유사 입력 | 인자 파서 정규식 (`TOKEN\|SECRET\|KEY\|PASSWORD\|Bearer\s\|sk-`) | 시크릿 거부 경고 출력 | 2 | `error=secret_like_input` |
+| 5 | 대상 파일 부재 | 단계 2 | "HANDOFF.md not found at <path>" | 3 | `error=missing_target` |
+| 6 | 섹션 헤더 부재 | 단계 4 정규식 | "section \`## Status\` not found" | 3 | `error=missing_section` |
+| 7 | Recent Changes 표 불량 | 단계 5 | "Recent Changes table missing header row" | 5 | `error=malformed_recent_changes_table` |
+| 8 | 파일 > 10 MB 가드 | 단계 3 | "HANDOFF.md unusually large; aborting"; 사용자 조사 필요 | 1 | `error=file_too_large` |
+| 9 | 쓰기 시 디스크 풀 · 권한 오류 | 단계 7 `mv` 실패 | 대상 미변경 (임시 파일 폐기) | 1 | `error=runtime_failure` |
+| 10 | 쓰기 후 검증 불일치 | 단계 8 | 쓰기 이전 백업 `.bak` 복원, "verify mismatch; rolled back" | 4 | `error=verify_mismatch` |
+
+3, 4 행 (`input_too_long`, `secret_like_input`) 은 Stage 9 (2026-04-22) 에서
+이전 AC.B4.3 불일치를 해소하기 위해 추가되었다. Sec. 7 에 서술되었던 보안 입력
+가드가 이전까지는 Sec. 6 표에 반영되지 않았으나, 구현체는 항상 이 두 키를
+구분된 stdout 키로 방출해 왔다. 이제 Sec. 6 가 단일 진실의 원천이며 Sec. 7 은
+그 *왜* 만을 서술한다.
 
 재시도 로직 없음 — 모든 실패는 즉시 표면화되어 사용자가 상태가 미변경임을 알 수 있어야 한다.
 

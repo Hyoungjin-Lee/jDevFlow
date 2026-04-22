@@ -356,16 +356,33 @@ Non-zero exits print a single-line human-readable reason to stderr **and** a mac
 
 ## 6. Error handling
 
-| Failure | Detection | Action | Exit |
-|---------|-----------|--------|------|
-| Unknown flag | arg parser | print usage, abort | 2 |
-| Missing required `--status` or `--change` | arg parser (per `--section` scope) | print "status/change text required for --section=X" | 2 |
-| Target file absent | step 2 | print "HANDOFF.md not found at <path>" | 3 |
-| Section header absent | step 4 regex | print "section `## Status` not found" | 3 |
-| Malformed table in Recent Changes | step 5 | print "Recent Changes table missing header row" | 5 |
-| Disk-full or permission on write | step 7 `mv` fail | leave target untouched (temp-file discarded) | 1 |
-| Post-write verify mismatch | step 8 | restore from pre-write backup `.bak`, print "verify mismatch; rolled back" | 4 |
-| File > 10 MB guard | step 3 | print "HANDOFF.md unusually large; aborting"; user must investigate | 1 |
+Every failure prints a single-line machine-parseable discriminator of the form
+`error=<key>` on **stdout** (for test harnesses) *and* a human-readable message
+on **stderr**, then exits with the mapped code. There are **nine distinct
+`error=<key>` discriminators** across **ten failure-mode rows**; `usage_error`
+covers both "unknown flag" and "missing required arg" because both collapse to
+the same user-facing help output. Test `test_02_update_handoff_failures.sh`
+asserts exit code + stdout key together for every row.
+
+| # | Failure | Detection | Action | Exit | stdout discriminator |
+|---|---------|-----------|--------|------|----------------------|
+| 1 | Unknown flag | arg parser | print usage, abort | 2 | `error=usage_error` |
+| 2 | Missing required `--status` or `--change` | arg parser (per `--section` scope) | print "status/change text required for --section=X" | 2 | `error=usage_error` |
+| 3 | Input exceeds length guard | arg parser | print length-limit message | 2 | `error=input_too_long` |
+| 4 | Secret-like input | arg parser regex (`TOKEN\|SECRET\|KEY\|PASSWORD\|Bearer\s\|sk-`) | print secret-rejection warning | 2 | `error=secret_like_input` |
+| 5 | Target file absent | step 2 | print "HANDOFF.md not found at <path>" | 3 | `error=missing_target` |
+| 6 | Section header absent | step 4 regex | print "section `## Status` not found" | 3 | `error=missing_section` |
+| 7 | Malformed table in Recent Changes | step 5 | print "Recent Changes table missing header row" | 5 | `error=malformed_recent_changes_table` |
+| 8 | File > 10 MB guard | step 3 | print "HANDOFF.md unusually large; aborting"; user must investigate | 1 | `error=file_too_large` |
+| 9 | Disk-full or permission on write | step 7 `mv` fail | leave target untouched (temp-file discarded) | 1 | `error=runtime_failure` |
+| 10 | Post-write verify mismatch | step 8 | restore from pre-write backup `.bak`, print "verify mismatch; rolled back" | 4 | `error=verify_mismatch` |
+
+Rows 3 and 4 ("input_too_long", "secret_like_input") were added at Stage 9
+(2026-04-22) to close an earlier AC.B4.3 mismatch: the security-input guards
+described in Sec. 7 were previously only narrated there and did not appear in
+the Sec. 6 table, even though the implementation has always emitted them as
+distinct stdout keys. Sec. 6 is now the single source of truth; Sec. 7 narrates
+the *why* only.
 
 No retry logic — every failure surfaces immediately so the user knows state is untouched.
 

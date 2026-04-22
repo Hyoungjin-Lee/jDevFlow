@@ -199,6 +199,39 @@
 
 ---
 
+### Entry 3.9 — Stage 8 + Stage 9 Bundle 4 (doc discipline, 옵션 β) 마감
+
+- **Stage:** 8 (Codex 구현, Bundle 4) + 9 (Claude 코드 리뷰, Bundle 4).
+- **Owner:** Codex (Stage 8, 구현자) → Claude (Stage 9, 리뷰어).
+- **Input (Stage 8):** `docs/03_design/bundle4_doc_discipline/technical_design.md` (AC.B4.1–16 루브릭) + `prompts/codex/v03/stage8_bundle4_codex_kickoff.md` (B-option 킥오프 v2) + `docs/02_planning/plan_final.md`. 아카이브된 Codex 완료 보고서: `prompts/codex/v03/stage8_bundle4_codex_report.md`.
+- **Output (Stage 8, 14 파일):** `scripts/update_handoff.sh` (486 줄, POSIX sh) + `templates/HANDOFF.template.md` + `CHANGELOG.md` + `CODE_OF_CONDUCT.md` + `CONTRIBUTING.md` (173 줄, 12 섹션 + F-a1 부록) + `docs/notes/decisions.md` (+ `.ko.md`) + `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) + `tests/run_bundle4.sh` + `tests/bundle4/` 하위 테스트 스크립트 4 개. Codex 보고서 기준 shellcheck 전부 깨끗, 4 개 테스트 PASS.
+- **Stage 9 판정:** **PASS — minor**. Per-AC 판정 표는 `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). 코드 변경 없음.
+- **Stage 9 에서 적용한 인라인 polish:** `docs/03_design/bundle4_doc_discipline/technical_design.md` Sec. 6 을 8 → 10 행으로 확장하고 `stdout 디스크리미네이터` 열 추가 (+ KO 쌍 미러). 이것이 루브릭의 "nine error cases" 표현 (= 스크립트가 방출하는 9 개 고유 `error=<key>` 디스크리미네이터) 과 Sec. 6 표의 확장 이전 행 수 (= 8) 사이의 내부 불일치를 해소. Sec. 6 이 이제 10 개 실패 행 (두 행이 `usage_error` 공유) 전부를 6 개 종료 코드 (0, 1, 2, 3, 4, 5) 에 권위 있게 매핑. Sec. 7 은 *왜* 만 서술.
+- **이번 단계 테스트 재실행:** `sh tests/run_bundle4.sh` — Sec. 6 편집 후에도 4 개 전부 PASS.
+- **Validation-group-1 상태:** Bundle 4 Stage 9 ✅ 마감; Bundle 1 은 여전히 Stage 5 완료, Stage 8 Codex 실행 대기 (M.1 + DEP.1 순서에 의해 Bundle 4 선행이 정답). Bundle 1 Stage 8 + Stage 9 착지 전까지 Stage 10/11/12/13 보류.
+- **이번 단계에서 건드린 dogfooded artifact:** `scripts/update_handoff.sh --section both --write` 로 `HANDOFF.md` Recent Changes (EN + KO) 에 Stage 9 판정 행 append. Dry-run diff 선검토; write atomic; 샌드박스 권한 문제로 `.bak` 정리가 실패했으나 `*.bak` 은 이미 `.gitignore` 에 들어가 있음 — 무해.
+- **Stage 11 로 이월:** `tests/run_bundle4.sh` 교차 플랫폼 CI 매트릭스 (mac + Linux); `shellcheck` 설치 가능한 샌드박스에서 `shellcheck -S style` 재실행 (이번 리뷰 샌드박스에서는 `shellcheck` 설치 불가 — Codex 의 empty-stdout 보고 + 로컬 `sh -n`/`dash -n` 구문 검사를 대체물로 수용).
+- **다음 세션:** Stage 8 Bundle 1 Codex 킥오프 (`prompts/codex/v03/stage8_bundle1_codex_kickoff.md`). 그 이후 M.3 불변식에 따라 fresh Claude 세션에서 Stage 9 Bundle 1 코드 리뷰.
+
+---
+
+### Entry 3.10 — Stage 8 + Stage 9 Bundle 1 (tool picker) 마감
+
+- **Stage:** 8 (Codex 구현, Bundle 1) + 9 (Claude 코드 리뷰, Bundle 1).
+- **Owner:** Codex (Stage 8, 구현자) → Claude (Stage 9, 리뷰어, fresh 세션 per M.3).
+- **Input (Stage 8):** `docs/03_design/bundle1_tool_picker/technical_design.md` (AC.B1.1–10 루브릭) + `prompts/codex/v03/stage8_bundle1_codex_kickoff.md` + `docs/notes/decisions.md` (D4.x2/x3/x4 인용 가능 기록). 아카이브된 Codex 완료 보고서: `prompts/codex/v03/stage8_bundle1_codex_report.md`.
+- **Output (Stage 8, 5 파일):** `.skills/tool-picker/SKILL.md` (173 줄, YAML frontmatter + 8 섹션 본문 + D4.x2/x3/x4 원문 인용 + stage×mode×risk 결정 테이블 + 31 줄 worked example) + `docs/notes/tool_picker_usage.md` (46 줄) + `docs/notes/tool_picker_usage.ko.md` (46 줄, R4 per) + `tests/bundle1/run_bundle1.sh` (151 줄, 10 검사) + `CLAUDE.md` Read-order 한 줄 추가. Codex 보고 기준 10 개 검사 전부 PASS, `description_bytes=287` (1024 자 상한 이하), R2 grep 0 매치.
+- **Stage 9 판정:** **PASS — minor**. Per-AC 판정 표는 `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). 코드 변경 0 건, 인라인 polish 0 건 (Codex 가 플래그한 4 개 셀 검토 후 Sec. 9-1 "sparingly" 기준 미달로 편집 불가).
+- **Codex 판단 처분:** AC.B1.3 (4 → 6 컬럼 확장), AC.B1.4 (Stage 11 경로 `to be created at Stage 11` 주석), AC.B1.7 (0 매치 grep vacuous), AC.B1.10 (헤더 + `updated:` parity) — 네 건 모두 수용.
+- **병렬 보완 (Bundle 1 범위 밖):** `docs/notes/dev_history.ko.md` 에 Entry 3.9 backfill. Stage 9 Bundle 4 마감 시 EN 파일은 Entry 3.9 가 들어갔으나 KO 미러가 빠진 R4 누락을 같은 날 복구.
+- **이번 단계 테스트 재실행:** `bash tests/bundle1/run_bundle1.sh` — 10 개 검사 전부 PASS; 독립 R2 grep 0 매치.
+- **Validation-group-1 상태:** Bundle 1 Stage 9 ✅ 마감. **양 번들 Stage 9 모두 PASS — minor**; Stage 10 (Codex final review) → Stage 11 (joint validation, fresh Claude 세션, M.3) → Stage 12 (릴리스 노트) → Stage 13 (공동 `v0.3` 태그) 로 진행.
+- **이번 단계에서 건드린 dogfooded artifact:** `scripts/update_handoff.sh --section both --write` 로 `HANDOFF.md` Recent Changes (EN + KO) + Status (EN + KO) 행 갱신. Dry-run 선검토 후 write. HANDOFF.md YAML bundles 블록의 Bundle 1 항목을 `stage: 1 · verdict: null` → `stage: 9 · verdict: minor` 로 수작업 갱신 (`update_handoff.sh` 는 YAML 블록을 건드리지 않음).
+- **Stage 11 로 이월:** worked example 을 live Stage-2 트리플로 갱신 (Stage 11 산출물 생성 후); `tests/bundle1/run_bundle1.sh` 53 행의 `rg` 의존 — otherwise-POSIX 스크립트 안의 minor cross-platform-CI 이슈, Stage 11 mac + Linux 매트릭스로 이월.
+- **다음 세션:** Stage 10 Codex final review (`prompts/codex/final_review.md` 기반) 또는 곧바로 Stage 11 joint validation (fresh Claude 세션).
+
+---
+
 ## Entry 템플릿 (향후 세션용)
 
 ```markdown
@@ -223,3 +256,4 @@
 | 2026-04-22 | v1 — 초기 backfill (세션 3 재개) | 세션 1, 2, 3 (토큰 충전 이전/이후)를 stage 단위로 커버. plan_final AN.3 + DC.2 부분 충족. 영문 페어 동일 세션에 작성. |
 | 2026-04-22 | v1.1 — Stage 5 Bundle 4 종료 (Entry 3.7) | Stage 5 Bundle 4 기술 설계 (EN + KO 페어) Entry 3.7 추가. 세션 요약표 갱신. |
 | 2026-04-22 | v1.2 — Stage 5 Bundle 1 종료 (Entry 3.8) | Stage 5 Bundle 1 기술 설계 (EN + KO 페어) Entry 3.8 추가. 세션 요약표 갱신 (Bundle 1 을 세션 3 재개 행에 추가). 양 번들 Stage 5 완료; 다음 stage = Stage 8 Codex. EN 페어 동시 갱신. |
+| 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 종료 backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 종료 (Entry 3.10) | Entry 3.9 를 KO 미러로 backfill (EN 파일에는 이미 있었던 R4 누락 복구) + Entry 3.10 추가 (Stage 8 + 9 Bundle 1 마감, PASS — minor). Validation group 1 의 양 번들 Stage 9 모두 마감; 다음 stage = Stage 10/11. EN 페어 동시 갱신. |
