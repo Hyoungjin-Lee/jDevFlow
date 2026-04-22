@@ -199,6 +199,39 @@
 
 ---
 
+### Entry 3.9 — Stage 8 + Stage 9 Bundle 4 (doc discipline, option β) close
+
+- **Stage:** 8 (Codex implementation, Bundle 4) + 9 (Claude code review, Bundle 4).
+- **Owner:** Codex (Stage 8, implementer) → Claude (Stage 9, reviewer).
+- **Input (Stage 8):** `docs/03_design/bundle4_doc_discipline/technical_design.md` (AC.B4.1–16 rubric) + `prompts/codex/v03/stage8_bundle4_codex_kickoff.md` (B-option kickoff v2) + `docs/02_planning/plan_final.md`. Archived Codex completion report at `prompts/codex/v03/stage8_bundle4_codex_report.md`.
+- **Output (Stage 8, 14 files):** `scripts/update_handoff.sh` (486 lines, POSIX sh) + `templates/HANDOFF.template.md` + `CHANGELOG.md` + `CODE_OF_CONDUCT.md` + `CONTRIBUTING.md` (173 lines, 12 sections + F-a1 appendix) + `docs/notes/decisions.md` (+ `.ko.md`) + `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) + `tests/run_bundle4.sh` + 4 test scripts under `tests/bundle4/`. All shellcheck-clean, all 4 tests PASS per Codex report.
+- **Stage 9 verdict:** **PASS — minor**. Per-AC verdict table in `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). No code changes required.
+- **Inline polish applied (Stage 9):** `docs/03_design/bundle4_doc_discipline/technical_design.md` Sec. 6 expanded from 8 → 10 rows with an added `stdout discriminator` column (+ KO pair). This closes the earlier AC.B4.3 spec-internal mismatch between the rubric's "nine error cases" phrase (= nine distinct `error=<key>` discriminators emitted by the script) and the Sec. 6 table's pre-expansion row count (= 8). Sec. 6 now authoritatively maps all ten failure rows (two share `usage_error`) to the six exit codes (0, 1, 2, 3, 4, 5). Sec. 7 narrates *why* only.
+- **Tests re-run this stage:** `sh tests/run_bundle4.sh` — all 4 PASS after the Sec. 6 edit.
+- **Validation-group-1 status:** Bundle 4 Stage 9 ✅ closed; Bundle 1 still at Stage 5 complete, Stage 8 Codex run pending (per M.1 + DEP.1 ordering, Bundle 4 first was correct). Stage 10/11/12/13 deferred until Bundle 1 Stage 8 + Stage 9 land.
+- **Dogfooded artifact touched this stage:** `scripts/update_handoff.sh --section both --write` used to append the Stage 9 verdict row to `HANDOFF.md` Recent Changes (EN + KO). Dry-run diff reviewed first; write atomic; `.bak` cleanup failed in sandbox (permission), but `*.bak` is already in `.gitignore` — harmless.
+- **Forwarded to Stage 11:** cross-platform CI matrix (mac + Linux) for `tests/run_bundle4.sh`; `shellcheck -S style` re-run on a sandbox where `shellcheck` is installable (this review sandbox could not install it — accepted Codex's empty-stdout report + local `sh -n`/`dash -n` syntax checks as substitutes).
+- **Next session:** Stage 8 Bundle 1 Codex kickoff (`prompts/codex/v03/stage8_bundle1_codex_kickoff.md`). After that, Stage 9 Bundle 1 code review in a fresh Claude session per M.3 invariant.
+
+---
+
+### Entry 3.10 — Stage 8 + Stage 9 Bundle 1 (tool picker) close
+
+- **Stage:** 8 (Codex implementation, Bundle 1) + 9 (Claude code review, Bundle 1).
+- **Owner:** Codex (Stage 8, implementer) → Claude (Stage 9, reviewer, fresh session per M.3).
+- **Input (Stage 8):** `docs/03_design/bundle1_tool_picker/technical_design.md` (AC.B1.1–10 rubric) + `prompts/codex/v03/stage8_bundle1_codex_kickoff.md` + `docs/notes/decisions.md` (D4.x2/x3/x4 quotable record). Archived Codex completion report at `prompts/codex/v03/stage8_bundle1_codex_report.md`.
+- **Output (Stage 8, 5 files):** `.skills/tool-picker/SKILL.md` (173 lines, YAML frontmatter + 8-section body + verbatim D4.x2/x3/x4 quote + stage×mode×risk decision table + 31-line worked example) + `docs/notes/tool_picker_usage.md` (46 lines) + `docs/notes/tool_picker_usage.ko.md` (46 lines, per R4) + `tests/bundle1/run_bundle1.sh` (151 lines, 10 checks) + one-line `CLAUDE.md` Read-order addition. All 10 checks PASS per Codex report; `description_bytes=287` (under 1024-char cap); R2 grep 0 matches.
+- **Stage 9 verdict:** **PASS — minor**. Per-AC verdict table in `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). 0 code changes, 0 inline polish edits (Codex-flagged 4 cells reviewed; Sec. 9-1 "sparingly" bar not met).
+- **Codex judgement dispositions:** AC.B1.3 (4 → 6 column expansion), AC.B1.4 (Stage 11 path annotated `to be created at Stage 11`), AC.B1.7 (vacuous annotation under 0 matches), AC.B1.10 (header + `updated:` parity as structural proxy) — all four accepted.
+- **Parallel housekeeping (outside Bundle 1 scope):** Backfilled Entry 3.9 into `docs/notes/dev_history.ko.md`. Stage 9 Bundle 4 close added Entry 3.9 to the EN file but not the KO mirror; same-day R4 recovery.
+- **Tests re-run this stage:** `bash tests/bundle1/run_bundle1.sh` — all 10 checks PASS; independent R2 grep 0 matches.
+- **Validation-group-1 status:** Bundle 1 Stage 9 ✅ closed. **Both bundles now at Stage 9 PASS — minor**; proceeding to Stage 10 (Codex final review) → Stage 11 (joint validation, fresh Claude session per M.3) → Stage 12 (release notes) → Stage 13 (joint `v0.3` tag).
+- **Dogfooded artifact touched this stage:** `scripts/update_handoff.sh --section both --write` used to refresh `HANDOFF.md` Recent Changes (EN + KO) + Status (EN + KO) rows. Dry-run previewed before write. HANDOFF.md YAML `bundles` block Bundle 1 entry hand-edited from `stage: 1 · verdict: null` to `stage: 9 · verdict: minor` (`update_handoff.sh` does not touch the YAML block).
+- **Forwarded to Stage 11:** worked-example refresh to use a live Stage-2 triple (once Stage 11 artifacts exist); `tests/bundle1/run_bundle1.sh` line 53 uses `rg` inside an otherwise-POSIX script — minor cross-platform-CI finding forwarded to the Stage 11 mac + Linux matrix.
+- **Next session:** Stage 10 Codex final review (per `prompts/codex/final_review.md`) or straight into Stage 11 joint validation (fresh Claude session).
+
+---
+
 ## Entry template (for future sessions)
 
 ```markdown
@@ -223,3 +256,4 @@
 | 2026-04-22 | v1 — initial backfill (session 3 resumed) | Covers sessions 1, 2, 3 (pre- and post-token-refill) at stage granularity. Fulfills plan_final AN.3 + partial DC.2. Korean pair written alongside. |
 | 2026-04-22 | v1.1 — Stage 5 Bundle 4 close (Entry 3.7) | Added Entry 3.7 for Stage 5 Bundle 4 Technical Design (EN + KO pair). Session summary table updated. KO pair update below. |
 | 2026-04-22 | v1.2 — Stage 5 Bundle 1 close (Entry 3.8) | Added Entry 3.8 for Stage 5 Bundle 1 Technical Design (EN + KO pair). Session summary table updated (Bundle 1 added to session-3-resumed row). Both bundles' Stage 5 now complete; next stage = Stage 8 Codex. KO pair updated alongside. |
+| 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 close backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 close (Entry 3.10) | Entry 3.9 KO-mirror backfill applied (R4 recovery — EN file already had it) + Entry 3.10 added (Stage 8 + 9 Bundle 1 close, PASS — minor). Both bundles in validation group 1 now closed at Stage 9; next stage = Stage 10/11. KO pair updated alongside. |

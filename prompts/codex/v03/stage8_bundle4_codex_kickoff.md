@@ -135,9 +135,11 @@ STEP 4 — Verify before reporting complete:
 - Run: wc -l docs/notes/decisions.md CONTRIBUTING.md scripts/update_handoff.sh
   → record line counts for the report
 
-STEP 5 — Completion report:
+STEP 5 — Completion report (write to disk AND paste back):
 
-Paste back into the next Claude session:
+Build the report using the "Bundle 4 — completion report template"
+block in prompts/codex/v03/stage8_codex_report_template.md. Every field
+must contain real output, not bracketed placeholders:
 - Path of every created/modified file (real paths — do NOT use brackets)
 - Real line counts for the big files
 - Full stdout of `shellcheck scripts/update_handoff.sh`
@@ -147,6 +149,49 @@ Paste back into the next Claude session:
 
 If any STEP 4 verification fails, STOP and report the failure instead of
 papering over it. Do not invent file paths, line counts, or test output.
+
+STEP 5.1 — Archive the report to disk yourself at exactly this path:
+  prompts/codex/v03/stage8_bundle4_codex_report.md
+
+Start the file with this YAML frontmatter (verbatim, --- delimiters included):
+
+---
+title: Stage 8 Bundle 4 — Codex completion report (archived)
+stage: 8
+bundle: 4
+version: 1
+language: en
+paired_with: null
+created: <today's date YYYY-MM-DD>
+updated: <today's date YYYY-MM-DD>
+status: archived
+validation_group: 1
+---
+
+# Stage 8 Bundle 4 — Codex completion report (archived)
+
+> **Source:** Codex session, <today's date>.
+> **Why archived:** The next Claude session (Stage 9) reads this file
+> for Codex's own test output and judgement calls, so Stage 9 review
+> can proceed even after this Codex session closes.
+> **Not committed today.** Stays untracked until Stage 9 disposition.
+>
+> Corresponding kickoff: `prompts/codex/v03/stage8_bundle4_codex_kickoff.md`.
+> Report template used: `prompts/codex/v03/stage8_codex_report_template.md`.
+
+Then the completion report body follows immediately after that header.
+
+Verify the archive with:
+  ls -la prompts/codex/v03/stage8_bundle4_codex_report.md
+  head -20 prompts/codex/v03/stage8_bundle4_codex_report.md
+  grep -c '\[N\]\|\[paste output\]\|\[paste full output\]' \
+       prompts/codex/v03/stage8_bundle4_codex_report.md
+
+The grep MUST return 0 — any bracketed placeholder means the verification
+commands were not actually run, which is a Stage 8 failure.
+
+STEP 5.2 — Paste the same report body back into the next Claude session
+(belt + suspenders: disk archive is primary, paste-back is redundancy).
 
 Then return control. Claude will enter Stage 9 code review with
 AC.B4.1–16 as the rubric.
@@ -186,10 +231,15 @@ Sec. 12-3 must-not-decide (escalate as Stage 9 finding instead of deciding):
 
 1. Verify Codex actually wrote the 7 deliverables: run the `ls -la` /
    `wc -l` commands listed in STEP 4 above and confirm real output.
-2. Format the completion report using
-   `prompts/codex/v03/stage8_codex_report_template.md` (Bundle 4 section).
+2. Verify Codex wrote the report archive at
+   `prompts/codex/v03/stage8_bundle4_codex_report.md` (STEP 5.1 above).
+   Codex now writes this file itself; the operator no longer hand-rolls
+   the YAML frontmatter. If the archive is missing or contains bracketed
+   placeholders, treat it as a Stage 8 failure and re-instruct Codex
+   before proceeding.
 3. Proceed to Bundle 1 kickoff
    (`prompts/codex/v03/stage8_bundle1_codex_kickoff.md`).
 4. After both bundles ship, start a fresh Claude session with
-   `prompts/claude/v03/session4_post_codex_resume_prompt.md`, pasting both
-   completion reports into the marked sections.
+   `prompts/claude/v03/session4_post_codex_resume_prompt.md`. The new
+   session reads each bundle's archive from disk; the paste-back slots
+   are fallback if an archive is missing.
