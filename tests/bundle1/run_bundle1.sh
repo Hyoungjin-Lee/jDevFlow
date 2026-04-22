@@ -50,7 +50,7 @@ expected_sections=$(cat <<'EOF'
 ## 8. Invocation reference
 EOF
 )
-actual_sections=$(rg '^## [1-8]\. ' "$SKILL")
+actual_sections=$(grep -E '^## [1-8]\. ' "$SKILL")
 [ "$actual_sections" = "$expected_sections" ] || fail "8-section body order mismatch"
 printf 'PASS section order\n'
 

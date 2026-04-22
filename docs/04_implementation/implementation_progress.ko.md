@@ -120,9 +120,9 @@ validation_group: 1
 | AC.B1.3 | PASS | 결정 테이블이 `Standard | Strict | Strict-hybrid` × `medium | medium-high` 루브릭의 모든 `stage × (mode, risk)` 교차를 커버. Codex 가 설계 예시의 4 컬럼을 6 컬럼으로 확장 — 수용: AC.B1.3 이 설계 예시보다 상위 권위. `decision table completeness` 검사로 검증. |
 | AC.B1.4 | PASS | 결정 테이블 셀의 모든 경로가 유효 (`docs/03_design/**`, `docs/notes/**`, `prompts/**`). Stage 11 행은 기존 kickoff prompt + `docs/notes/final_validation.md` 를 `to be created at Stage 11` 로 명시. `decision table paths` 검사로 검증. |
 | AC.B1.5 | PASS (minor) | worked example 은 31 줄, 합성된 Stage-2 트리플을 사용하되 live field-name 형태를 보존. Sec. 6 첫 줄이 예시성 명시 → 수용. live-state 업데이트는 Stage 11 로 이월. |
-| AC.B1.6 | PASS | D4.x2/D4.x3/D4.x4 원문 인용 블록이 `docs/notes/decisions.md` + Bundle 4 설계 Sec. 0 을 출처로 명시하며 존재. |
+| AC.B1.6 | PASS | `docs/notes/tool_picker_usage.md` + `.ko.md` 가 D1.x 참조 쌍으로 존재, 각 46 줄, 둘 다 완전한 D4.x2 frontmatter (`stage: 5-support`, `bundle: 1`) 보유. |
 | AC.B1.7 | PASS (헤드라인 — 리뷰어 명시 서명) | R2 read-only 불변식 준수. 독립 grep `\b(bash|sh \|python|node|eval|exec \|curl|wget)\b` 를 `.skills/tool-picker/SKILL.md` 에 돌린 결과 0 매치. code-fence, quoted-output, violation 주석 0 건. `R2 grep` 검사로 검증. |
-| AC.B1.8 | PASS | `docs/notes/tool_picker_usage.md` + `.ko.md` 가 D1.x 참조 쌍으로 존재, 각 46 줄, 둘 다 완전한 D4.x2 frontmatter (`stage: 5-support`, `bundle: 1`) 보유. |
+| AC.B1.8 | PASS | D4.x2/D4.x3/D4.x4 원문 인용 블록이 `.skills/tool-picker/SKILL.md` Sec. 1 에 존재 (34–72 행이 `docs/notes/decisions.md` 24–62 행과 문자 단위 일치); Bundle 4 설계 Sec. 0 출처. Stage 11 `final_validation.md` Sec. 3 에 따라: `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 은 verbatim paste 대신 압축 paraphrase 불릿 사용 — non-blocking 문서 위생 (사용자/파서 facing 표면인 SKILL.md 는 verbatim 준수). tech_design Sec. 0 refresh 는 optional 로 forward. |
 | AC.B1.9 | PASS | `CLAUDE.md` read-order hook 이 `.skills/tool-picker/SKILL.md` 를 가리킴. `CLAUDE read order hook` 검사로 검증. |
 | AC.B1.10 | PASS | KO 쌍 `tool_picker_usage.ko.md` 가 EN 의 5-섹션 레이아웃을 미러; 헤더 수 일치; `updated:` 일치 (`2026-04-22`). `usage docs and KO sync` 검사로 검증. |
 

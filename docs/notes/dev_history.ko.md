@@ -274,6 +274,36 @@
 
 ---
 
+### Entry 3.13 — Stage 12 QA & Release 준비 마감
+
+- **Stage:** 12 (QA & Release 준비, M.6 에 따라 공동; validation_group = 1).
+- **Owner:** Claude (세션 6 연속 — Stage 11 검증과 같은 대화창에서 진행, 과도한 세션 생성 회피를 위한 사용자 선호에 따름; Stage 12 는 M.3 fresh-session 요구 없음 — M.3 는 Stage 11 에만 적용되므로 여기서 연속 진행이 plan_final 과 정합).
+- **Input:** Stage 11 `docs/notes/final_validation.md` Sec. 3 (Stage 12 punch list), WORKFLOW Sec. 15, plan_final M.6, Bundle 1 + Bundle 4 기술 설계, 기존 테스트 하네스.
+- **Output (신규):**
+  - `docs/05_qa_release/qa_scenarios.md` + `qa_scenarios.ko.md` — H1–H4 happy path + F1–F6 실패/엣지 시나리오; AC 커버리지 시나리오별 매핑; D4.x2 frontmatter 적용 (stage: 12, bundle: 1+4, validation_group: 1, status: draft).
+  - `docs/05_qa_release/release_checklist.md` + `release_checklist.ko.md` — Stage 13 태그 게이트 정본; pre-flight, CI 매트릭스, QA 사인오프, 문서 게이트, 리포 위생, 태그 mechanics, 릴리스 후, 사인오프 총 8 섹션. D4.x2 frontmatter 적용.
+  - `CHANGELOG.md` `[0.3.0]` 엔트리 — Keep a Changelog v1.1.0 형식; Added/Changed/Fixed 섹션이 Bundle 1 + Bundle 4 shipped 표면 전체 커버; "Deferred to v0.4" 서브섹션이 Stage 12 에서 미실행된 Stage 11 optional forward 열거; TBD 태그 날짜 플레이스홀더.
+  - `prompts/claude/v03/stage12_qa_release_prompt.md` — Stage 11 패턴과 매칭되는 canonical Stage 12 kickoff 프롬프트 (EN, 137 줄).
+- **트리 랜딩된 Housekeeping (Stage 11 non-blocking forward):**
+  - `tests/bundle1/run_bundle1.sh` 53 행: `rg '^## [1-8]\. ' "$SKILL"` → `grep -E '^## [1-8]\. ' "$SKILL"`. ripgrep 의존성 제거; 하네스 전체가 POSIX-clean. 스왑 후 Bundle 1: 10/10 PASS.
+  - `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) Stage 9 Bundle 1 판정 표: AC.B1.6 과 AC.B1.8 행의 Notes 교환, 레이블이 `docs/03_design/bundle1_tool_picker/technical_design.md` 정의와 정렬 (AC.B1.6 = D1.x 참조 페어; AC.B1.8 = verbatim clause). AC.B1.8 Notes 를 업데이트하여 SKILL.md verbatim 일치 AND v0.4 로 forward 된 tech_design Sec. 0 paraphrase-vs-verbatim 위생 플래그 기록.
+- **v0.4 로 연기 (이번 stage 에 미실행된 optional forward):**
+  - `.skills/tool-picker/SKILL.md` Sec. 6 worked example 을 live Stage-12 triple 로 refresh.
+  - `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 에 D4.x2/x3/x4 를 verbatim paste refresh (AC.B1.8 강화; SKILL.md 표면은 이미 verbatim 준수이므로 tech_design Sec. 0 refresh 는 doc-hygiene 전용).
+- **Pre-flight + 각 편집 후 체크:** `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS. 이 세션의 모든 mutation (rg swap, label swap, qa_scenarios 저작, release_checklist 저작, CHANGELOG append) 후 재실행.
+- **CI forward (Stage 13 pre-tag 로 이월):**
+  - `shellcheck -S style scripts/update_handoff.sh` mac + Linux.
+  - 전체 테스트 매트릭스 (`tests/bundle1/run_bundle1.sh`, `tests/run_bundle4.sh`) mac + Linux.
+  이 2건이 `[0.3.0]` TBD 날짜 확정 외에 남은 유일한 pre-tag 전제조건.
+- **HANDOFF.md 업데이트 기록:** Status 라인을 Stage 12 완료 (Stage 13 게이트 오픈) 로 전환; bundles YAML `stage 11→12` (Stage 11 APPROVED 에 따라 verdict `minor` 이월); Stage 11 close 커밋 (`d453ea1`) + Stage 12 QA & Release 준비를 위한 Recent Changes 상단 신규 엔트리; Key Document Links 에 `qa_scenarios.md`, `release_checklist.md`, `CHANGELOG.md` 행 추가; Next Session Prompt 블록 (EN + KO) 을 Stage 13 태그용으로 재작성. EN + KO 미러 모두 갱신.
+- **Stage 11 close 커밋:** 이 Stage 12 작업 직전에 `d453ea1` 가 9 파일 번들 (+804/−199); CLAUDE.md git 안전 정책에 따라 global git config 를 수정하지 않기 위해 inline `git -c user.name/email` 플래그 사용.
+- **Dogfooding 메모:** 계속 `scripts/update_handoff.sh` 미사용 — Stage 12 close 가 스크립트의 2-섹션 계약이 지원하는 것보다 훨씬 많은 표면 (Status, In Progress, Next, Blockers, Bundles YAML, Recent Changes, Key Document Links, Next Session Prompt, KO 미러) 을 건드림. 수작업 단일 패스; 테스트 하네스 재실행 green.
+- **세션-종료 git 정책 (CLAUDE.md):** 세션 6 의 이 Stage 12 부분 종료 시 사용자에게 지금 커밋할지 보류할지 질문. 후보 커밋 내용: `HANDOFF.md`, `CHANGELOG.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. 열거된 것 외 신규 untracked 디렉터리 없음.
+- **재진입:** 불필요. Stage 12 는 검증 단계가 아니므로 재진입 유발 verdict 메커니즘 없음. Stage 13 으로 진행.
+- **다음 세션:** Stage 13 릴리스 태그. Paste 블록은 HANDOFF.md Sec. "📋 다음 세션 시작 프롬프트" (Stage 13 kickoff, 지금 설치됨).
+
+---
+
 ## Entry 템플릿 (향후 세션용)
 
 ```markdown
@@ -301,3 +331,4 @@
 | 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 종료 backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 종료 (Entry 3.10) | Entry 3.9 를 KO 미러로 backfill (EN 파일에는 이미 있었던 R4 누락 복구) + Entry 3.10 추가 (Stage 8 + 9 Bundle 1 마감, PASS — minor). Validation group 1 의 양 번들 Stage 9 모두 마감; 다음 stage = Stage 10/11. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.4 — Stage 11 prep 종료 (Entry 3.11) | Entry 3.11 추가 (DC.6 dossier + ko_freshness 스크래치 산출; CLAUDE.md "Session close — git policy" 서브섹션 고정; 두 번들 PASS — minor 이므로 Stage 10 생략). CLAUDE.md 편집은 사용자 defer 선택에 따라 uncommitted 로 유지; HANDOFF.md 가 Stage 11 세션을 위해 해당 상태 플래그. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.5 — Stage 11 joint validation 종료 (Entry 3.12) | Entry 3.12 추가 — 그룹 판정 APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 모두 APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 가 D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved) 와 함께 발행. Cross-bundle 검증: AC.B4.10 verbatim 일치 문자 단위 확인; AC.B4.11 구조상 vacuous; KO freshness 7 페어 / 0 일 델타 독립 재검증. Bundle 1 의 non-blocking 4 건 + Bundle 4 의 3 건 을 Stage 12 housekeeping 으로 forward. HANDOFF.md 갱신 (bundles stage 9→11, verdict minor 이월, Recent Changes 그룹 단위 노트, Next Session Prompt 를 Stage 12 kickoff 로 전환). EN 페어 동시 갱신. |
+| 2026-04-22 | v1.6 — Stage 12 QA & Release prep 종료 (Entry 3.13) | Entry 3.13 추가 — Stage 11 과 동일 세션 6 연속. 새 산출물: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy-path + F1–F6 failure/edge), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 gate, 0–8 절), `prompts/claude/v03/stage12_qa_release_prompt.md` (Stage 12 kickoff), `CHANGELOG.md` `[0.3.0]` 섹션 (TBD 날짜). On-tree 해소된 housekeeping: `tests/bundle1/run_bundle1.sh` 의 `rg` → `grep -E` 스왑 (POSIX cleanliness), `implementation_progress.md` + `.ko.md` 의 AC.B1.6/B1.8 라벨 스왑. v0.4 로 deferred: SKILL.md Sec. 6 live tool-picker triple, tech_design Sec. 0 verbatim refresh, CI matrix (mac + Linux), Bundle 4 non-blocking #3 (atomicity 문서화). 양 하네스 green (Bundle 1 10/10, Bundle 4 4/4). HANDOFF.md 갱신 (bundles stage 11→12, Next Session Prompt 를 Stage 13 tag kickoff 로 전환). Stage 11 close commit `d453ea1` 가 prerequisite. EN 페어 동시 갱신. |
