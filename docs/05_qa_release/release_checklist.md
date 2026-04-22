@@ -2,12 +2,12 @@
 title: Release Checklist — jOneFlow v0.3 (single joint tag)
 stage: 12
 bundle: 1+4
-version: 1
+version: 2
 language: en
 paired_with: release_checklist.ko.md
 created: 2026-04-22
 updated: 2026-04-22
-status: draft
+status: in_progress
 validation_group: 1
 ---
 
@@ -32,14 +32,30 @@ validation_group: 1
 
 ## 1. Code & test gates
 
-- [ ] `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS on tag candidate commit.
-- [ ] `sh tests/run_bundle4.sh` → 4/4 PASS on tag candidate commit.
-- [ ] Both harnesses green on **mac** (CI matrix forward from Stage 11 Bundle 4 non-blocking #2).
-- [ ] Both harnesses green on **Linux** (CI matrix forward, same source).
-- [ ] `shellcheck -S style scripts/update_handoff.sh` exits 0 on mac.
-- [ ] `shellcheck -S style scripts/update_handoff.sh` exits 0 on Linux.
+- [x] `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS on tag candidate commit.
+- [x] `sh tests/run_bundle4.sh` → 4/4 PASS on tag candidate commit.
+- [ ] Both harnesses green on **mac** (CI matrix forward from Stage 11 Bundle 4 non-blocking #2). *Pending operator paste — see Sec. 1.1.*
+- [x] Both harnesses green on **Linux** (CI matrix forward, same source).
+- [ ] `shellcheck -S style scripts/update_handoff.sh` exits 0 on mac. *Pending operator paste — see Sec. 1.1.*
+- [x] `shellcheck -S style scripts/update_handoff.sh` exits 0 on Linux. *Proxy used (`sh -n` + `dash -n` + `bash -n`), real shellcheck deferred to v0.4 (CHANGELOG `[Unreleased]`/CI backlog).*
 
 If `shellcheck` is unavailable on either CI runner, document the proxy used (e.g., `sh -n` + `dash -n` syntax checks per Stage 11 final_validation.md Sec. 3 Bundle 4 #1) AND open a v0.4 issue for the real shellcheck run.
+
+### 1.1 Results ledger (Stage 13 session 7, 2026-04-22 UTC)
+
+| Row | Runner | Command | Result | Notes |
+|-----|--------|---------|--------|-------|
+| 1.a | Linux aarch64 (Ubuntu 22, sandbox) | `bash tests/bundle1/run_bundle1.sh` | 10/10 PASS | Candidate commit `08a43fd` (Stage 12 close). |
+| 1.b | Linux aarch64 (Ubuntu 22, sandbox) | `sh tests/run_bundle4.sh` | 4/4 PASS | Same candidate. |
+| 1.c | Linux aarch64 (Ubuntu 22, sandbox) | `sh -n scripts/update_handoff.sh` | exit 0 | shellcheck proxy. |
+| 1.d | Linux aarch64 (Ubuntu 22, sandbox) | `dash -n scripts/update_handoff.sh` | exit 0 | shellcheck proxy. |
+| 1.e | Linux aarch64 (Ubuntu 22, sandbox) | `bash -n scripts/update_handoff.sh` | exit 0 | Bonus proxy (non-POSIX interpreter sanity). |
+| 1.f | Linux aarch64 (Ubuntu 22, sandbox) | `shellcheck -S style scripts/update_handoff.sh` | unavailable | Binary not installed; `apt-get install` blocked (no root). v0.4 backlog seeded. |
+| 1.g | **mac** | `bash tests/bundle1/run_bundle1.sh` | **pending operator paste** | Release author to run locally; paste result here. |
+| 1.h | **mac** | `sh tests/run_bundle4.sh` | **pending operator paste** | Ditto. |
+| 1.i | **mac** | `shellcheck -S style scripts/update_handoff.sh` | **pending operator paste** | Ditto. Mac typically has shellcheck via Homebrew (`brew install shellcheck`). |
+
+Once operator pastes mac results, the three `pending` rows above flip to `PASS`/`FAIL` and the three checkboxes in Sec. 1 flip accordingly before the tag is cut.
 
 ---
 
@@ -47,22 +63,22 @@ If `shellcheck` is unavailable on either CI runner, document the proxy used (e.g
 
 Per `docs/05_qa_release/qa_scenarios.md`:
 
-- [ ] H1 (Bundle 1 — tool-picker discovery and decision) PASS.
-- [ ] H2 (Bundle 4 — `update_handoff.sh` succeeds on valid HANDOFF.md) PASS.
-- [ ] H3 (Joint — SKILL.md verbatim-parses `decisions.md`) PASS.
-- [ ] H4 (Joint — KO pair freshness R4 at stage close) PASS.
-- [ ] F1–F6 procedures verified as current (no need to actually break the tree on the tag commit).
+- [x] H1 (Bundle 1 — tool-picker discovery and decision) PASS. *Harness 10/10 + `.skills/tool-picker/SKILL.md` Sec. 6 produces five-line advisory shape.*
+- [x] H2 (Bundle 4 — `update_handoff.sh` succeeds on valid HANDOFF.md) PASS. *`tests/run_bundle4.sh` 4/4.*
+- [x] H3 (Joint — SKILL.md verbatim-parses `decisions.md`) PASS. *`diff <(sed -n '24,62p' decisions.md) <(sed -n '34,72p' SKILL.md)` empty; `grep -nE '\]\(' SKILL.md` 0 matches; backlink rows 45/55/72 use D4.x4 relative-link form.*
+- [x] H4 (Joint — KO pair freshness R4 at stage close) PASS. *Every Stage-5+ EN/KO pair Δ=0 on `updated:`; Stage 1–4 pairs share same git-log day.*
+- [x] F1–F6 procedures verified as current (no need to actually break the tree on the tag commit). *All referenced files exist; SKILL.md Sec. 7 + tech_design Sec. 6 + `tests/bundle4/test_02_update_handoff_failures.sh` + `test_04_frontmatter_and_stage1_4.sh` + SKILL.md Sec. 3 all present.*
 
 ---
 
 ## 3. Documentation gates
 
-- [ ] `CHANGELOG.md` `[0.3.0]` date filled in with the actual tag date (replace `TBD`).
-- [ ] `CHANGELOG.md` `[Unreleased]` section reset to empty stubs.
-- [ ] `HANDOFF.md` reflects Stage 13 release in Recent Changes + status line.
-- [ ] `docs/notes/dev_history.md` (+ `.ko.md`) carries the Stage 13 close entry (Entry 3.14 or next).
-- [ ] All Stage-5+ docs carry D4.x2 frontmatter (auto-checked by `tests/bundle4/test_04_frontmatter_and_stage1_4.sh`).
-- [ ] All EN/KO pairs satisfy R4 (Δ ≤ 1 day at tag time).
+- [x] `CHANGELOG.md` `[0.3.0]` date filled in with the actual tag date (replace `TBD`). *Finalised `[0.3.0] - 2026-04-22` in session 7.*
+- [x] `CHANGELOG.md` `[Unreleased]` section reset to empty stubs. *Reset plus one populated subsection "CI / infra (v0.4 backlog seed)" with shellcheck install + mac CI automation items.*
+- [x] `HANDOFF.md` reflects Stage 13 release in Recent Changes + status line. *EN status line = "Stage 13 🟡 tag target committed; `v0.3` tag to be cut on this commit" with post-release flip note. KO mirror updated.*
+- [x] `docs/notes/dev_history.md` (+ `.ko.md`) carries the Stage 13 close entry (Entry 3.14). *Entry 3.14 authored EN + KO; revision log bumped to v1.7; session summary table +4 rows (sessions 4/5/6/7). Entry 3.15 to follow in post-release commit with actual tag SHA.*
+- [x] All Stage-5+ docs carry D4.x2 frontmatter (auto-checked by `tests/bundle4/test_04_frontmatter_and_stage1_4.sh`). *Harness 4/4 PASS on `08a43fd`.*
+- [x] All EN/KO pairs satisfy R4 (Δ ≤ 1 day at tag time). *H4 verified session 7; Δ=0 across all Stage-5+ pairs.*
 
 ---
 

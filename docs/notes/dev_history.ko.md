@@ -20,6 +20,10 @@
 | 2 | 2026-04-22 | Stage 2 Plan Draft (EN + KO) | PASS | UI 사용량 ~76%, 깨끗한 stage 경계 |
 | 3 | 2026-04-22 | Stage 3 Plan Review (EN + KO) | PASS, 4/4 포커스 | UI 사용량 ~95%, Stage 4 진입 전 |
 | 3 재개 (토큰 충전 이후) | 2026-04-22 | Stage 4 Plan Final (EN + KO) + Stage 4.5 승인 + DC.5 + DC.6 + 섹션 기호 정책 변경 + 본 backfill + Stage 5 Bundle 4 기술 설계 (EN + KO) + Stage 5 Bundle 1 기술 설계 (EN + KO) | APPROVED (공동); 양 번들 Stage 5 완료 | TBD |
+| 4 | 2026-04-22 | Stage 8 Bundle 4 Codex 완료 readback + Stage 9 Bundle 4 Claude 코드 리뷰 | PASS — minor | Stage 9 Bundle 4 종료; Bundle 1 킥오프 차단 해제 |
+| 5 | 2026-04-22 | Stage 9 Bundle 1 Claude 코드 리뷰 + Stage 11 prep housekeeping (DC.6 dossier) | PASS — minor; dossier 산출 | Stage 11 직전 (M.3 에 따라 Stage 11 은 새 세션) |
+| 6 | 2026-04-22 | Stage 11 joint validation (M.3 에 따른 새 세션) + Stage 11 close 커밋 `d453ea1` + Stage 12 QA & Release 준비 | APPROVED (M.5 worst-of-two); Stage 12 완료 | Stage 13 직전 (Stage 12 커밋은 defer → 세션 7 open 에서 해소) |
+| 7 | 2026-04-22 | Stage 12 close 커밋 `08a43fd` + Stage 13 릴리스 준비 (CI 매트릭스 Linux, QA 게이트, 문서 게이트, 태그 대상 커밋) + v0.3 태그 cut + post-release | plan_final M.6 에 따라 v0.3 릴리스 | Post-release (세션-종료 git 정책 적용) |
 
 ---
 
@@ -304,6 +308,30 @@
 
 ---
 
+## 세션 7 — 2026-04-22 (UTC)
+
+### Entry 3.14 — Stage 13 릴리스 준비 + 태그 대상
+
+- **Stage:** 13 (릴리스 태그, plan_final M.6 에 따른 공동; validation_group = 1).
+- **Owner:** Claude (세션 7 — 세션 6 종료 후 사용자 재론칭으로 새 세션. M.3 는 Stage 11 에만 적용되므로 Stage 13 은 새 세션이 필수는 아니지만 세션 6 이 ~95% 컨텍스트 바운드까지 돌았기에 클린 세션이 바람직).
+- **Input:** `docs/05_qa_release/release_checklist.md` (권위 있는 태그 게이트, Stage 12 산출물), `docs/05_qa_release/qa_scenarios.md` (H1–H4 + F1–F6), `CHANGELOG.md` `[0.3.0]` (Stage 12 에서 TBD 날짜 플레이스홀더), Stage 12 close 커밋 `08a43fd` (이 세션의 첫 액션 — 아래 "Pre-flight" 참조).
+- **Output (이 엔트리 — pre-tag):**
+  - **Pre-flight:** Stage 12 close 커밋 `08a43fd` (부모 `d453ea1`). 12 파일 / +1050 / −93. Stage 12 uncommitted 집합 전체 번들 (`HANDOFF.md`, `CHANGELOG.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`). 커밋 메시지 "Stage 12 QA & Release prep close — validation_group 1 (session 6 continuation)". CLAUDE.md git 안전 정책에 따라 inline `git -c user.name='Hyoungjin' -c user.email='geenya36@gmail.com'` 플래그 사용. `08a43fd` 에서 양 하네스 재실행 green: `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS.
+  - **CI 매트릭스 Linux 사이드 (release_checklist.md Sec. 1.1):** 9 행 결과 레저 채움. Linux aarch64 (Ubuntu 22, 샌드박스) 행 1.a–1.e 전부 green: 하네스 PASS + 프록시 셸 (`sh -n` + `dash -n` + `bash -n`) 전부 exit 0. 행 1.f (실제 `shellcheck`) 사용 불가 — 바이너리 미설치, `apt-get install` 차단 (root 없음). `CHANGELOG.md` `[Unreleased]` CI/infra 섹션에 v0.4 백로그 항목 seed: "Linux CI 러너에 `shellcheck` 설치하여 v0.3 프록시를 `shellcheck -S style scripts/update_handoff.sh` 로 교체". 행 1.g–1.i (mac) 은 사용자의 Stage 13 방향 (패턴 1 — "일단 1번으로 하고 나중에 개선점을 찾아보자" → 운영자가 mac 로컬 실행, 자동화는 v0.4) 에 따라 **operator-paste 행으로 캡처**.
+  - **QA 게이트 (release_checklist.md Sec. 2):** H1–H4 전부 inline 증거와 함께 tick. H1 PASS (하네스 10/10 + SKILL.md Sec. 6 5줄 advisory shape). H2 PASS (하네스 4/4). H3 PASS (`diff <(sed -n '24,62p' docs/notes/decisions.md) <(sed -n '34,72p' .skills/tool-picker/SKILL.md)` 빈 결과; `grep -nE '\]\(' .skills/tool-picker/SKILL.md` 0 매치; backlink 행 45/55/72 이 D4.x4 상대경로 형식 사용). H4 PASS (모든 Stage-5+ EN/KO 페어 `updated:` Δ=0; Stage 1–4 페어는 같은 git-log 날짜 공유). F1–F6 절차 current 확인 — 참조 파일 전부 트리 상 존재 (SKILL.md Sec. 7 + tech_design Sec. 6 + `tests/bundle4/test_02_update_handoff_failures.sh` + `test_04_frontmatter_and_stage1_4.sh` + SKILL.md Sec. 3). 태그 커밋에서 실제로 트리를 깨뜨릴 필요 없음.
+  - **문서 게이트 (release_checklist.md Sec. 3):**
+    - `CHANGELOG.md`: `## [0.3.0] - TBD` → `## [0.3.0] - 2026-04-22`; blockquote 추가 "Released 2026-04-22 (UTC) under a single joint `v0.3` git tag per plan_final M.6. Validation Group 1 = Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β)."
+    - `CHANGELOG.md` `[Unreleased]`: 빈 stub 유지 (Added / Changed / Deprecated / Removed / Fixed / Security) + 서브섹션 하나 populate — "CI / infra (v0.4 backlog seed, carried forward from v0.3 Stage 13)" 에 CI 2 항목 (shellcheck 설치, mac CI 자동화) 열거.
+    - `release_checklist.md` (+ `.ko.md`): frontmatter `version: 1 → 2`, `status: draft → in_progress`; Sec. 1 Linux-side + 프록시 체크박스 tick, mac 행은 unticked (operator paste 대기); Sec. 1.1 "결과 레저" 서브섹션 9 행 삽입; Sec. 2 H1–H4 + F1–F6 체크박스 전부 inline 증거와 함께 tick.
+    - `HANDOFF.md` (EN + KO): Status 라인 → "Stage 13 🟡 **tag target committed; `v0.3` tag to be cut on this commit**"; bundles YAML `stage: 12 → 13` (Stage 11 APPROVED 에 따라 verdict `minor` 이월); 완료 엔트리 4 개 신규 (Stage 12 close 커밋 `08a43fd`, Stage 13 CI 매트릭스 Linux 사이드, Stage 13 QA 게이트, Stage 13 문서 게이트); In Progress / Next / Blockers 를 세션-7-중반 상태로 재작성; Recent Changes 상단 2 엔트리 추가 (Stage 13 릴리스 준비 + 태그 대상, Stage 12 close 커밋); Key Document Links 갱신 (release_checklist 행 "Sec. 1.1 + Sec. 2–3 ticked"; CHANGELOG 행 "[0.3.0] - 2026-04-22 finalised"); Next Session Prompt 블록을 v0.4 planning kickoff (6 항목 백로그 + mid-session-7 resume fallback 메모) 로 재작성. KO 미러 lockstep 편집.
+- **판정:** Pre-tag 게이트 PASS; release_checklist.md Sec. 0–3 박스 전부 tick (단, 3 개 mac operator-paste 행은 비동기이며 사용자가 선택한 Stage 13 방향 하에서 태그-blocking 이 아님).
+- **태그 대상 커밋:** 이 dev_history Entry 3.14 + HANDOFF + release_checklist + CHANGELOG 편집을 담은 커밋. 커밋 메시지 타깃: "[bundle1+bundle4] Stage 13 release prep — v0.3 tag target (validation_group 1)". 부모 `08a43fd`.
+- **다음 (세션 7 연속 — Entry 3.15):** 이 엔트리의 태그 대상 커밋에서 `git tag -a v0.3 -m "jOneFlow v0.3 — Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β); joint release per M.6"`; `git push origin main && git push origin v0.3`; `gh release create v0.3 -F <CHANGELOG [0.3.0] 본문>` (fallback: GitHub UI 수동 오픈); HANDOFF 상태 라인을 "v0.3 released; v0.4 planning open" 으로 flip 하고 실제 태그 SHA 와 함께 Entry 3.15 기록하는 post-release 커밋. 세션-종료 git 정책 (CLAUDE.md 서브섹션) 적용 — 사용자에게 태그+post-release 커밋을 지금 푸시할지 defer 할지 질문.
+- **Dogfooding 메모:** 이 스테이지에서도 `scripts/update_handoff.sh` 미사용 — Stage 13 HANDOFF 업데이트가 Status 라인 + bundles YAML + 완료 리스트 + In Progress + Next + Blockers + Recent Changes + Key Document Links + Next Session Prompt 에 걸쳐 EN + KO 미러 양쪽에 영향, 스크립트의 2-섹션 계약 범위를 훨씬 초과. 스크립트 커버리지 확장은 v0.4 백로그 후보 (아직 목록화되지 않음 — 추진 시 7번 항목으로 추가 가능).
+- **재진입:** 없음. Stage 13 은 릴리스 메커닉; verdict 분기 없음. 태그 생성으로 continue.
+
+---
+
 ## Entry 템플릿 (향후 세션용)
 
 ```markdown
@@ -332,3 +360,4 @@
 | 2026-04-22 | v1.4 — Stage 11 prep 종료 (Entry 3.11) | Entry 3.11 추가 (DC.6 dossier + ko_freshness 스크래치 산출; CLAUDE.md "Session close — git policy" 서브섹션 고정; 두 번들 PASS — minor 이므로 Stage 10 생략). CLAUDE.md 편집은 사용자 defer 선택에 따라 uncommitted 로 유지; HANDOFF.md 가 Stage 11 세션을 위해 해당 상태 플래그. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.5 — Stage 11 joint validation 종료 (Entry 3.12) | Entry 3.12 추가 — 그룹 판정 APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 모두 APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 가 D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved) 와 함께 발행. Cross-bundle 검증: AC.B4.10 verbatim 일치 문자 단위 확인; AC.B4.11 구조상 vacuous; KO freshness 7 페어 / 0 일 델타 독립 재검증. Bundle 1 의 non-blocking 4 건 + Bundle 4 의 3 건 을 Stage 12 housekeeping 으로 forward. HANDOFF.md 갱신 (bundles stage 9→11, verdict minor 이월, Recent Changes 그룹 단위 노트, Next Session Prompt 를 Stage 12 kickoff 로 전환). EN 페어 동시 갱신. |
 | 2026-04-22 | v1.6 — Stage 12 QA & Release prep 종료 (Entry 3.13) | Entry 3.13 추가 — Stage 11 과 동일 세션 6 연속. 새 산출물: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy-path + F1–F6 failure/edge), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 gate, 0–8 절), `prompts/claude/v03/stage12_qa_release_prompt.md` (Stage 12 kickoff), `CHANGELOG.md` `[0.3.0]` 섹션 (TBD 날짜). On-tree 해소된 housekeeping: `tests/bundle1/run_bundle1.sh` 의 `rg` → `grep -E` 스왑 (POSIX cleanliness), `implementation_progress.md` + `.ko.md` 의 AC.B1.6/B1.8 라벨 스왑. v0.4 로 deferred: SKILL.md Sec. 6 live tool-picker triple, tech_design Sec. 0 verbatim refresh, CI matrix (mac + Linux), Bundle 4 non-blocking #3 (atomicity 문서화). 양 하네스 green (Bundle 1 10/10, Bundle 4 4/4). HANDOFF.md 갱신 (bundles stage 11→12, Next Session Prompt 를 Stage 13 tag kickoff 로 전환). Stage 11 close commit `d453ea1` 가 prerequisite. EN 페어 동시 갱신. |
+| 2026-04-22 | v1.7 — Stage 13 릴리스 준비 + 태그 대상 (Entry 3.14) | Entry 3.14 추가 — 세션 7, Stage 13 릴리스-태그 메커닉. Pre-flight: Stage 12 close 커밋 `08a43fd` (12 파일, +1050/−93, 부모 `d453ea1`). CI 매트릭스 Linux 사이드 (release_checklist.md Sec. 1.1): 행 1.a–1.e 전부 green (하네스 + `sh -n` + `dash -n` + `bash -n` 프록시); 행 1.f 실제 `shellcheck` 사용 불가, `CHANGELOG.md` `[Unreleased]` CI/infra 블록에 v0.4 백로그 seed; 행 1.g–1.i mac operator-paste 는 사용자의 Stage 13 패턴-1 방향. QA 게이트: H1–H4 inline 증거와 함께 PASS; F1–F6 current. 문서 게이트: `CHANGELOG.md` `[0.3.0] - TBD` → `[0.3.0] - 2026-04-22` 확정; `[Unreleased]` stub 리셋 + CI/infra v0.4 백로그 seed. `release_checklist.md` (+ `.ko.md`) version 1→2, status draft→in_progress, Sec. 1.1 결과 레저 채움, Sec. 2–3 체크박스 tick. `HANDOFF.md` (EN + KO) Status 라인을 "Stage 13 태그 대상 커밋됨" 으로 flip, bundles YAML `stage 12→13`, 완료 리스트 +4 엔트리, Recent Changes 상단 2 엔트리, Next Session Prompt 를 v0.4 planning kickoff (6 항목 백로그 + fallback) 로 재작성. 세션-요약표 +4 행 (세션 4/5/6/7). |
