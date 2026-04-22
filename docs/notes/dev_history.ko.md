@@ -1,0 +1,225 @@
+# 개발 이력 — jOneFlow v0.3
+
+> **목적.** v0.3 개발 주기 동안 벌어진 일을 단계(stage) 단위로 시간순 기록. 각 항목은 한 번의 stage 실행(또는 housekeeping)을 판정·주요 산출물·후속 stage로 넘긴 결정과 함께 남긴다. Fresh Claude 세션이 "왜 지금 이 모양인지" 재구성할 수 있도록 작성.
+>
+> **읽는 순서.** 참조 자료. 더 깊은 이력이 필요할 때 CLAUDE.md / HANDOFF.md / WORKFLOW.md 이후에 읽는다. 일차 기획 문서를 대체하지 않음.
+>
+> **표기.** Stage 실행 1회당 1개 섹션, 시간순. 섹션 참조는 `Sec. N` 사용 (`§` 문자는 v0.3에서 가독성 이슈로 퇴역).
+>
+> **언어.** EN primary. 이 파일이 `dev_history.md`의 한국어 페어 (R4에 따라 세션 종료 시 작성).
+>
+> **DC.2 참조.** Plan_final Sec. 3-3 DC.2. Backfill은 세션 3 재개 시점에 실행 (2026-04-22).
+
+---
+
+## 세션 요약표
+
+| 세션 | 날짜 | 실행된 Stage | 판정 | 종료 시점 |
+|------|------|--------------|------|-----------|
+| 1 | 2026-04-22 | Stage 1 브레인스토밍 | PASS | Stage 2 진입 전 (컨텍스트 보존) |
+| 2 | 2026-04-22 | Stage 2 Plan Draft (EN + KO) | PASS | UI 사용량 ~76%, 깨끗한 stage 경계 |
+| 3 | 2026-04-22 | Stage 3 Plan Review (EN + KO) | PASS, 4/4 포커스 | UI 사용량 ~95%, Stage 4 진입 전 |
+| 3 재개 (토큰 충전 이후) | 2026-04-22 | Stage 4 Plan Final (EN + KO) + Stage 4.5 승인 + DC.5 + DC.6 + 섹션 기호 정책 변경 + 본 backfill + Stage 5 Bundle 4 기술 설계 (EN + KO) + Stage 5 Bundle 1 기술 설계 (EN + KO) | APPROVED (공동); 양 번들 Stage 5 완료 | TBD |
+
+---
+
+## 세션 1 — 2026-04-22
+
+### Entry 1.1 — Stage 1 Brainstorm
+
+- **Stage:** 1 (Brainstorm)
+- **Owner:** Claude (planner), Hyoungjin (참여자)
+- **Output:** `docs/01_brainstorm/brainstorm.md` (+ 세션 종료 시 Addendum 추가)
+- **판정:** PASS — Stage 2 진입 준비 완료.
+- **Stage 2로 넘긴 주요 결정:**
+  - 워크플로우 모드: **Strict-hybrid** (상위 Strict + 내부 번들 Standard).
+  - 번들 선택: **Bundle 1 (tool-picker) + Bundle 4 (doc-discipline)**. Bundle 2, 3은 v0.4로 이월.
+  - Validation group 1 = {Bundle 1, Bundle 4} — 공동 Stage 4.5 승인 게이트 (M.1) + 단일 fresh 세션 Stage 11 (M.3).
+  - UI 정책: v0.3에서 `has_ui=false`. v0.5 또는 첫 downstream `has_ui=true` 프로젝트까지 base-only.
+  - Bundle 4 **option β**: kickoff goals 5/9/10 + brainstorm Sec. 9-2 내부 문서 구조. 리스크 low-medium → medium. Brainstorm Addendum에 결정 기록.
+- **도입된 참조 프레임:** P1–P10 우려사항 (규모 / 동시성 / verdict authority), D-A/B/C/D 규칙 (tool-picker 권고 전용, Codex 타이밍, verdict 전파).
+- **이 stage에서 이월된 항목:** `template_vs_dogfooding_separation` (Stage 2에서 Bundle 4 option β D4.x1로 흡수).
+- **세션 종료 사유:** Stage 2 진입 전 컨텍스트 보존; brainstorm 산출물 전체를 세션 2로 인계.
+
+### Entry 1.2 — HANDOFF.md 전환 (housekeeping, Option 1)
+
+- **액션:** v0.2 승계 HANDOFF.md 템플릿을 in-place로 v0.3 dogfooding 트래커로 전환 (Option 1). "이 파일은 dogfooding 상태 추적용" 배너 추가.
+- **근거:** jOneFlow v0.3는 자기 자신을 dogfooding 중. HANDOFF.md를 두 개로 유지하는 대신 여기서 dogfooding 상태를 추적하고, v0.3 릴리스 시 깨끗한 템플릿(`templates/HANDOFF.template.md`)을 Bundle 4 D4.x1로 분리.
+- **이월:** Clean-template 분리는 Bundle 4 책임 (D4.x1).
+
+---
+
+## 세션 2 — 2026-04-22
+
+### Entry 2.1 — Stage 2 Plan Draft (EN + KO 페어)
+
+- **Stage:** 2 (Plan Draft)
+- **Owner:** Claude (planner)
+- **Output:** `docs/02_planning/plan_draft.md` (EN) + `docs/02_planning/plan_draft.ko.md` (KO, R4에 따라 같은 세션 내 페어 커밋).
+- **판정:** PASS — Stage 3 진입 준비 완료.
+- **구조:** 10개 섹션 — Goals / Non-goals / Deliverables / Milestones / Risks / Dependencies / Open Questions / Approval Checklist (사전 박음, 비어있음) / Deferrals / Revision log.
+- **번들 통합:** 공동 Stage 4.5 + Stage 11을 거치므로 plan_draft도 공동 (번들별 분리 아님).
+- **추적성 규율:** kickoff goals와 scope_extras를 Sec. 3에서 별도 리스트로 분리 유지 — `prompts/claude/v03_kickoff.md`와의 연결 보존.
+- **Top-3 리스크 사전 기재:** R1 option-β 스코프 크립 · R2 tool-picker N5 영역으로 드리프트 · R3 Stage 11 컨텍스트 폭발. 각각 likelihood/impact/mitigation/owner 기재.
+- **승인 체크리스트 사전 박음:** 7개 항목 — AC.1–AC.4 (WORKFLOW.md Sec. 6 기본) + AC.5–AC.7 (Strict-hybrid 추가). Stage 4에서 채우도록 비워둠.
+- **이 stage에서 연 Open Questions:** OQ.S11.2 (판정 분기 정책), OQ.L2 (KO freshness 체크 위치), OQ.N3 (`.github/` 템플릿). 셋 다 세션 3에서 해소.
+- **세션 종료 사유:** UI 사용량 ~76%에서 stage 경계 조기 종료. `docs/notes/session_token_economics.md`를 동시에 작성하여 continue-vs-transition 판단 프레임워크 캡처.
+
+### Entry 2.2 — `session_token_economics.md` 도입 (living doc)
+
+- **Output:** `docs/notes/session_token_economics.md` (KO 단독; EN 페어는 OSS 공개 시점으로 이월).
+- **목적:** "현재 세션 유지 vs 새 세션 전환" 판단 프레임워크 운영 wiki. 세션 2의 실제 76%-사용량 판단 사례에서 유도.
+- **상태:** Bundle 1, 4 스코프 외. 운영 위생 artifact.
+
+---
+
+## 세션 3 — 2026-04-22 (토큰 충전 이전)
+
+### Entry 3.1 — Stage 3 Plan Review (EN + KO 페어)
+
+- **Stage:** 3 (Plan Review)
+- **Owner:** Claude (reviewer)
+- **Input:** 세션 2의 `plan_draft.md`.
+- **Output:** `docs/02_planning/plan_review.md` + `plan_review.ko.md`.
+- **판정:** plan_draft "Next Stage"의 4개 포커스 전부 **PASS**:
+  - (a) kickoff goals 5/7/9/10/11/12 커버리지 — 전부 deliverables에 매핑.
+  - (b) Top-3 리스크 타당성 — 확인.
+  - (c) Open Questions Stage 5 컨테인먼트 — 진짜 Stage-4 leak 1건 발견 (아래 참조).
+  - (d) KO freshness — 통과, Sec. 4-3에 재사용 가능한 4-item KO sync 체크 블록 도입.
+- **핵심 발견 (진짜 Stage-4 leak):** **OQ.S11.2 (판정 분기 정책)** 은 거버넌스 정책이지 기술 설계가 아님. plan_final의 **committed 규칙 M.5**로 승격 (F-c2): 그룹 판정 = worst-of-two; 어느 한 번들 `design_level`이면 공동 재승인.
+- **다른 개정 사항 (모두 Stage 4에서 흡수):**
+  - F-a1 — CONTRIBUTING.md 파일 소유권 D4.c; D4.b는 `## Changelog maintenance` 단일 섹션만 기여.
+  - F-b2 — 신규 secondary 리스크 **R9 Joint-approval coupling** (M.1 증폭기)를 Sec. 5-2에 추가.
+  - F-c1 — 신규 cross-bundle deliverable **DC.6** (`prompts/claude/v03/stage11_joint_validation_prompt.md`).
+  - F-c3 — OQ.L2 Stage-3 절반 Sec. 4-3 KO sync 블록으로 해소. Stage-9 절반은 Bundle 4 tech design으로 유지.
+  - F-o1 — DEP.1 정밀화: Bundle 4 D4.x2–x4가 Bundle 1 D1.b보다 먼저 잠겨야 함; 나머지는 병렬 가능.
+  - F-o2 — Stage 13는 단일 공동 `v0.3` git tag 배포 (릴리스 위생 노트 → M.6).
+  - F-o3 — OQ.N3를 N7 `.github/` PR/이슈 템플릿 서브불릿으로 병합; Sec. 7에서 제거.
+- **세션 종료 사유:** UI 사용량 **~95%** 도달. Stage 4 진입 전 깨끗한 Stage-3 경계에서 중단. Stage 4 작업 전부를 `plan_review.md Sec. 6`의 8건 개정 테이블 + HANDOFF.md 다음-세션 프롬프트로 사전 스테이징하여 세션 4가 기계적으로 이어받을 수 있도록 함.
+
+---
+
+## 세션 3 (토큰 충전 후 재개) — 2026-04-22
+
+### Entry 3.2 — Stage 4 Plan Final (EN + KO 페어)
+
+- **Stage:** 4 (Plan Final)
+- **Owner:** Claude (planner)
+- **Input:** `plan_draft.md` (v1, 세션 2) + `plan_review.md` (v1, 세션 3, 개정 테이블).
+- **Output:** `docs/02_planning/plan_final.md` + `plan_final.ko.md`.
+- **판정:** 승인 체크리스트 7/7 ✅. Stage 4.5 준비 완료.
+- **plan_review 개정 8건 전부 흡수** (F-a1, F-b2, F-c1, F-c2, F-c3, F-o1, F-o2, F-o3) — Sec. 0-2 Summary of changes 테이블이 각 개정이 어디로 착지했는지 교차 참조.
+- **OQ.S11.2가 M.5로 committed** (더 이상 open question 아님) — divergent-verdict policy.
+- **Open Questions Sec. 7 축소:** OQ.S11.2 제거 (이제 M.5), OQ.L2 Stage-3 절반 resolved 표시, OQ.N3 제거 (N7로 병합).
+- **KO sync 체크 블록** Sec. 0에 추가, 4개 항목 모두 페어 `.ko.md`와 대조 후 체크.
+- **비차단 주석 (AN.1–AN.3):** DC.5 + DC.6은 pre-Stage-5 / pre-Stage-11 선결조건 (Stage-4 게이트 아님); 잔여 OQ는 Stage 5에서 해소; `dev_history.md` backfill은 본 세션 내.
+- **세션 연속 근거:** 토큰 충전 이후 사용자 요청으로 사용량 압박에도 Stage 3 → Stage 4 연속 실행. 판단은 session_token_economics wiki에 기록.
+
+### Entry 3.3 — Stage 4.5 사용자 승인 게이트
+
+- **Stage:** 4.5 (승인 게이트 — validation group 1 공동)
+- **제출자:** Claude · **결정자:** Hyoungjin
+- **제출 입력:** `plan_final.md` + `plan_final.ko.md`, 7/7 ✅.
+- **적용 제약:** M.1 — 부분 승인 불가; Bundle 1 + Bundle 4 공동 결정.
+- **판정:** **APPROVED (공동)**. 두 번들 `approval_status` → `approved` in HANDOFF.md YAML.
+- **차단 해제:** pre-Stage-5 housekeeping + Stage 5 진입 가능.
+
+### Entry 3.4 — Pre-Stage-5 Housekeeping (DC.5 + DC.6 프롬프트 드래프트)
+
+- **Step:** Cross-bundle housekeeping (공식 stage 아님).
+- **Owner:** Claude.
+- **Output (`prompts/claude/v03/` 하위 3개 신규 파일):**
+  - `stage5_bundle4_design_prompt_draft.md` — DC.5 #1. D4.x2/x3/x4를 Sec. 0 lock-우선 요구로 하드와이어; D4.a–D4.c + D4.x1 커버리지 명시; Bundle 4 tech design에서 닫을 OQ 열거.
+  - `stage5_bundle1_design_prompt_draft.md` — DC.5 #2. Bundle 4 Sec. 0 잠금을 하드 게이트로; plan_final Sec. 5-2 R2 (읽기 전용 Markdown 표면)를 수락 기준으로 인용.
+  - `stage11_joint_validation_prompt.md` — DC.6 (F-c1에 의해 신규). 번들별 pre-compacted dossier 포맷 (각각 ≤ 1페이지 산문 + ≤ 200줄 diff) 강제로 R3 컨텍스트 폭발 차단. M.3/M.5/M.6을 출력 템플릿에 직접 박음.
+- **닫힌 open question:** OQ.S11.1 — Stage 11 컨텍스트 전달 포맷이 이제 구체적으로 "`docs/notes/stage11_dossiers/bundle{id}_dossier.md`의 dossier".
+- **이월:** 3개 드래프트 전부 명명된 다음 stage 진입의 선결조건.
+
+### Entry 3.5 — 섹션 기호 정책 변경 (house style)
+
+- **Step:** House style housekeeping.
+- **트리거:** 사용자 피드백 — `§` (U+00A7)가 EN/KO 이중언어 기획 문서의 가독성을 해침.
+- **변경 범위:** v0.3 작업 문서 8개에서 `§` → `Sec. ` (리터럴 접두어 + 공백) 일괄 치환:
+  - `plan_draft.md` + `plan_draft.ko.md`
+  - `plan_review.md` + `plan_review.ko.md`
+  - `plan_final.md` + `plan_final.ko.md`
+  - `HANDOFF.md`
+  - `brainstorm.md`
+- **의도적으로 미변경:** canonical 프롬프트 템플릿 (`prompts/claude/final_review.md`, `code_review.md`, `v03_kickoff.md`) — v0.2 호환성 보존; `docs/notes/session_token_economics.md` 및 `docs/notes/2026-04-21-v0.3-kickoff-state.md` — 기획 문서 표면 아님.
+- **검증:** 8개 파일에서 `§` 잔존 0건; `Sec.  ` (2칸 공백) 아티팩트 0건.
+- **이월:** 이후 작성하는 신규 문서는 `Sec. ` 직접 사용; 본 entry가 convention 참조점.
+
+### Entry 3.6 — `dev_history.md` backfill (본 파일)
+
+- **Step:** AN.3 / DC.2 부분 충족 (backfill만; 이후부터는 live 로깅).
+- **Output:** `docs/notes/dev_history.md` + 한국어 페어 `docs/notes/dev_history.ko.md` (본 파일, R4에 따라 같은 세션 내 작성).
+- **범위:** 세션 1, 2, 3 (토큰 충전 이전/이후). Stage 단위 entry + housekeeping entry.
+- **이후 규율:** 세션 4부터는 revision 루프 때만이 아니라 **stage 종료마다** 또는 중대한 housekeeping 때 신규 entry 추가. 상기 entry 템플릿 준수 (Stage / Owner / Input / Output / 판정 / 주요 결정 / 이월).
+
+### Entry 3.7 — Stage 5 Bundle 4 기술 설계 (EN + KO 페어)
+
+- **Stage:** 5 (기술 설계 — Bundle 4, Doc Discipline, 옵션 β).
+- **Owner:** Claude (설계자).
+- **Input:** `docs/02_planning/plan_final.md` (Stage 4.5 에서 APPROVED) + `prompts/claude/v03/stage5_bundle4_design_prompt_draft.md` (DC.5 #1).
+- **Output:** `docs/03_design/bundle4_doc_discipline/technical_design.md` (EN, 14 섹션, 약 640 줄) + `technical_design.ko.md` (KO 페어, R4 에 따라 같은 세션). 양쪽 파일에 D4.x2 규정대로 YAML 프론트매터 부착 및 4 항목 KO 동기화 체크 블록 (모두 체크 완료).
+- **판정:** Stage 5 Bundle 4 **완료**. Stage 9 리뷰 대상 수락 기준 AC.B4.1–16 열거.
+- **이월된 주요 결정 (Sec. 0 잠금 — DEP.1 게이트):**
+  - **D4.x2** — Stage-5 이후 문서에만 YAML 프론트매터; 최소 필드 `title, stage, bundle, version, language, paired_with, created, updated` (+ 선택 `status, supersedes, validation_group`). Stage 1–4 문서는 prose-only 유지.
+  - **D4.x3** — 번들 폴더 명명 `bundle{id}_{name}/`, snake_case; 정규식 `^bundle(\d+)_(.+)$` 로 두 필드 추출.
+  - **D4.x4** — 링크 규칙은 항상 현재 파일 기준 상대경로 (프로젝트 루트 절대경로 금지); 앵커 슬러그는 GitHub 의 lowercase-hyphenated 규칙 준수.
+  - Bundle 1 Sec. 1 이 원문 그대로 인용할 결정 기록 라인.
+- **명시된 구성 요소:** `scripts/update_handoff.sh` (D4.a, POSIX sh, dry-run 기본, 6 종료 코드 계약), `CHANGELOG.md` (D4.b, Keep-a-Changelog v1.1.0), `CONTRIBUTING.md` (D4.c, 12 필수 섹션 + F-a1 소유 표 부록), `CODE_OF_CONDUCT.md` (D4.c, Contributor Covenant v2.1), `templates/HANDOFF.template.md` (D4.x1), `docs/notes/decisions.md` (D4.x2/x3/x4 인용 가능 기록).
+- **이 step 에서 닫힌 open question:** OQ.N1 (Keep-a-Changelog 포맷 선택), OQ4.1 (Stage-5 이후 전용 프론트매터), OQ4.2 (`bundle{id}_{name}/`), OQ.H2 (수작업 마이그레이션 경로 → `CONTRIBUTING.md` Sec. 9), OQ.L2 Stage-9 절반 (`CONTRIBUTING.md` Sec. 7 에 KO 신선도 체크리스트 bullet).
+- **F-a1 보정:** D4.c 소유 `CONTRIBUTING.md` 내부 Sec. 8 `## Changelog maintenance` 가 유일한 예외로 유지; `CONTRIBUTING.md` 부록 Sec. 12 에 섹션 단위 명시적 소유 표 부착.
+- **Stage 8 (Codex) 로 이월:** 7 파일 의존성 순서 deliverable 리스트 + 위반 금지 제약 + Codex 킥오프 프롬프트 (tech design Sec. 12-1).
+- **Bundle 1 DEP.1 차단 해제:** Sec. 0 결정이 잠금 및 `docs/notes/decisions.md` 로 인용 가능. Bundle 1 Stage 5 진입 가능.
+
+### Entry 3.8 — Stage 5 Bundle 1 기술 설계 (EN + KO 페어)
+
+- **Stage:** 5 (기술 설계 — Bundle 1, Tool Picker).
+- **Owner:** Claude (설계자).
+- **Input:** `docs/02_planning/plan_final.md` (Stage 4.5 에서 APPROVED) + `prompts/claude/v03/stage5_bundle1_design_prompt_draft.md` (DC.5 #2) + `docs/03_design/bundle4_doc_discipline/technical_design.md` Sec. 0 (DEP.1 게이트, 잠금 완료).
+- **Output:** `docs/03_design/bundle1_tool_picker/technical_design.md` (EN, 14 섹션) + `technical_design.ko.md` (KO 페어, R4 에 따라 같은 세션). 양쪽 파일에 D4.x2 규정대로 YAML 프론트매터 부착 및 4 항목 KO 동기화 체크 블록 (모두 체크 완료, 헤더 17/17 일치, AC.B1.1–10 × 10 항목).
+- **판정:** Stage 5 Bundle 1 **완료**. Stage 9 리뷰 대상 수락 기준 AC.B1.1–10 열거 (헤드라인: AC.B1.7 R2 읽기 전용 불변식).
+- **이월된 주요 결정 (Sec. 0 DEP.1 preflight + Sec. 1–4):**
+  - **OQ1.1 해결 — 단일 파일:** `D1.a + D1.b + D1.c` 를 하나의 `.skills/tool-picker/SKILL.md` 로 통합 (≤ 300 줄; 예상 180–220; 분할 대신 escalate).
+  - **OQ1.2 해결 — 두 트리거, 단일 파이프라인:** stage-entry 자동 호출과 사용자 요청 호출이 같은 결정 파이프라인을 공유; 트리거 출처가 출력을 바꾸지 않음.
+  - **OQ1.3 해결 — 네이티브 Skill API 미사용:** 순수 Markdown 스킬을 CLAUDE.md Read 순서 (N14) 로 등록; 네이티브 API 등록 없음.
+  - **D1.x 는 `docs/notes/tool_picker_usage.md` 로 분리** (≤ 80 줄) — SKILL.md 의 matcher 친화성을 위해 "inlined 사용 가이드" 에서 의도적으로 범위 축소.
+  - **Frontmatter 계약:** Anthropic Skills 포맷에 따라 `name: tool-picker` + 필수 트리거 키워드 ("stage", "mode", "risk_level", "next step", "jOneFlow") 를 포함한 description.
+  - **결정 테이블 매트릭스:** stages 2/3/5/8/9/11 × {Standard, Strict, Strict-hybrid} × {medium, medium-high} → 3 슬롯 출력 (primary / checklist / watch-out).
+  - **R2 읽기 전용 불변식 테스트 가능:** AC.B1.7 이 grep 패턴 `'\b(bash|sh |python|node|eval|exec |curl|wget)\b'` 규정; 일치는 오직 코드 펜스 내 또는 인용된 예시 출력 안에서만 나타나야 함.
+  - **D4.x4 좁은 예외 (Sec. 9-4):** 조언 출력 경로는 프로젝트 루트 기준 상대경로 (런타임 조언 시점에 "현재 파일" 컨텍스트가 없음); 스킬 본체 자체의 교육용 citation 은 여전히 D4.x4 를 따름.
+  - **CLAUDE.md 조율 (Sec. 9-5):** 같은 세션이면 공동 커밋 `[bundle1+bundle4]`, 아니면 rebase — 두 번들 모두 CLAUDE.md Read 순서를 편집함.
+- **이 step 에서 닫힌 open question:** OQ1.1 (단일 파일), OQ1.2 (두 트리거, 단일 파이프라인), OQ1.3 (네이티브 Skill API 등록 없음).
+- **명시된 구성 요소:** `.skills/tool-picker/SKILL.md` (D1.a + D1.b + D1.c, 단일 파일 ≤ 300 줄) + `docs/notes/tool_picker_usage.md` (D1.x, ≤ 80 줄, 교육용 참조 문서).
+- **Stage 8 (Codex) 로 이월:** 2 파일 deliverable 리스트 (SKILL.md + 사용 문서) + CLAUDE.md Read 순서 한 줄 편집 (Bundle 4 와 조율) + R2 불변식 테스트 + Codex 킥오프 프롬프트 (tech design Sec. 12-1).
+- **DEP.1 충족:** Sec. 0 이 Bundle 4 D4.x2/x3/x4 를 원문 그대로 인용; Bundle 1 은 구조적 규율을 재결정하지 않음.
+- **Validation group 1 상태:** 양 번들 Stage 5 모두 완료. Stage 6–7 스킵 (has_ui=false). 다음 stage = **Stage 8 Codex 구현** (번들별 킥오프 프롬프트는 각 tech design 의 Sec. 12-1).
+
+---
+
+## Entry 템플릿 (향후 세션용)
+
+```markdown
+### Entry N.M — [stage 또는 step 이름]
+
+- **Stage:** [n 및 이름, 또는 "housekeeping"]
+- **Owner:** [Claude / Codex / user]
+- **Input:** [참조한 artifacts]
+- **Output:** [경로 + 해당 시 KO 페어 메모]
+- **판정:** [PASS / NEEDS REVISION (minor|bug_fix|design_level) / APPROVED / BLOCKED]
+- **이월된 주요 결정:** [stage 포인터와 함께 bullet]
+- **이 step에서 연/닫은 open question:** [OQ 참조]
+- **세션 종료 사유 (세션 경계일 때):** [트리거]
+```
+
+---
+
+## 본 문서 개정 로그
+
+| 날짜 | 개정 | 메모 |
+|------|------|------|
+| 2026-04-22 | v1 — 초기 backfill (세션 3 재개) | 세션 1, 2, 3 (토큰 충전 이전/이후)를 stage 단위로 커버. plan_final AN.3 + DC.2 부분 충족. 영문 페어 동일 세션에 작성. |
+| 2026-04-22 | v1.1 — Stage 5 Bundle 4 종료 (Entry 3.7) | Stage 5 Bundle 4 기술 설계 (EN + KO 페어) Entry 3.7 추가. 세션 요약표 갱신. |
+| 2026-04-22 | v1.2 — Stage 5 Bundle 1 종료 (Entry 3.8) | Stage 5 Bundle 1 기술 설계 (EN + KO 페어) Entry 3.8 추가. 세션 요약표 갱신 (Bundle 1 을 세션 3 재개 행에 추가). 양 번들 Stage 5 완료; 다음 stage = Stage 8 Codex. EN 페어 동시 갱신. |

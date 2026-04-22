@@ -1,7 +1,7 @@
 # 🤖 jOneFlow
 
 > A universal AI-driven development workflow template — part of the [Jonelab_Platform](https://github.com/aigeenya/Jonelab_Platform).
-> Structured 13-stage workflow · Secure secrets management · Git automation · Bilingual (EN/KO)
+> Tiered workflow (Lite / Standard / Strict) · Document-centric · Session persistence · Secure secrets · Bilingual (EN/KO)
 
 **한국어 README:** [README.ko.md](./README.ko.md)
 
@@ -17,11 +17,13 @@ It is designed so that **non-developers can also use it** with Claude's guidance
 
 ### Key features
 
-- **13-stage AI workflow** with clearly defined roles for Claude (planning, design, review, QA) and Codex (implementation, revision)
-- **4 AI agents** — Planner, Designer, Reviewer, QA Engineer — each using the right model and effort level
-- **Cross-platform secret management** — macOS Keychain and Windows Credential Manager, no credentials ever in code
+- **Tiered workflow** — pick **Lite**, **Standard**, or **Strict** per task so workflow weight matches task risk
+- **Canonical Strict Flow** of 13 stages that defines the upper bound of governance (the reference flow, not a forced default)
+- **Role separation** — Claude for thinking (planning, design, review, QA); Codex for implementation and revision
+- **4 Claude agents** — Planner, Designer, Reviewer, QA Engineer — each using the right model and effort
+- **Cross-platform secret management** — macOS Keychain and Windows Credential Manager, never plaintext credentials in code
 - **Git automation** — one-command checkpoints with automatic dev history logging
-- **Session persistence** — HANDOFF.md keeps every Claude session in sync, even across days or weeks
+- **Session persistence** — `HANDOFF.md` keeps every Claude session in sync, even across days or weeks
 - **Bilingual** — full English and Korean support
 
 ---
@@ -65,9 +67,9 @@ git commit -m "chore: init project from template"
 ### 5. Open Claude and start
 
 Tell Claude:
-> "I'm starting a new project. Please read CLAUDE.md and HANDOFF.md first, then ask me what language I'd like to work in."
+> "I'm starting a new project. Please read CLAUDE.md and HANDOFF.md first, then ask me what language I'd like to work in and which workflow mode (Lite / Standard / Strict) fits this task."
 
-Claude will guide you from there.
+Claude will guide you from there. See [`docs/notes/session_bootstrap.md`](./docs/notes/session_bootstrap.md) for the canonical session entry sequence.
 
 ---
 
@@ -76,12 +78,12 @@ Claude will guide you from there.
 ```
 your-project/
 ├── CLAUDE.md               ← Claude operating guide (read first every session)
-├── WORKFLOW.md             ← 13-stage development workflow
-├── HANDOFF.md              ← Session state & next tasks (read second)
+├── WORKFLOW.md             ← Tiered workflow model + Canonical Strict Flow (13 stages)
+├── HANDOFF.md              ← Session state, current mode, next tasks (read second)
 ├── README.md               ← This file
 │
 ├── .claude/
-│   ├── settings.json       ← Model & effort config (fixed in v0.1)
+│   ├── settings.json       ← Model & effort config
 │   └── language.json       ← Language preference
 │
 ├── security/
@@ -103,22 +105,38 @@ your-project/
 │   ├── 03_design/
 │   ├── 04_implementation/
 │   ├── 05_qa_release/
-│   └── notes/              ← dev_history.md, decisions.md, final_validation.md
+│   └── notes/              ← dev_history.md, decisions.md, final_validation.md,
+│                            session_bootstrap.md, workflow_eval_plan.md
 │
 ├── prompts/
 │   ├── claude/             ← Prompt templates for each Claude stage
 │   └── codex/              ← Prompt templates for each Codex stage
 │
+├── .skills/
+│   ├── README.md           ← How to write behavior-shaping skills
+│   ├── _templates/         ← Empty skill template to copy
+│   └── examples/           ← Worked example skills
+│
 ├── src/                    ← Your project source code
 ├── tests/                  ← Your tests
-├── .env.example            ← Secret keys template (no real values)
+├── .env.example            ← Secret KEY NAMES (no values — real secrets go in the OS keychain)
 ├── .gitignore
 └── LICENSE
 ```
 
 ---
 
-## The 13-Stage Workflow
+## Workflow modes — Lite / Standard / Strict
+
+jOneFlow does **not** force every task through 13 stages. You pick a mode based on the work:
+
+| Mode | Use it for | Typical time |
+|------|-----------|--------------|
+| **Lite** | Hotfixes, config tweaks, copy changes, docs-only updates | minutes – 2 hr |
+| **Standard** | New features, refactors, most day-to-day work | 4 hr – 2 days |
+| **Strict** | Architecture, security, data-schema, payment, regulated changes | 2 days – weeks |
+
+The **Strict Flow** is the 13-stage canonical reference:
 
 | Stage | Name | Who | Model |
 |-------|------|-----|-------|
@@ -128,8 +146,8 @@ your-project/
 | 4 | Plan Final | Claude | Sonnet |
 | 4.5 | **Your Approval** 🔴 | You | — |
 | 5 | Technical Design | Claude | Opus |
-| 6 | UI/UX Requirements *(optional)* | Claude | Sonnet |
-| 7 | UI Flow *(optional)* | Claude | Sonnet |
+| 6 | UI/UX Requirements *(if `has_ui`)* | Claude | Sonnet |
+| 7 | UI Flow *(if `has_ui`)* | Claude | Sonnet |
 | 8 | Implementation | Codex | — |
 | 9 | Code Review | Claude | Sonnet |
 | 10 | Revision | Codex | — |
@@ -137,14 +155,19 @@ your-project/
 | 12 | QA & Release | Claude | Sonnet |
 | 13 | Deploy & Archive | Codex | — |
 
-See [WORKFLOW.md](./WORKFLOW.md) for the full details.
+**Lite** keeps only Implementation → (light) Code Review → Archive. **Standard** adds planning, design, and a required approval gate. **Strict** adds stricter conditions and Opus-level final validation at Stage 11.
+
+See [WORKFLOW.md](./WORKFLOW.md) for the full model, including stage types, execution conditions, completion criteria, and re-entry rules.
 
 ---
 
 ## Secret Management
 
-Secrets (API keys, passwords, tokens) are **never stored in code or `.env` files**.
-They live in your OS secure store.
+Real secrets (API keys, passwords, tokens) live in your **OS secure store**, never in code and never in `.env`.
+
+- `.env.example` — committed, holds only the **key names** the project expects
+- `.env` — optional local scratch file, never committed, never holds production secrets
+- OS keychain (macOS Keychain / Windows Credential Manager) — the real store, accessed via `secret_loader.py`
 
 ```python
 # In your code
@@ -185,16 +208,22 @@ aigit "msg"  # git commit + dev history
 
 | Version | Feature |
 |---------|---------|
-| **v0.1** (current) | Core 13-stage workflow, fixed model/effort, cross-platform secrets, bilingual |
-| v0.2 | User-configurable model and effort per stage |
-| v0.3 | First-run language selection wizard |
-| v1.0 | Full Claude ↔ Codex automation (no manual handoff) |
+| v0.1 | Core 13-stage workflow, fixed model/effort, cross-platform secrets, bilingual |
+| v0.2 | Tiered workflow model (Lite / Standard / Strict), stage types, execution conditions, completion criteria, re-entry rules, strengthened planning/design/review/QA templates, `.skills/` behavior-contract library with starter template and worked example, attribution to `obra/superpowers` |
+| **v0.3** (next) | First-run language-selection wizard (interactive), automated workflow-eval runner for `docs/notes/workflow_eval_plan.md`, session-bootstrap hook reference implementation (Claude Code / Cowork), expanded `.skills/examples/` set (API client, report generator, safe-deploy), `HANDOFF.md` auto-writer script, mode-selection decision-tree `.skills` rule, **Stage 6 / 7 (UI) prompt strengthened to v0.2 parity** (Runs-in / completion criteria / re-entry), **`ai_step.sh` + `zsh_aliases.sh` mode-aware CLI** (`aib --lite`, `aipd --standard`, etc.), **`CHANGELOG.md` with v0.1 → v0.2 migration notes and keep-a-changelog discipline**, **`CONTRIBUTING.md` split from README + Contributor Covenant `CODE_OF_CONDUCT.md`**, **Stage 8 implementer picker** (Codex-recommended / Claude-Sonnet / custom — context-dependent recommendation), **Stage 6 / 7 UI-tool picker** (Google Antigravity–recommended / Claude Design / Figma / custom) |
+| v1.0 | Full Claude ↔ Codex automation with policy-driven mode selection, template-drift regression evals, one-command release pipeline |
 
 ---
 
 ## Contributing
 
 Contributions welcome. Please open an issue first to discuss what you'd like to change.
+
+---
+
+## Acknowledgments
+
+jOneFlow was developed independently as part of Jonelab_Platform. Some workflow, skill-system, and agent-operating design directions were informed by ideas explored in [obra/superpowers](https://github.com/obra/superpowers) by Jesse Vincent and contributors. Where jOneFlow adapts concepts inspired by that work, we acknowledge superpowers as an important reference. See [ATTRIBUTION.md](./ATTRIBUTION.md) for details.
 
 ---
 
