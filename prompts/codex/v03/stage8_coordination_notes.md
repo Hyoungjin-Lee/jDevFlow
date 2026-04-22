@@ -97,7 +97,31 @@ For the Stage 9 code review session to be efficient, each Codex run should end w
 
 - Bundle 4 Codex kickoff: `prompts/codex/v03/stage8_bundle4_codex_kickoff.md`
 - Bundle 1 Codex kickoff: `prompts/codex/v03/stage8_bundle1_codex_kickoff.md`
+- Codex completion-report templates (operator-only, not for Codex):
+  `prompts/codex/v03/stage8_codex_report_template.md`
 - Post-Codex Claude resume prompt: `prompts/claude/v03/session4_post_codex_resume_prompt.md`
 - Bundle 4 tech design: `docs/03_design/bundle4_doc_discipline/technical_design.md`
 - Bundle 1 tech design: `docs/03_design/bundle1_tool_picker/technical_design.md`
 - Canonical Stage-8 template (v0.2 baseline): `prompts/codex/implementation.md`
+
+---
+
+## 7. v2 kickoff structure (post-2026-04-22 redesign)
+
+Both kickoff documents (`stage8_bundle{4,1}_codex_kickoff.md`) were rewritten
+to v2 on 2026-04-22 after a paste-target mix-up: the operator pasted the
+"Expected report back" example block from the bottom of v1 into Codex
+instead of the actual prompt block. v2 changes:
+
+- Each kickoff contains exactly **one** fenced code block intended for
+  Codex (the "Codex prompt — paste this exact block" section).
+- A prominent "⚠️ Operator instruction" banner appears above that single
+  block to call out which content is the paste target.
+- Example completion-report shapes were moved out of the kickoffs into
+  the new `stage8_codex_report_template.md` so they can never be mistaken
+  for an instruction block.
+- The Codex prompt body now starts with a **STEP 0 quote-back gate**:
+  Codex must read the spec files and quote the structural decisions
+  (D4.x2/x3/x4, AC rubric, deliverables list) verbatim before being
+  allowed to write any file. This catches "empty implementation complete"
+  reports at the source.
