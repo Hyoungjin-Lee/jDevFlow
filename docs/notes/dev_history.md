@@ -230,6 +230,48 @@
 - **Forwarded to Stage 11:** worked-example refresh to use a live Stage-2 triple (once Stage 11 artifacts exist); `tests/bundle1/run_bundle1.sh` line 53 uses `rg` inside an otherwise-POSIX script — minor cross-platform-CI finding forwarded to the Stage 11 mac + Linux matrix.
 - **Next session:** Stage 10 Codex final review (per `prompts/codex/final_review.md`) or straight into Stage 11 joint validation (fresh Claude session).
 
+### Entry 3.11 — Stage 11 prep housekeeping + session-close git policy codification
+
+- **Stage:** 11-prep (housekeeping between Stage 9 close and Stage 11 fresh-session entry).
+- **Owner:** Claude (session 5 continued, QA-orchestrator role per DC.6).
+- **Input:** Stage 9 verdicts for both bundles (PASS — minor each) + `prompts/claude/v03/stage11_joint_validation_prompt.md` Sec. "Pre-flight for the QA-orchestrator".
+- **Output (3 new + 1 modified):**
+  - `docs/notes/stage11_dossiers/bundle1_dossier.md` (CREATED, 135 lines) — DC.6 format, 7 sections, ≤ 1 page prose + pinned YAML/decision-table/grep/hook blocks as key diffs.
+  - `docs/notes/stage11_dossiers/bundle4_dossier.md` (CREATED, 173 lines) — DC.6 format, 7 sections, CLI-contract + decisions-anchors + CHANGELOG/CONTRIBUTING skeletons + Sec. 6 before→after condensed diff as key diffs.
+  - `docs/notes/stage11_dossiers/ko_freshness.md` (CREATED) — scratch KO-pair freshness table; all 7 Stage-5+ and Stage-1-4 pairs show 0-day delta (verified via `updated:` frontmatter and `git log -1` dates).
+  - `CLAUDE.md` (MODIFIED) — new subsection "Session close — git policy" added near cross-tool handoff rule (line ~181). Codifies ask-first / verify-after commit loop with two branches: (1) reflect-now → Claude runs or hands off commit + verifies via `git log`; (2) defer → record uncommitted surface in HANDOFF.md, next session flag on `git status`.
+- **Verdict:** PASS (Stage 11 prep complete; dossiers and scratch within size budget; test harnesses re-run green).
+- **Stage 10 disposition:** **Skipped.** Both bundles closed Stage 9 at PASS — minor; WORKFLOW Sec. 10 gates Stage 10 on NEEDS REVISION, which neither bundle triggered.
+- **Dogfooding the new git policy:** At session 5 close, user selected branch 2 (defer). Per policy, the CLAUDE.md edit lives on-disk uncommitted; HANDOFF.md Recent Changes + Status + Next-session prompt explicitly flag this so the Stage 11 session runs `git status` first.
+- **Tests re-run at dossier-write time:** `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS.
+- **Forwarded to Stage 11:** both dossier forward-lists (Bundle 1 `rg`-in-POSIX-script + worked-example live refresh; Bundle 4 `shellcheck -S style` + mac/Linux CI matrix + CHANGELOG 0.3.0 entry at Stage 12).
+- **Next session:** Stage 11 joint validation in a **fresh Claude session** per M.3. Paste block in HANDOFF.md Sec. "📋 Next Session Prompt" (also canonical at `prompts/claude/v03/stage11_joint_validation_prompt.md`).
+
+### Entry 3.12 — Stage 11 joint validation close (APPROVED)
+
+- **Stage:** 11 (joint final validation, validation_group = 1).
+- **Owner:** Claude (session 6, fresh session per M.3 — confirmed no prior chat context carried).
+- **Input:** `CLAUDE.md`, `HANDOFF.md`, `WORKFLOW.md` (Sec. 14), `docs/02_planning/plan_final.md`, the three Stage-11 dossiers under `docs/notes/stage11_dossiers/`, `prompts/claude/final_review.md`, `prompts/claude/v03/stage11_joint_validation_prompt.md`.
+- **Output:** `docs/notes/final_validation.md` (EN, 7 sections per stage11_joint_validation_prompt Sec. "Output file format") + `final_validation.ko.md` (KO pair, same session per R4). Both files carry D4.x2 frontmatter with `stage: 11`, `validation_group: 1`, `status: approved`.
+- **Verdict:** **APPROVED** (group, M.5 worst-of-two). Bundle 1 = APPROVED; Bundle 4 = APPROVED.
+- **Pre-flight executed:**
+  - `git status` — captured the session-5 uncommitted surface (`CLAUDE.md`, `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, untracked `docs/notes/stage11_dossiers/`) as acknowledged state.
+  - `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS.
+  - `sh tests/run_bundle4.sh` → 4/4 PASS.
+- **Cross-bundle verifications (new this stage):**
+  - **AC.B4.10** — `.skills/tool-picker/SKILL.md` lines 34–72 verbatim-match `docs/notes/decisions.md` lines 24–62 (same headings with ASCII-dash `### D4.x2 - …`, same Decision/Scope/Rule/Rationale/Backlink, same backlink path). Line 30 of SKILL.md also declares the verbatim-quote rule explicitly. Cross-bundle contract intact.
+  - **AC.B4.11** — `grep -nE '\]\(' .skills/tool-picker/SKILL.md` returns 0 matches; the skill emits inline-code display paths, not Markdown links, so D4.x4's "no project-root-absolute, no file://, relative-to-current-file" rule is vacuous-by-construction on the advisory surface. Backlinks inside the verbatim D4.x2/x3/x4 block already use D4.x4 form (`../03_design/bundle4_doc_discipline/technical_design.md Sec. 0`).
+  - **D1.b ↔ D4.x2/x3/x4 parser contract** — `tests/bundle4/test_04_frontmatter_and_stage1_4.sh` PASS (part of the 4/4 of `tests/run_bundle4.sh`) re-confirms the Stage-5+ frontmatter shape Bundle 1 parses is stable.
+  - **KO freshness** — all 7 `updated:` / git-log dates independently re-read; all equal `2026-04-22`; 0-day delta across the board. Matches scratch `ko_freshness.md`.
+- **Non-blocking forwards (to Stage 12 housekeeping):**
+  - Bundle 1: worked-example live-state refresh (SKILL.md Sec. 6 synthetic triple); `rg` (ripgrep) dep in `tests/bundle1/run_bundle1.sh` line 53 (POSIX-clean swap to `grep -E` or CI-notes documentation); AC.B1.6 vs AC.B1.8 row label swap in `docs/04_implementation/implementation_progress.md`; AC.B1.8 tech_design Sec. 0 summary-vs-verbatim hygiene (SKILL.md half is verbatim; tech_design half is paraphrased bullets — loose honoring of the "no paraphrase" clause).
+  - Bundle 4: `shellcheck -S style` on CI (sandbox could not install); mac + Linux CI matrix for both test harnesses (AC.B4.13); `[0.3.0]` CHANGELOG entry (AC.B4.14, authored at Stage 12 release time per KaC v1.1.0 convention).
+- **HANDOFF.md updates recorded:** `bundles[1].stage 9→11`, `bundles[4].stage 9→11`, verdicts carried `minor` on both; Recent Changes group-level entry (Stage 11 APPROVED, M.5 outcome); Status line; Key Document Links `final_validation.md` row flipped to ✅; Next Session Prompt block replaced with Stage 12 kickoff; EN + KO mirrors updated.
+- **Dogfooding note:** Did not invoke `scripts/update_handoff.sh` this session — updates spanned multiple structural surfaces (bundles YAML, Next Session Prompt rewrite, Key Document Links, Recent Changes, Status) beyond the script's two-section contract. Hand-edited, single pass; test harnesses re-run green both before and after.
+- **Session-close git policy (from CLAUDE.md):** at close of session 6 the user is asked whether to bundle the accumulated uncommitted work (session 5 + session 6) into a Stage 11 close commit now, or defer. Decision carries to session 7 (Stage 12 kickoff) either way.
+- **Re-entry:** none required (group APPROVED ⇒ no Stage 4.5 loop, no Stage 10 return). Proceed to Stage 12.
+- **Next session:** Stage 12 QA & Release prep (joint per M.6). Paste block in HANDOFF.md Sec. "📋 Next Session Prompt" (Stage 12 kickoff, now installed).
+
 ---
 
 ## Entry template (for future sessions)
@@ -257,3 +299,5 @@
 | 2026-04-22 | v1.1 — Stage 5 Bundle 4 close (Entry 3.7) | Added Entry 3.7 for Stage 5 Bundle 4 Technical Design (EN + KO pair). Session summary table updated. KO pair update below. |
 | 2026-04-22 | v1.2 — Stage 5 Bundle 1 close (Entry 3.8) | Added Entry 3.8 for Stage 5 Bundle 1 Technical Design (EN + KO pair). Session summary table updated (Bundle 1 added to session-3-resumed row). Both bundles' Stage 5 now complete; next stage = Stage 8 Codex. KO pair updated alongside. |
 | 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 close backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 close (Entry 3.10) | Entry 3.9 KO-mirror backfill applied (R4 recovery — EN file already had it) + Entry 3.10 added (Stage 8 + 9 Bundle 1 close, PASS — minor). Both bundles in validation group 1 now closed at Stage 9; next stage = Stage 10/11. KO pair updated alongside. |
+| 2026-04-22 | v1.4 — Stage 11 prep close (Entry 3.11) | Entry 3.11 added (DC.6 dossiers + ko_freshness scratch produced; CLAUDE.md "Session close — git policy" subsection codified; Stage 10 skipped because both bundles PASS — minor). CLAUDE.md edit left uncommitted per user defer choice; HANDOFF.md flags the uncommitted state for Stage 11 session. KO pair updated alongside. |
+| 2026-04-22 | v1.5 — Stage 11 joint validation close (Entry 3.12) | Entry 3.12 added — group verdict APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 both APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted with D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved). Cross-bundle verifications: AC.B4.10 verbatim match verified char-for-char; AC.B4.11 vacuous-by-construction; KO freshness 7 pairs / 0-day delta independently re-verified. 4 Bundle-1 + 3 Bundle-4 non-blocking items forwarded to Stage 12 housekeeping. HANDOFF.md updated (bundles stage 9→11, verdicts carried minor, Recent Changes group-level note, Next Session Prompt flipped to Stage 12 kickoff). KO pair updated alongside. |

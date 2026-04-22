@@ -178,6 +178,58 @@ where `<block identifier>` is one of (in order of preference for stability):
 - Within-session Claude-to-Claude handoffs (same chat, same file access) can
   use pure pointer ("다음 단계는 파일 X 참고") without the paste-wrapper.
 
+### 🔴 Session close — git policy
+
+At the end of any logically-complete unit of work (stage close, validation
+group close, multi-file edit batch, anything the user might reasonably
+expect to be committable), Claude **asks the user whether to reflect the
+changes to git now** before moving on. Default question form (KO):
+
+> "이번 작업분을 지금 git 에 반영할까요, 아니면 다음 세션에서 같이 할까요?"
+
+The two branches:
+
+**1) User chooses to reflect now.**
+
+- Claude attempts the commit itself using the Bash tool when sandbox
+  permissions allow (`git add <specific paths> && git commit -m "..."`).
+  **Do not** `git add -A` / `git add .` — always name the paths.
+- If the sandbox blocks git (`.git/index.lock` unwritable, user-owned files
+  unreadable, etc.), Claude hands the operator a **single fenced shell block**
+  containing the exact `git add <paths> && git commit -m "..."` invocation,
+  written as a HEREDOC so multi-line messages render correctly. The commit
+  message follows the repo's existing style (prefix convention, Co-Authored-By
+  line per existing commits).
+- After the user reports the commit is done ("업로드 완료" / "커밋 끝" / etc.),
+  Claude **verifies by reading git log**:
+  `git log --oneline -5 && git status --short && git log -1 --stat`.
+  Confirm: (a) tip commit hash + subject matches what was expected,
+  (b) author / Co-Authored-By lines are correct, (c) `git status` is clean
+  (or has only the expected residue), (d) file count / insertion count is
+  roughly what the staged diff predicted.
+- **If verification fails** (wrong tip, dirty tree, missing files, etc.):
+  report the discrepancy to the user in plain language, show the offending
+  `git status` / `git log` lines, and hand back a corrected command block.
+  Do **not** proceed to the next session / stage until it's clean.
+- **If verification passes**: proceed to generate the next-session
+  pointer-prompt (per cross-tool handoff rule above).
+
+**2) User chooses to defer git reflection.**
+
+- Claude records the uncommitted surface in `HANDOFF.md` **Recent Changes**
+  row (or equivalent) so the next session is aware that some edits are
+  on-disk but not yet in history. The next-session resume prompt must
+  explicitly flag "previous session's edits not yet committed — verify
+  `git status` before new work".
+- Claude does **not** silently proceed as if the commit happened.
+
+**Rationale:** this policy was added 2026-04-22 after a Stage 9 Bundle 1
+session where the git-commit protocol was ambiguous (Claude claimed it
+couldn't access git → work got handed to Codex → later Claude did try
+committing, causing inconsistency). Making the ask-first / verify-after
+loop explicit eliminates both the "silent uncommitted state" failure and
+the "Claude claims a commit landed that actually didn't" failure.
+
 ### 🔴 Chat output rule — summary by default, plain language, detail only for issues
 
 The chat is the **operator's console**, not the audit trail. Canonical files

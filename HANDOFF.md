@@ -16,7 +16,7 @@
 **Current version:** v0.3 (in progress)
 **Last updated:** 2026-04-22 (UTC)
 **Workflow mode:** Strict-hybrid
-**Current stage:** Stage 9 Bundle 1 ✅ PASS — minor; both bundles in validation group 1 now closed at Stage 9. Next: Stage 10/11 (Stage 11 = fresh Claude session per M.3). has_ui=false; risk_level=medium.
+**Current stage:** Stage 11 ✅ **APPROVED** (joint validation complete, session 6, 2026-04-22). Both bundles PASS — minor; Group verdict (M.5 worst-of-two) = APPROVED. `docs/notes/final_validation.md` (+ `.ko.md`) emitted per DC.6. Stage 12 (QA & Release) unblocked; Stage 13 will ship a single joint `v0.3` git tag per M.6. has_ui=false; risk_level=medium.
 **has_ui:** false
 **risk_level:** medium
 
@@ -46,18 +46,32 @@
   - `prompts/claude/v03/session4_post_codex_resume_prompt.md` — post-Codex Claude resume prompt (EN + KO mirror) for starting session 4 at Stage 9
 - [x] **Stage 8 Bundle 4 — Codex implementation** ✅ complete (2026-04-22, Codex session) — 14 deliverables: `scripts/update_handoff.sh` (POSIX sh, 486 lines, shellcheck clean), `templates/HANDOFF.template.md`, `CHANGELOG.md` (KaC v1.1.0), `CODE_OF_CONDUCT.md` (Covenant v2.1), `CONTRIBUTING.md` (12 sections + F-a1 appendix), `docs/notes/decisions.md` (+ `.ko.md`, D4.x2/x3/x4 quotable), `docs/04_implementation/implementation_progress.md` (+ `.ko.md`), `tests/run_bundle4.sh` + 4 test scripts under `tests/bundle4/` (all PASS). Completion report archived at `prompts/codex/v03/stage8_bundle4_codex_report.md`.
 - [x] **Stage 9 Bundle 4 — Claude code review** ✅ **PASS — minor** (2026-04-22, session 4) — per-AC verdict table in `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). No code changes. Inline design polish: Bundle 4 `technical_design.md` Sec. 6 expanded 8 → 10 rows with added `stdout discriminator` column (+ KO pair) to resolve AC.B4.3 mismatch (rubric "nine" = nine distinct `error=<key>` discriminators, now mapped 1-to-1). `dev_history.md` Entry 3.9 recorded. Bundle 1 kickoff precondition checklist ticked (all 3 green).
+- [x] **Stage 9 Bundle 1 — Claude code review** ✅ **PASS — minor** (2026-04-22, session 5) — per-AC verdict table in `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). 0 code changes, 0 inline polish edits; accepted 4 Codex judgement calls (AC.B1.3 6-column expansion, AC.B1.4 `to be created at Stage 11` marker, AC.B1.7 zero-match grep, AC.B1.10 structural-sync proxy). Entry 3.10 recorded; `dev_history.ko.md` Entry 3.9 backfilled. Validation group 1 Stage 9 gate closed (bundle 4 minor + bundle 1 minor).
+- [x] **Stage 10 skipped** (both bundles PASS — minor; no revision required per WORKFLOW Sec. 10 Stage 10 "if NEEDS REVISION").
+- [x] **Stage 11 prep housekeeping** ✅ complete (2026-04-22, session 5 continued) — DC.6 dossiers produced:
+  - `docs/notes/stage11_dossiers/bundle1_dossier.md` (135 lines, ≤ 1 page prose + pinned key-diff blocks)
+  - `docs/notes/stage11_dossiers/bundle4_dossier.md` (173 lines, ≤ 1 page prose + pinned key-diff blocks)
+  - `docs/notes/stage11_dossiers/ko_freshness.md` (scratch KO-freshness table, pre-populated for validator cross-check)
+  - `CLAUDE.md` "Session close — git policy" subsection added near cross-tool handoff rule (uncommitted on-disk — bundled into next commit per user's defer choice branch 2).
+  - Bundle 1 + Bundle 4 test harnesses re-run: `tests/bundle1/run_bundle1.sh` 10/10 PASS; `tests/run_bundle4.sh` 4/4 PASS.
+- [x] **Stage 11 — Joint Final Validation** ✅ **APPROVED** (2026-04-22, session 6, fresh session per M.3) — `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted. Bundle 1 verdict = APPROVED; Bundle 4 verdict = APPROVED; Group (M.5 worst-of-two) = APPROVED. Cross-bundle checks pass: AC.B4.10 (SKILL.md lines 34–72 verbatim-match decisions.md lines 24–62, char-for-char); AC.B4.11 (0 Markdown-link matches in SKILL.md ⇒ D4.x4 vacuous-by-construction; backlinks inside the verbatim block already use D4.x4 form); D1.b↔D4.x2/x3/x4 parser contract intact. KO freshness table independently re-verified — 7 pairs, 0-day delta across the board. 4 non-blocking items forwarded to Stage 12 housekeeping (Bundle 1: worked-example live-state refresh, `rg` dep in tests/bundle1/run_bundle1.sh, AC.B1.6/B1.8 label swap in implementation_progress.md, AC.B1.8 tech_design Sec. 0 paraphrase-vs-verbatim hygiene; Bundle 4: shellcheck -S style to CI, mac+Linux CI matrix, 0.3.0 CHANGELOG entry at Stage 12). No blocking findings.
 
 ### 🔄 In Progress
-- **Awaiting Stage 8 Bundle 1 Codex run.** Bundle 4 side is fully closed through Stage 9. Hyoungjin runs the Bundle 1 kickoff next (`prompts/codex/v03/stage8_bundle1_codex_kickoff.md`); on completion, Hyoungjin starts **session 5** using `prompts/claude/v03/session5_post_codex_bundle1_resume_prompt.md` to enter **Stage 9 Bundle 1 code review** (M.3 invariant — fresh Claude session).
+- **Stage 12 (QA & Release) readiness.** Per plan_final Sec. 4 M.6, Stage 12 runs joint across both bundles; Stage 13 ships a single joint `v0.3` git tag. No re-entry to Stage 4.5 / Stage 10 required.
 
-### ⏭️ Next (session 5)
-1. **Stage 8 Bundle 1 Codex run** (operator-driven, outside Claude) — paste block from `stage8_bundle1_codex_kickoff.md`. Expected 2-file deliverable: `.skills/tool-picker/SKILL.md` (D1.a+D1.b+D1.c, ≤ 300 lines) + `docs/notes/tool_picker_usage.md` (D1.x, ≤ 80 lines) + KO pair for D1.x + test `tests/bundle1/test_skill_read_only.sh` + CLAUDE.md Read-order line (coordinated with Bundle 4).
-2. **Stage 9 Bundle 1 — Claude code review** against AC.B1.1–10 (headline: AC.B1.7 R2 read-only invariant grep test; AC.B1.3 ≤ 300 lines; AC.B1.4 frontmatter mandatory triggers; AC.B1.10 KO pair sync). Sec. 9-1 "Claude polish" allowance: decision-table wording polish may be applied inline during Stage 9.
-3. **Stage 10** (if NEEDS REVISION) → loop back to Codex with `prompts/codex/revise.md` + findings list → re-enter Stage 9.
-4. **Stage 11 joint validation** — after both bundles at PASS — **fresh Claude session** per M.3 invariant; do NOT chain into the same session. Use `prompts/claude/v03/stage11_joint_validation_prompt.md`.
+### ⏭️ Next (session 7 — Stage 12 QA & Release)
+1. **Stage 12 QA scenarios** — author `docs/05_qa_release/qa_scenarios.md` (+ `.ko.md` per R4), per WORKFLOW Sec. 15.
+2. **Stage 12 housekeeping forwards** (from Stage 11 non-blocking list):
+   - Swap `rg` → `grep -E` in `tests/bundle1/run_bundle1.sh` line 53 (or document ripgrep dependency in CI notes).
+   - Fix AC.B1.6 ↔ AC.B1.8 row label swap in `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 verdict table.
+   - Optional: refresh `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 to paste D4.x2/x3/x4 verbatim (match SKILL.md standard, tighten AC.B1.8).
+   - Optional: refresh SKILL.md Sec. 6 worked example onto a live Stage-12 triple.
+3. **CI forwards** — run `shellcheck -S style scripts/update_handoff.sh` on mac + Linux CI; run full test matrix (`tests/run_bundle4.sh`, `tests/bundle1/run_bundle1.sh`) on both OSes.
+4. **Stage 13 release** — author `[0.3.0]` section in `CHANGELOG.md` (Keep a Changelog v1.1.0), tag `v0.3` once Stage 12 closes.
+5. **Uncommitted edits flag (carried forward):** session-5 on-disk edits (`CLAUDE.md` "Session close — git policy" subsection, `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, untracked `docs/notes/stage11_dossiers/`) PLUS session-6 new files (`docs/notes/final_validation.{md,ko.md}`) and this HANDOFF.md update are candidates for the Stage 11 close commit. Per CLAUDE.md "Session close — git policy", this session asks the user whether to commit now or defer to the next session.
 
 ### 🚧 Blockers
-- None. All three Bundle 1 kickoff preconditions satisfied (Bundle 4 deliverables present; `decisions.md` D4.x2/x3/x4 recorded; `tests/run_bundle4.sh` green + Stage 9 PASS).
+- None. Stage 11 closed APPROVED; Stage 12 fully unblocked.
 
 ---
 
@@ -69,8 +83,8 @@ bundles:
     name: tool-picker
     goals: [7, 11, 12]          # from prompts/claude/v03_kickoff.md
     risk_level: medium-high
-    stage: 9                     # Stage 9 closed 2026-04-22 (PASS — minor)
-    verdict: minor               # Stage 9 Bundle 1 close 2026-04-22 — housekeeping only; 0 code changes, 0 inline polish edits
+    stage: 11                    # Stage 11 closed 2026-04-22 (APPROVED, joint validation)
+    verdict: minor               # Stage 11 carry-forward: Stage 9 minor + no Stage 11 blocking finding
     validation_group: 1
     approval_status: approved  # Stage 4.5 joint approval 2026-04-22 (M.1 satisfied)
   - id: 4
@@ -83,8 +97,8 @@ bundles:
       - doc_link_conventions
       - template_vs_dogfooding_separation  # earlier deferral folded in
     risk_level: medium               # bumped from low-medium under option β
-    stage: 9                         # Stage 9 closed 2026-04-22 (PASS)
-    verdict: minor                   # Stage 9 Bundle 4 close 2026-04-22 — design-doc polish only; no code revision
+    stage: 11                        # Stage 11 closed 2026-04-22 (APPROVED, joint validation)
+    verdict: minor                   # Stage 11 carry-forward: Stage 9 minor + no Stage 11 blocking finding
     validation_group: 1
     approval_status: approved  # Stage 4.5 joint approval 2026-04-22 (M.1 satisfied)
 
@@ -110,6 +124,8 @@ validation_groups:
 
 | Date | Description |
 |------|-------------|
+| 2026-04-22 | **Stage 11 joint validation APPROVED** (session 6, fresh Claude session per M.3). Group verdict (M.5 worst-of-two) = APPROVED. Bundle 1 = APPROVED, Bundle 4 = APPROVED. `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted under DC.6. Cross-bundle contracts verified: AC.B4.10 (SKILL.md verbatim from decisions.md), AC.B4.11 (D4.x4 link conventions — vacuous-by-construction). KO freshness independently re-verified (7 pairs, 0-day delta). 4 non-blocking items forwarded to Stage 12 housekeeping; 3 Bundle-4 items remain as CI/Stage-12 forwards (shellcheck -S style, mac+Linux CI matrix, 0.3.0 CHANGELOG entry). Stage 12 unblocked; Stage 13 ships single joint `v0.3` git tag per M.6. Uncommitted-edits decision deferred to user per CLAUDE.md "Session close — git policy". |
+| 2026-04-22 | Stage 11 prep complete: `bundle1_dossier.md` + `bundle4_dossier.md` + `ko_freshness.md` produced under `docs/notes/stage11_dossiers/`; Stage 10 skipped (both bundles PASS — minor); CLAUDE.md "Session close — git policy" subsection added (uncommitted on-disk, bundled into next commit per user defer choice); both bundles' test harnesses re-run green. |
 | 2026-04-22 | Stage 9 Bundle 1 code review PASS — minor; 0 code changes, 0 inline polish edits; Entry 3.9 KO-mirror backfilled; Bundle 1 YAML bumped stage 1→9, verdict null→minor. |
 | 2026-04-22 | Stage 9 Bundle 4 code review PASS; Sec. 6 of Bundle 4 technical_design expanded to 10 rows to resolve AC.B4.3 mismatch. |
 | 2026-04-22 | Stage 1 Brainstorm complete: mode=strict-hybrid, bundles 1+4 selected, validation group 1 declared, UI base-only policy set (through v0.5 or first downstream has_ui=true) |
@@ -143,8 +159,8 @@ validation_groups:
 | `docs/02_planning/plan_final.ko.md` | Stage 4 (KO) | ✅ Complete (2026-04-22, session 3 resumed) |
 | `docs/03_design/bundle1_tool_picker/technical_design.md` | Stage 5 | ✅ Complete (2026-04-22, session 3 resumed) — EN + KO pair, AC.B1.1–10 enumerated |
 | `docs/03_design/bundle4_doc_discipline/technical_design.md` | Stage 5 | ✅ Complete (2026-04-22, session 3 resumed) — EN + KO pair, D4.x2/x3/x4 locked |
-| `docs/04_implementation/implementation_progress.md` | Stage 8–10 | ⬜ Not started |
-| `docs/notes/final_validation.md` | Stage 11 | ⬜ Not started (Group 1 joint validation) |
+| `docs/04_implementation/implementation_progress.md` | Stage 8–10 | ✅ Stage 9 verdicts recorded (2026-04-22, sessions 4+5) — EN + KO pair |
+| `docs/notes/final_validation.md` | Stage 11 | ✅ Complete (2026-04-22, session 6) — Group 1 joint validation APPROVED, EN + KO pair |
 | `docs/05_qa_release/qa_scenarios.md` | Stage 12 | ⬜ Not started |
 | `docs/notes/dev_history.md` | All | ✅ Backfilled (2026-04-22, session 3 resumed) — EN + KO pair |
 | `prompts/claude/v03_kickoff.md` | Stage 0 | ✅ Reference |
@@ -153,99 +169,47 @@ validation_groups:
 
 ## 📋 Next Session Prompt
 
-> Copy and paste this at the start of your next Claude session (**session 5**, after Codex has run Stage 8 Bundle 1).
-> Full standalone copy also at: `prompts/claude/v03/session5_post_codex_bundle1_resume_prompt.md` (EN + KO mirror).
+> Copy and paste this at the start of your next Claude session — **session 7 = Stage 12 QA & Release (joint per M.6)**.
+> Canonical structure reference: `WORKFLOW.md` Sec. 15 (Stage 12).
 >
-> Before running this Claude prompt, Hyoungjin runs **one** Codex job:
-> 1. Bundle 1 only — prompt at `prompts/codex/v03/stage8_bundle1_codex_kickoff.md`
->    (Bundle 4 Stage 8 + Stage 9 are already closed; Bundle 1 preconditions are all ticked.)
-> 2. Coordination notes (still applicable — same failure-escalation rules) — `prompts/codex/v03/stage8_coordination_notes.md`
-> 3. Codex's Bundle 1 completion report should be archived at
->    `prompts/codex/v03/stage8_bundle1_codex_report.md` (mirrors the Bundle 4 archive pattern).
+> **Stage 11 is CLOSED** as of 2026-04-22 session 6 (APPROVED, group verdict). `docs/notes/final_validation.md` (+ `.ko.md`) holds the verdicts. No re-entry required.
+>
+> **Uncommitted-edits flag (carried from sessions 5 + 6):** multiple edits are on-disk but not committed — `CLAUDE.md` "Session close — git policy" subsection, this `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, and untracked `docs/notes/stage11_dossiers/` + `docs/notes/final_validation.{md,ko.md}`. Per CLAUDE.md "Session close — git policy", the user was asked at session-6 close whether to commit now or defer; carry that decision forward.
 
 ```
-Continue jOneFlow v0.3 (session 5 — post-Codex Bundle 1 resumption).
+Start Stage 12 — QA & Release prep for jOneFlow v0.3, validation_group = 1 (joint per M.6).
 
-Please read in this order:
+Read first, in order:
 1. CLAUDE.md
-2. HANDOFF.md
-3. WORKFLOW.md  (in particular Sec. 10 Stages 9, 10, 11, 12, 13)
-4. docs/notes/dev_history.md  (latest entry: 3.9 — Stage 8 + 9 Bundle 4 close)
-5. docs/03_design/bundle1_tool_picker/technical_design.md     (AC.B1.1–10 rubric — PRIMARY spec this session)
-6. docs/04_implementation/implementation_progress.md          (Stage 8 Bundle 4 log + Stage 9 Bundle 4 verdict; Bundle 1 log appended by Codex this session)
-7. prompts/codex/v03/stage8_bundle1_codex_report.md           (archived Codex paste for Bundle 1, if present)
-8. Whatever Codex created for Bundle 1 — skim tree with:
-   find .skills docs/notes/tool_picker_usage.md docs/notes/tool_picker_usage.ko.md tests/bundle1 -maxdepth 3 2>/dev/null
+2. HANDOFF.md (verify Stage 11 = APPROVED, both bundles stage=11 verdict=minor)
+3. WORKFLOW.md (Sec. 15 Stage 12 + Sec. 16 Stage 13)
+4. docs/notes/final_validation.md (approved verdicts + forwarded non-blocking items)
+5. docs/02_planning/plan_final.md Sec. 4 (M.6 single-joint-tag rule)
 
-Path: ~/projects/Jonelab_Platform/jOneFlow/
+Project path: ~/projects/Jonelab_Platform/jOneFlow/
+Mode: Strict-hybrid · Effort: High
+has_ui: false
+Bundles in scope: 1 (tool-picker) + 4 (doc-discipline, option β) — joint release per M.6
 
-Session-specific deltas from the template:
-- Bundle 4 side is DONE through Stage 9 (PASS — minor, 2026-04-22). Skip all Bundle 4 review.
-- This session reviews Bundle 1 ONLY against AC.B1.1–10.
-- Bundle 1's artifacts are still untracked. Formal commit only after Stage 9 PASS.
-- Codex Stage 8 Bundle 1 report archive location (not pasted inline):
-  prompts/codex/v03/stage8_bundle1_codex_report.md
-- If Codex flagged any non-trivial judgement calls in its report, Stage 9 must
-  decide disposition (accept / tighten rubric / tighten design doc). Precedent
-  from Stage 9 Bundle 4: AC.B4.3 nine-error-cases mismatch resolved by
-  expanding Sec. 6 of the Bundle 4 design inline (Option b).
+Pre-flight checks (do NOT skip):
+- `git status` — decide whether to bundle the session 5+6 uncommitted edits into a Stage 11 close commit BEFORE starting Stage 12 work.
+- Re-run `bash tests/bundle1/run_bundle1.sh` and `sh tests/run_bundle4.sh` — both must remain green.
 
-Current status:
-- Workflow mode: Strict-hybrid
-- Validation group 1 = {Bundle 1 tool-picker, Bundle 4 doc-discipline (option β)}
-- Stages 1–5 complete; Stages 6–7 skipped (has_ui=false)
-- Stage 8 Bundle 4 done; Stage 9 Bundle 4 = PASS — minor
-- Stage 8 Bundle 1: SEE CODEX REPORT BELOW
-- has_ui=false, risk_level=medium-high (Bundle 1)
+Your task: Stage 12 QA scenarios + forwarded housekeeping from final_validation.md Sec. 3:
+1. Author `docs/05_qa_release/qa_scenarios.md` (+ `.ko.md` per R4) per WORKFLOW Sec. 15.
+2. Execute forwards (non-blocking from Stage 11):
+   - Swap `rg` → `grep -E` in `tests/bundle1/run_bundle1.sh` line 53 (or document ripgrep dep in CI notes).
+   - Fix AC.B1.6 ↔ AC.B1.8 row label swap in `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 table.
+   - Optional: refresh `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 to paste D4.x2/x3/x4 verbatim.
+   - Optional: refresh SKILL.md Sec. 6 worked example onto a live Stage-12 triple.
+3. CI forwards:
+   - Run `shellcheck -S style scripts/update_handoff.sh` on mac + Linux.
+   - Run full test matrix on both OSes.
+4. Prepare for Stage 13:
+   - Author `[0.3.0]` entry in `CHANGELOG.md` (Keep a Changelog v1.1.0) per AC.B4.14.
+   - Plan the single joint `v0.3` tag per M.6.
 
-=== CODEX STAGE 8 COMPLETION REPORT — BUNDLE 1 ===
-[paste Codex's Bundle 1 completion report here, or note "pending" if not yet run]
-
-Next task in this session: Stage 9 Bundle 1 code review (AC.B1.1–10).
-
-Stage 9 Bundle 1 plan:
-1. Read Codex's Bundle 1 artifacts: `.skills/tool-picker/SKILL.md`,
-   `docs/notes/tool_picker_usage.{md,ko.md}`, `tests/bundle1/*`, and the
-   one-line edit to CLAUDE.md Read-order.
-2. Run per-AC verdict against AC.B1.1–10.
-   - Headline items: AC.B1.7 (R2 read-only invariant grep test — pattern
-     `'\b(bash|sh |python|node|eval|exec |curl|wget)\b'` must only match
-     inside code fences or quoted example output), AC.B1.3 (SKILL.md
-     ≤ 300 lines; escalate rather than split), AC.B1.4 (frontmatter
-     mandatory-trigger keywords: "stage", "mode", "risk_level",
-     "next step", "jOneFlow"), AC.B1.10 (KO pair sync for D1.x usage
-     doc), AC.B1.1 (single-file consolidation D1.a+D1.b+D1.c).
-   - Sec. 9-1 of Bundle 1 tech design permits inline Claude polish of
-     decision-table cell wording during Stage 9 — apply sparingly and
-     record every edit in the verdict section.
-3. Append Stage 9 Bundle 1 verdict section to
-   `docs/04_implementation/implementation_progress.md` (+ .ko.md) with
-   per-AC verdict table, inline-polish list, and PASS / NEEDS REVISION
-   decision.
-4. Update HANDOFF.md Recent Changes (EN + KO mirror) via
-   `scripts/update_handoff.sh --section both --write` (dogfood Bundle 4
-   script).
-5. Append `dev_history.md` Entry 3.10 (Stage 8 + 9 Bundle 1 close).
-6. If PASS: set Bundle 1 verdict in HANDOFF YAML to the appropriate
-   value (minor / bug_fix / design_level); validation-group-1 Stage 9
-   gate now closed — ready for Stage 11 joint validation.
-   If NEEDS REVISION: trigger Stage 10 — hand back to Codex with a
-   focused revise prompt (prompts/codex/revise.md canonical template +
-   specific findings list). Re-enter Stage 9 on the revised output.
-
-Important M.3 invariant (do NOT violate):
-- Stage 11 joint validation is a FRESH Claude session. Do NOT run Stage
-  11 in this same session. At the end of Stage 9/10 close, the operator
-  runs the Stage 11 prompt at prompts/claude/v03/stage11_joint_validation_prompt.md
-  in a new Claude session with only the pre-compacted dossiers (DC.6).
-
-Language policy reminders:
-- EN primary + KO translation; KO updated at stage close (R4).
-- New documents avoid the U+00A7 section-sign — use literal "Sec. " prefix.
-- Stage 5+ docs carry YAML frontmatter (D4.x2). Stage 1–4 docs stay prose-only.
-
-Announce "읽기 완료 — Stage 9 Bundle 1 시작 준비됨" once the reads are done,
-then begin from AC.B1.1.
+Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
 ```
 
 ---
@@ -268,7 +232,7 @@ then begin from AC.B1.1.
 **현재 버전:** v0.3 (in progress)
 **마지막 업데이트:** 2026-04-22 (UTC)
 **워크플로우 모드:** Strict-hybrid
-**현재 단계:** Stage 9 Bundle 1 ✅ PASS — minor; both bundles in validation group 1 now closed at Stage 9. Next: Stage 10/11 (Stage 11 = fresh Claude session per M.3). has_ui=false; risk_level=medium.
+**현재 단계:** Stage 11 ✅ **APPROVED** (공동 검증 완료, 세션 6, 2026-04-22). 두 번들 PASS — minor; 그룹 판정 (M.5 worst-of-two) = APPROVED. `docs/notes/final_validation.md` (+ `.ko.md`) 가 DC.6 에 따라 발행됨. Stage 12 (QA & Release) 차단 해제; Stage 13 은 M.6 에 따라 단일 공동 `v0.3` git tag 로 릴리스. has_ui=false; risk_level=medium.
 **has_ui:** false
 **risk_level:** medium
 
@@ -298,18 +262,32 @@ then begin from AC.B1.1.
   - `prompts/claude/v03/session4_post_codex_resume_prompt.md` — Codex 작업 이후 Claude 세션 4 재개 프롬프트 (EN + KO 미러), Stage 9 진입
 - [x] **Stage 8 Bundle 4 — Codex 구현** ✅ 완료 (2026-04-22, Codex 세션) — 14 개 산출물: `scripts/update_handoff.sh` (POSIX sh, 486 줄, shellcheck clean), `templates/HANDOFF.template.md`, `CHANGELOG.md` (KaC v1.1.0), `CODE_OF_CONDUCT.md` (Covenant v2.1), `CONTRIBUTING.md` (12 섹션 + F-a1 부록), `docs/notes/decisions.md` (+ `.ko.md`, D4.x2/x3/x4 quotable), `docs/04_implementation/implementation_progress.md` (+ `.ko.md`), `tests/run_bundle4.sh` + `tests/bundle4/` 아래 4 개 테스트 (전부 PASS). Codex 완료 보고서는 `prompts/codex/v03/stage8_bundle4_codex_report.md` 에 아카이브.
 - [x] **Stage 9 Bundle 4 — Claude 코드 리뷰** ✅ **PASS — minor** (2026-04-22, 세션 4) — per-AC 판정 표가 `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) 에 기록됨. 코드 변경 없음. 인라인 설계 보정: Bundle 4 `technical_design.md` Sec. 6 을 8 → 10 행으로 확장하고 `stdout 디스크리미네이터` 열 추가 (+ KO 쌍) — AC.B4.3 불일치 해소 (루브릭 "nine" = 9 개의 구분되는 `error=<key>` 디스크리미네이터, 이제 1:1 매핑). `dev_history.md` Entry 3.9 기록. Bundle 1 킥오프 Precondition checklist 3 개 모두 ticked.
+- [x] **Stage 9 Bundle 1 — Claude 코드 리뷰** ✅ **PASS — minor** (2026-04-22, 세션 5) — per-AC 판정 표가 `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) 에 기록됨. 코드 변경 0건, 인라인 polish 편집 0건; Codex 판정 4건 수락 (AC.B1.3 6열 확장, AC.B1.4 `to be created at Stage 11` 마커, AC.B1.7 0-매치 grep, AC.B1.10 구조 동기 프록시). Entry 3.10 기록; `dev_history.ko.md` Entry 3.9 백필. Validation group 1 의 Stage 9 게이트 종료 (번들 4 minor + 번들 1 minor).
+- [x] **Stage 10 생략** (두 번들 모두 PASS — minor; WORKFLOW Sec. 10 Stage 10 "NEEDS REVISION 시" 조건 미충족이므로 revision 불필요).
+- [x] **Stage 11 prep housekeeping** ✅ 완료 (2026-04-22, 세션 5 연속) — DC.6 dossier 산출:
+  - `docs/notes/stage11_dossiers/bundle1_dossier.md` (135 줄, ≤ 1 쪽 prose + pinned key-diff 블록)
+  - `docs/notes/stage11_dossiers/bundle4_dossier.md` (173 줄, ≤ 1 쪽 prose + pinned key-diff 블록)
+  - `docs/notes/stage11_dossiers/ko_freshness.md` (KO 동기 검증용 스크래치 표, 사전 채움)
+  - `CLAUDE.md` "Session close — git policy" 서브섹션을 cross-tool handoff rule 근처에 추가 (디스크 상 uncommitted — 사용자 defer 선택 branch 2 에 따라 다음 커밋에 번들).
+  - Bundle 1 + Bundle 4 테스트 하네스 재실행: `tests/bundle1/run_bundle1.sh` 10/10 PASS; `tests/run_bundle4.sh` 4/4 PASS.
+- [x] **Stage 11 — 공동 최종 검증** ✅ **APPROVED** (2026-04-22, 세션 6, M.3 에 따른 새 세션) — `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 발행. Bundle 1 판정 = APPROVED; Bundle 4 판정 = APPROVED; 그룹 (M.5 worst-of-two) = APPROVED. Cross-bundle 점검 PASS: AC.B4.10 (SKILL.md 34–72 행이 decisions.md 24–62 행과 문자 단위 verbatim 일치); AC.B4.11 (SKILL.md 에 Markdown 링크 0 매치 ⇒ D4.x4 vacuous-by-construction; verbatim 블록 내부의 backlink 는 이미 D4.x4 형식 사용); D1.b↔D4.x2/x3/x4 파서 계약 유지. KO freshness 표 독립 재검증 — 7 페어, 전역 0일 델타. 4 건의 non-blocking 항목을 Stage 12 housekeeping 으로 forward (Bundle 1: worked-example live-state refresh, tests/bundle1/run_bundle1.sh 의 `rg` 의존성, implementation_progress.md 의 AC.B1.6/B1.8 레이블 swap, tech_design Sec. 0 의 AC.B1.8 paraphrase-vs-verbatim 위생; Bundle 4: shellcheck -S style CI 재실행, mac+Linux CI 매트릭스, 0.3.0 CHANGELOG entry Stage 12). Blocking 발견 없음.
 
 ### 🔄 진행 중
-- **Stage 8 Bundle 1 Codex 실행 대기 중.** Bundle 4 쪽은 Stage 9 까지 완전 종료. Hyoungjin 이 다음으로 Bundle 1 킥오프 (`prompts/codex/v03/stage8_bundle1_codex_kickoff.md`) 실행 → 완료되면 `prompts/claude/v03/session5_post_codex_bundle1_resume_prompt.md` 로 **세션 5** 시작 → **Stage 9 Bundle 1 코드 리뷰** 진입 (M.3 불변식: 새 Claude 세션).
+- **Stage 12 (QA & Release) 준비.** plan_final Sec. 4 M.6 에 따라 Stage 12 는 두 번들 공동 진행; Stage 13 은 단일 공동 `v0.3` git tag 릴리스. Stage 4.5 / Stage 10 재진입 불필요.
 
-### ⏭️ 다음 (세션 5)
-1. **Stage 8 Bundle 1 Codex 실행** (운영자 주도, Claude 외부) — `stage8_bundle1_codex_kickoff.md` 의 단일 paste 블록 실행. 기대 산출물: `.skills/tool-picker/SKILL.md` (D1.a+D1.b+D1.c, ≤ 300 줄) + `docs/notes/tool_picker_usage.md` (D1.x, ≤ 80 줄) + D1.x 의 KO 쌍 + 테스트 `tests/bundle1/test_skill_read_only.sh` + CLAUDE.md Read-order 1줄 편집 (Bundle 4 와 조정).
-2. **Stage 9 Bundle 1 — Claude 코드 리뷰** (AC.B1.1–10 기준) (헤드라인: AC.B1.7 R2 읽기 전용 불변식 grep 테스트; AC.B1.3 ≤ 300 줄; AC.B1.4 프론트매터 mandatory triggers; AC.B1.10 KO 쌍 동기화). Sec. 9-1 "Claude polish" 허용 — 결정 테이블 문구 polish 는 Stage 9 인라인으로 가능.
-3. **Stage 10** (NEEDS REVISION 시) → `prompts/codex/revise.md` + findings 리스트로 Codex 에 되돌려보냄 → Stage 9 재진입.
-4. **Stage 11 공동 검증** — 양 번들 PASS 이후 — **새 Claude 세션** (M.3 불변식); 같은 세션에서 chain 금지. `prompts/claude/v03/stage11_joint_validation_prompt.md` 사용.
+### ⏭️ 다음 (세션 7 — Stage 12 QA & Release)
+1. **Stage 12 QA 시나리오** — WORKFLOW Sec. 15 에 따라 `docs/05_qa_release/qa_scenarios.md` (+ R4 의 `.ko.md` 페어) 작성.
+2. **Stage 12 housekeeping forward** (Stage 11 non-blocking 리스트에서):
+   - `tests/bundle1/run_bundle1.sh` 53 행의 `rg` → `grep -E` 스왑 (또는 CI 노트에 ripgrep 의존성 문서화).
+   - `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 판정 표의 AC.B1.6 ↔ AC.B1.8 레이블 swap 수정.
+   - Optional: `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 을 SKILL.md 표준에 맞춰 D4.x2/x3/x4 원문 paste 로 refresh.
+   - Optional: SKILL.md Sec. 6 worked example 을 live Stage-12 triple 로 refresh.
+3. **CI forward** — `shellcheck -S style scripts/update_handoff.sh` mac + Linux 실행; 전체 테스트 매트릭스 양 OS 실행.
+4. **Stage 13 릴리스** — `CHANGELOG.md` 에 `[0.3.0]` 섹션 작성 (Keep a Changelog v1.1.0), Stage 12 종료 후 `v0.3` 태그.
+5. **Uncommitted 편집 플래그 (이월):** 세션-5 디스크 편집 (`CLAUDE.md` "Session close — git policy" 서브섹션, `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, 미추적 `docs/notes/stage11_dossiers/`) 과 세션-6 신규 파일 (`docs/notes/final_validation.{md,ko.md}`) 및 이 HANDOFF.md 업데이트가 Stage 11 close 커밋의 후보. CLAUDE.md "Session close — git policy" 에 따라 이 세션은 사용자에게 지금 커밋 vs 다음 세션 이월 여부를 물음.
 
 ### 🚧 차단 요인
-- 없음. Bundle 1 킥오프 3 개 Precondition 전부 충족 (Bundle 4 산출물 존재; `decisions.md` D4.x2/x3/x4 기록; `tests/run_bundle4.sh` green + Stage 9 PASS).
+- 없음. Stage 11 APPROVED 종료; Stage 12 완전 차단 해제.
 
 ---
 
@@ -328,6 +306,8 @@ Bundle 2·3는 v0.4로 이월.
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-22 | **Stage 11 공동 검증 APPROVED** (세션 6, M.3 에 따른 새 Claude 세션). 그룹 판정 (M.5 worst-of-two) = APPROVED. Bundle 1 = APPROVED, Bundle 4 = APPROVED. `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 를 DC.6 에 따라 발행. Cross-bundle 계약 검증: AC.B4.10 (SKILL.md 가 decisions.md 에서 verbatim 인용), AC.B4.11 (D4.x4 링크 컨벤션 — vacuous-by-construction). KO freshness 독립 재검증 (7 페어, 0일 델타). 4 건의 non-blocking 항목을 Stage 12 housekeeping 으로 forward; Bundle 4 에서 3 건은 CI/Stage-12 forward 로 유지 (shellcheck -S style, mac+Linux CI 매트릭스, 0.3.0 CHANGELOG entry). Stage 12 차단 해제; Stage 13 은 M.6 에 따라 단일 공동 `v0.3` git tag 릴리스. Uncommitted 편집 처리는 CLAUDE.md "Session close — git policy" 에 따라 사용자에게 질문 이월. |
+| 2026-04-22 | Stage 11 prep 완료: `bundle1_dossier.md` + `bundle4_dossier.md` + `ko_freshness.md` 을 `docs/notes/stage11_dossiers/` 에 산출; Stage 10 생략 (두 번들 PASS — minor); CLAUDE.md "Session close — git policy" 서브섹션 추가 (디스크 상 uncommitted, 사용자 defer 선택에 따라 다음 커밋에 번들); 두 번들 테스트 하네스 재실행 green. |
 | 2026-04-22 | Stage 9 Bundle 1 code review PASS — minor; 0 code changes, 0 inline polish edits; Entry 3.9 KO-mirror backfilled; Bundle 1 YAML bumped stage 1→9, verdict null→minor. |
 | 2026-04-22 | Stage 9 Bundle 4 code review PASS; Sec. 6 of Bundle 4 technical_design expanded to 10 rows to resolve AC.B4.3 mismatch. |
 | 2026-04-22 | Stage 1 브레인스토밍 완료: 모드 strict-hybrid, 번들 1+4 선택, validation group 1 선언, UI base-only 정책 확정 (v0.5 또는 첫 downstream has_ui=true 중 먼저) |
@@ -359,8 +339,8 @@ Bundle 2·3는 v0.4로 이월.
 | `docs/02_planning/plan_final.ko.md` | Stage 4 (KO) | ✅ 완료 (2026-04-22, 세션 3 재개) — Stage 4.5 승인 |
 | `docs/03_design/bundle1_tool_picker/technical_design.md` | Stage 5 | ✅ 완료 (2026-04-22, 세션 3 재개) — EN + KO 페어, AC.B1.1–10 열거 |
 | `docs/03_design/bundle4_doc_discipline/technical_design.md` | Stage 5 | ✅ 완료 (2026-04-22, 세션 3 재개) — EN + KO 페어, D4.x2/x3/x4 잠금 |
-| `docs/04_implementation/implementation_progress.md` | Stage 8~10 | ⬜ 미시작 |
-| `docs/notes/final_validation.md` | Stage 11 | ⬜ 미시작 (Group 1 공동 검증) |
+| `docs/04_implementation/implementation_progress.md` | Stage 8~10 | ✅ Stage 9 판정 기록 완료 (2026-04-22, 세션 4+5) — EN + KO 페어 |
+| `docs/notes/final_validation.md` | Stage 11 | ✅ 완료 (2026-04-22, 세션 6) — Group 1 공동 검증 APPROVED, EN + KO 페어 |
 | `docs/05_qa_release/qa_scenarios.md` | Stage 12 | ⬜ 미시작 |
 | `docs/notes/dev_history.md` | 전체 | ✅ Backfill 완료 (2026-04-22, 세션 3 재개) — EN + KO 페어 |
 | `prompts/claude/v03_kickoff.md` | Stage 0 | ✅ 참조 |
@@ -369,94 +349,45 @@ Bundle 2·3는 v0.4로 이월.
 
 ## 📋 다음 세션 시작 프롬프트
 
-> 다음 Claude 세션 (**세션 5**, Codex Stage 8 Bundle 1 실행 이후) 시작 시 복사해서 붙여넣으세요.
-> 독립 파일 사본: `prompts/claude/v03/session5_post_codex_bundle1_resume_prompt.md` (EN + KO 미러).
+> 다음 Claude 세션 — **세션 7 = Stage 12 QA & Release (M.6 공동)** — 시작 시 복사해서 붙여넣으세요.
+> 표준 구조 참조: `WORKFLOW.md` Sec. 15 (Stage 12).
 >
-> 이 Claude 프롬프트를 실행하기 전에 Hyoungjin 이 Codex 작업 **1건**을 먼저 수행:
-> 1. Bundle 1 만 — `prompts/codex/v03/stage8_bundle1_codex_kickoff.md`
->    (Bundle 4 Stage 8 + Stage 9 는 이미 종료; Bundle 1 Precondition 전부 ticked.)
-> 2. 조정 참고 (여전히 적용됨 — 동일 실패-escalation 규칙) — `prompts/codex/v03/stage8_coordination_notes.md`
-> 3. Codex 의 Bundle 1 완료 보고서는 `prompts/codex/v03/stage8_bundle1_codex_report.md` 에
->    아카이브 (Bundle 4 아카이브 패턴 동일).
+> **Stage 11 은 2026-04-22 세션 6 에 종료 (APPROVED, 그룹 판정)**. `docs/notes/final_validation.md` (+ `.ko.md`) 에 판정이 보관됨. 재진입 불필요.
+>
+> **Uncommitted 편집 플래그 (세션 5 + 6 이월):** 디스크 상 다수 편집이 아직 커밋 안 됨 — `CLAUDE.md` "Session close — git policy" 서브섹션, 이 `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, 미추적 `docs/notes/stage11_dossiers/` + `docs/notes/final_validation.{md,ko.md}`. CLAUDE.md "Session close — git policy" 에 따라 세션 6 종료 시 사용자에게 지금 커밋 vs 다음 세션 이월 여부를 물었음; 그 결정을 이어가세요.
 
 ```
-jOneFlow v0.3 이어서 진행해줘 (세션 5 — Codex Bundle 1 작업 이후 재개).
+Start Stage 12 — QA & Release prep for jOneFlow v0.3, validation_group = 1 (joint per M.6).
 
-다음 순서로 먼저 읽어줘:
+Read first, in order:
 1. CLAUDE.md
-2. HANDOFF.md
-3. WORKFLOW.md  (특히 Sec. 10 Stage 9, 10, 11, 12, 13)
-4. docs/notes/dev_history.md  (최신 Entry: 3.9 — Stage 8 + 9 Bundle 4 종료)
-5. docs/03_design/bundle1_tool_picker/technical_design.md     (AC.B1.1–10 루브릭 — 이번 세션의 PRIMARY 스펙)
-6. docs/04_implementation/implementation_progress.md          (Stage 8 Bundle 4 로그 + Stage 9 Bundle 4 판정; Bundle 1 로그는 이번 세션에 Codex 가 추가)
-7. prompts/codex/v03/stage8_bundle1_codex_report.md           (아카이브된 Codex Bundle 1 paste, 존재 시)
-8. Codex 가 Bundle 1 로 생성한 것: 트리 스킴 —
-   find .skills docs/notes/tool_picker_usage.md docs/notes/tool_picker_usage.ko.md tests/bundle1 -maxdepth 3 2>/dev/null
+2. HANDOFF.md (verify Stage 11 = APPROVED, both bundles stage=11 verdict=minor)
+3. WORKFLOW.md (Sec. 15 Stage 12 + Sec. 16 Stage 13)
+4. docs/notes/final_validation.md (approved verdicts + forwarded non-blocking items)
+5. docs/02_planning/plan_final.md Sec. 4 (M.6 single-joint-tag rule)
 
-경로: ~/projects/Jonelab_Platform/jOneFlow/
+Project path: ~/projects/Jonelab_Platform/jOneFlow/
+Mode: Strict-hybrid · Effort: High
+has_ui: false
+Bundles in scope: 1 (tool-picker) + 4 (doc-discipline, option β) — joint release per M.6
 
-이번 세션 특이사항 (템플릿 대비 델타):
-- Bundle 4 는 Stage 9 까지 종료 (PASS — minor, 2026-04-22). Bundle 4 리뷰 섹션 전부 스킵.
-- 이번 세션은 AC.B1.1–10 기준 Bundle 1 만 리뷰.
-- Bundle 1 산출물은 아직 untracked. Stage 9 PASS 판정 후에만 정식 커밋.
-- Codex Stage 8 Bundle 1 보고서 아카이브 위치 (인라인 paste 아님):
-  prompts/codex/v03/stage8_bundle1_codex_report.md
-- Codex 가 보고서에 non-trivial judgement call 을 플래그했다면, Stage 9 에서
-  처분 결정 (accept / rubric 정정 / 설계 문서 정정). Stage 9 Bundle 4 선례:
-  AC.B4.3 nine-error-cases 불일치를 Bundle 4 설계 Sec. 6 인라인 확장으로 해소
-  (Option b).
+Pre-flight checks (do NOT skip):
+- `git status` — decide whether to bundle the session 5+6 uncommitted edits into a Stage 11 close commit BEFORE starting Stage 12 work.
+- Re-run `bash tests/bundle1/run_bundle1.sh` and `sh tests/run_bundle4.sh` — both must remain green.
 
-현재 상태:
-- 워크플로우 모드: Strict-hybrid
-- Validation group 1 = {Bundle 1 tool-picker, Bundle 4 doc-discipline (옵션 β)}
-- Stage 1–5 완료; Stage 6–7 스킵 (has_ui=false)
-- Stage 8 Bundle 4 완료; Stage 9 Bundle 4 = PASS — minor
-- Stage 8 Bundle 1: 아래 CODEX 보고서 참조
-- has_ui=false, risk_level=medium-high (Bundle 1)
+Your task: Stage 12 QA scenarios + forwarded housekeeping from final_validation.md Sec. 3:
+1. Author `docs/05_qa_release/qa_scenarios.md` (+ `.ko.md` per R4) per WORKFLOW Sec. 15.
+2. Execute forwards (non-blocking from Stage 11):
+   - Swap `rg` → `grep -E` in `tests/bundle1/run_bundle1.sh` line 53 (or document ripgrep dep in CI notes).
+   - Fix AC.B1.6 ↔ AC.B1.8 row label swap in `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 table.
+   - Optional: refresh `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 to paste D4.x2/x3/x4 verbatim.
+   - Optional: refresh SKILL.md Sec. 6 worked example onto a live Stage-12 triple.
+3. CI forwards:
+   - Run `shellcheck -S style scripts/update_handoff.sh` on mac + Linux.
+   - Run full test matrix on both OSes.
+4. Prepare for Stage 13:
+   - Author `[0.3.0]` entry in `CHANGELOG.md` (Keep a Changelog v1.1.0) per AC.B4.14.
+   - Plan the single joint `v0.3` tag per M.6.
 
-=== CODEX STAGE 8 완료 보고서 — BUNDLE 1 ===
-[Codex 의 Bundle 1 완료 보고서를 여기 붙여넣기, 또는 미실행이면 "pending"]
-
-이 세션에서 할 작업: Stage 9 Bundle 1 코드 리뷰 (AC.B1.1–10).
-
-Stage 9 Bundle 1 계획:
-1. Codex Bundle 1 산출물 읽기: `.skills/tool-picker/SKILL.md`,
-   `docs/notes/tool_picker_usage.{md,ko.md}`, `tests/bundle1/*`,
-   CLAUDE.md Read-order 1줄 편집.
-2. AC.B1.1–10 per-AC 판정.
-   - 헤드라인: AC.B1.7 (R2 읽기 전용 불변식 grep 테스트 — 패턴
-     `'\b(bash|sh |python|node|eval|exec |curl|wget)\b'` 매치는 code fence
-     또는 quoted example output 안에서만 허용), AC.B1.3 (SKILL.md ≤ 300 줄;
-     분할 말고 escalate), AC.B1.4 (프론트매터 mandatory-trigger 키워드:
-     "stage", "mode", "risk_level", "next step", "jOneFlow"), AC.B1.10
-     (D1.x 사용 문서 KO 쌍 동기화), AC.B1.1 (단일 파일 통합
-     D1.a+D1.b+D1.c).
-   - Bundle 1 기술 설계 Sec. 9-1 은 Stage 9 중 결정 테이블 셀 문구
-     인라인 Claude polish 허용 — 절제 있게 적용하고 판정 섹션에 모든
-     편집 기록.
-3. Stage 9 Bundle 1 판정 섹션을 `docs/04_implementation/implementation_progress.md`
-   (+ .ko.md) 에 추가 — per-AC 판정 표, 인라인 polish 리스트, PASS /
-   NEEDS REVISION 결정.
-4. HANDOFF.md 최근 변경 이력 (EN + KO 미러) 을
-   `scripts/update_handoff.sh --section both --write` 로 갱신 (Bundle 4
-   스크립트 dogfooding).
-5. `dev_history.md` Entry 3.10 (Stage 8 + 9 Bundle 1 종료) 추가.
-6. PASS 시: HANDOFF YAML 의 Bundle 1 verdict 를 적절한 값 (minor /
-   bug_fix / design_level) 으로 설정; validation-group-1 Stage 9 게이트
-   종료 → Stage 11 공동 검증 준비 완료.
-   NEEDS REVISION 시: Stage 10 진입 — focused revise 프롬프트로 Codex 에
-   되돌려보냄 (prompts/codex/revise.md 표준 템플릿 + 구체적 findings
-   리스트). 수정본으로 Stage 9 재진입.
-
-M.3 불변식 준수 (위반 금지):
-- Stage 11 공동 검증은 반드시 새 Claude 세션. 같은 세션에서 chain 금지.
-  Stage 9/10 종료 시 운영자가 prompts/claude/v03/stage11_joint_validation_prompt.md
-  프롬프트를 새 Claude 세션에서 실행; DC.6 pre-compacted dossier 만 컨텍스트로 제공.
-
-언어 정책 상기:
-- EN primary + KO translation; KO 는 stage 종료 시 업데이트 (R4).
-- 신규 문서는 U+00A7 섹션 기호 사용 안 함 — 리터럴 "Sec. " 접두어 사용.
-- Stage 5 이후 문서에 YAML 프론트매터 (D4.x2). Stage 1–4 는 prose-only 유지.
-
-읽기 끝나면 "읽기 완료 — Stage 9 Bundle 1 시작 준비됨" 알리고, AC.B1.1 부터 시작.
+Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
 ```
