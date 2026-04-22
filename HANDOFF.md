@@ -13,10 +13,10 @@
 
 ## Status
 
-**Current version:** v0.3 released; v0.4 planning open
-**Last updated:** 2026-04-22 (UTC)
-**Workflow mode:** Strict-hybrid
-**Current stage:** Stage 13 ✅ **v0.3 released; v0.4 planning open** (single joint tag per M.6, 2026-04-22 UTC, session 7). Tag object SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → commit `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (tag target = Stage 13 release prep; parent = `08a43fd` Stage 12 close). **Push + GitHub release pending operator** (sandbox has no git credentials — operator runs `git push origin main && git push origin v0.3` then `gh release create v0.3 -F <[0.3.0] body>` or GitHub UI; see `docs/05_qa_release/release_checklist.md` Sec. 5.1 step 3/4). CI matrix Linux side green (bundle1 10/10, bundle4 4/4, shellcheck proxy `sh -n` + `dash -n` + `bash -n` all exit 0; real `shellcheck` deferred to v0.4). Mac CI rows (1.g–1.i) async operator-paste per user's Stage 13 pattern-1 direction; v0.4 automates. H1–H4 PASS; F1–F6 procedures verified current. has_ui=false; risk_level=medium.
+**Current version:** v0.3 released; **v0.4 = retrospective + simplification** (meta release, no new bundles); feature backlog reindexed to v0.5
+**Last updated:** 2026-04-23 (UTC)
+**Workflow mode:** Strict-hybrid (for v0.3 close; v0.4 mode TBD at its own Stage 1)
+**Current stage:** Stage 13 ✅ **v0.3 released; v0.4 redefined as retrospective/simplification** (single joint tag per M.6, 2026-04-22 UTC, session 7; v0.4 redefined at session 7 close, 2026-04-23 UTC). Tag object SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → commit `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (tag target = Stage 13 release prep; parent = `08a43fd` Stage 12 close). **Push + GitHub release pending operator** (sandbox has no git credentials — operator runs `git push origin main && git push origin v0.3` then `gh release create v0.3 -F <[0.3.0] body>` or GitHub UI; see `docs/05_qa_release/release_checklist.md` Sec. 5.1 step 3/4). CI matrix Linux side green (bundle1 10/10, bundle4 4/4, shellcheck proxy `sh -n` + `dash -n` + `bash -n` all exit 0; real `shellcheck` deferred to v0.4). Mac CI rows (1.g–1.i) async operator-paste per user's Stage 13 pattern-1 direction; v0.4 automates. H1–H4 PASS; F1–F6 procedures verified current. has_ui=false; risk_level=medium.
 > ℹ️ **Session-close git policy.** User to be asked at session 7 close whether to push tag + GitHub release now from their local shell, or defer. If deferred, the tag + commits sit locally at `ebb1e98` on `main` plus tag `v0.3 → f2069cf` until next session.
 **has_ui:** false
 **risk_level:** medium
@@ -72,16 +72,16 @@
 
 ### ⏭️ Next (operator-side, or next session)
 1. **Push tag + commits to origin** (operator, local shell):
-   - `git push origin main` (pushes `d453ea1` → `08a43fd` → `ebb1e98`).
-   - `git push origin v0.3` (pushes annotated tag `f2069cf`).
+   - `git push origin main` (pushes `d453ea1` → `08a43fd` → `ebb1e98` → `032a095` → the v0.4-redefinition commit created at session 7 close).
+   - `git push origin v0.3` (pushes annotated tag `f2069cf`; tag still pins to `ebb1e98`).
 2. **Open GitHub release** (operator):
    - Preferred: `gh release create v0.3 -F <(awk '/^## \[0.3.0\]/,/^## \[Unreleased\]/' CHANGELOG.md | head -n -2)`
    - Fallback: GitHub UI → Releases → Draft new release → tag `v0.3` → body = `[0.3.0]` section of `CHANGELOG.md`.
-3. **Mac CI paste (asynchronous).** Operator pastes mac results for release_checklist.md Sec. 1.1 rows 1.g / 1.h / 1.i. Per user's Stage 13 pattern-1 direction, paste is async; v0.4 automates.
-4. **v0.4 planning kickoff** (next Claude session — session 8). Use the Next Session Prompt block below ("Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 …"); the 6-item v0.4 backlog is already seeded.
+3. **Mac CI paste (asynchronous).** Operator pastes mac results for release_checklist.md Sec. 1.1 rows 1.g / 1.h / 1.i. Per user's Stage 13 pattern-1 direction, paste is async; automation moved to v0.5 (not v0.4, which is a meta release).
+4. **v0.4 planning kickoff** (next Claude session — session 8). **v0.4 is now a retrospective + simplification release**, not a feature release. Use the Next Session Prompt block below ("Start v0.4 — retrospective + simplification. jDevFlow v0.3 released 2026-04-22 …"). The original 6-item v0.4 feature backlog is reindexed to v0.5 and surfaced in CHANGELOG.md `[Unreleased]` "Planned for v0.5".
 
 ### 🚧 Blockers
-- None. v0.3 is complete locally. Push and GitHub release are operator actions; nothing blocks v0.4 planning on the Claude side once the operator pushes.
+- None. v0.3 is complete locally. Push and GitHub release are operator actions; nothing blocks v0.4 retrospective on the Claude side once the operator pushes.
 
 ---
 
@@ -134,6 +134,7 @@ validation_groups:
 
 | Date | Description |
 |------|-------------|
+| 2026-04-23 | **v0.4 redefined as retrospective + simplification release; v0.5 inherits original v0.4 backlog** (session 7 close, user direction). Rationale: v0.3 dogfooding surfaced that the template "designed to make projects easier" had become heavy (13 stages × 2 bundles × EN+KO × joint validation gates × D4.x frontmatter × dual harness). v0.4 will now (a) retrospect the concrete friction points from v0.3 and (b) propose simplifications to the workflow itself — no new bundles, no feature adds. The 6-item v0.4 backlog (SKILL.md live-triple refresh, tech_design Sec. 0 refresh, shellcheck install, mac CI automation, Bundle 2/3 re-scope, `§` removal) is reindexed to **v0.5 "Planned"** in `CHANGELOG.md [Unreleased]`. v0.5 also becomes the nominal UI base-only sunset anchor per v0.3 brainstorm Sec. 9. Status line flipped; Next Session Prompt rewritten for v0.4 retrospective mode (A/B/C discovery questions deferred to session 8 open). |
 | 2026-04-22 | **v0.3 released (session 7 close)** — single joint tag per plan_final M.6. Annotated tag `v0.3` created locally: tag object SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → commit `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (Stage 13 release prep). Push + GitHub release creation pending operator local shell (sandbox has no git credentials). Post-release artefacts landed: HANDOFF.md status line → "v0.3 released; v0.4 planning open" + bundles YAML `stage: released` (EN + KO); `docs/notes/dev_history.{md,ko.md}` Entry 3.15 with actual tag SHA (revision log v1.8); `docs/05_qa_release/release_checklist.{md,ko.md}` Sec. 4–7 ticked + Sec. 5.1 execution log with push-pending note + status frontmatter `in_progress → signed_off`. v0.4 backlog (6 items) seeded in HANDOFF Next Session Prompt + CHANGELOG `[Unreleased]` CI/infra subsection. Session-close git policy ask: push now or defer. |
 | 2026-04-22 | **Stage 13 tag target committed (session 7)** — Stage 12 close commit `08a43fd` created (12 files, +1050/−93, parent `d453ea1`) resolving the session-6 defer. CI matrix Linux side green (bundle1 10/10, bundle4 4/4, `sh -n` + `dash -n` + `bash -n` proxy all exit 0; real `shellcheck` deferred to v0.4). QA gates H1–H4 PASS; F1–F6 procedures verified. Doc gates: `CHANGELOG.md` `[0.3.0] - 2026-04-22` finalised; `[Unreleased]` reset + CI/infra v0.4 backlog seed; `release_checklist.md` + `.ko.md` checkboxes ticked through Sec. 1 (Linux) / Sec. 2 + Sec. 1.1 results ledger populated; HANDOFF bundles YAML stage 12→13 (verdict minor carried); Next Session Prompt will flip to v0.4 planning after post-release commit. Mac CI rows captured as operator-paste per user's Stage 13 pattern-1 direction; v0.4 automates. Tag target commit = `ebb1e98` (6 files, +221/−158). |
 | 2026-04-22 | **Stage 12 QA & Release prep complete** (session 6 continuation, same chat window). New: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy + F1–F6 failure scenarios, full AC mapping), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 tag gate), `CHANGELOG.md` `[0.3.0]` section (KaC v1.1.0, TBD date), `prompts/claude/v03/stage12_qa_release_prompt.md` canonical. Housekeeping discharged on-tree: `rg` → `grep -E` swap in `tests/bundle1/run_bundle1.sh` line 53 (removes ripgrep dep), AC.B1.6/B1.8 label swap fix in `implementation_progress.md` (+ `.ko.md`). Both harnesses re-run green (Bundle 1: 10/10, Bundle 4: 4/4). Optional Stage 11 forwards (SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim refresh) deferred to v0.4. CI forwards (shellcheck + mac+Linux matrix) remain Stage 13 pre-tag prerequisites. |
@@ -185,42 +186,53 @@ validation_groups:
 
 ## 📋 Next Session Prompt
 
-> Copy and paste this at the start of your next Claude session — **session 8 = v0.4 planning kickoff** (after v0.3 release is fully landed on origin + GitHub release page).
-> v0.3 Stage 13 completed mid-session 7 (2026-04-22): tag target committed, `v0.3` tag cut + pushed, GitHub release opened, post-release HANDOFF/dev_history entries landed. See `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + CHANGELOG `[0.3.0] - 2026-04-22`.
+> Copy and paste this at the start of your next Claude session — **session 8 = v0.4 retrospective + simplification kickoff** (after v0.3 release is fully landed on origin + GitHub release page).
+> v0.3 Stage 13 completed mid-session 7 (2026-04-22): tag target committed, `v0.3` tag cut, post-release + v0.4-redefinition entries landed. See `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + Entry 3.16 + CHANGELOG `[0.3.0] - 2026-04-22` + CHANGELOG `[Unreleased]` "Planned for v0.4" / "Planned for v0.5".
 >
-> **v0.4 backlog (seeded from v0.3 CHANGELOG `[Unreleased]` + `[0.3.0]` "Deferred to v0.4"):**
-> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 hygiene; pick the current HANDOFF triple at v0.4 Stage 1).
+> **v0.4 scope (redefined 2026-04-23, session 7 close): retrospective + simplification — meta release, no feature adds.** Deliverable shape (tentative): one brainstorm + one simplification proposal doc; minimal code changes; no new bundles.
+>
+> **v0.5 backlog (inherited from original v0.3 Stage 13 deferrals; re-evaluated after v0.4 simplification decisions):**
+> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 hygiene; pick the current HANDOFF triple at v0.5 Stage 1).
 > 2. `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh of D4.x2/x3/x4 (AC.B1.8 tightening).
 > 3. Install `shellcheck` in the Linux CI runner; replace `sh -n` + `dash -n` proxy in `release_checklist.md` Sec. 1.1 row 1.f.
-> 4. Automate mac-side CI (`bash tests/bundle1/run_bundle1.sh`, `sh tests/run_bundle4.sh`, `shellcheck -S style scripts/update_handoff.sh`) so future Stage 13 cuts don't need an operator paste.
-> 5. Bundle 2 (metadata-refinement, goals 1/2/3) and Bundle 3 (codex-handoff-UX, goals 4/6/8) — re-scope based on v0.3 real-world use.
-> 6. Move the v0.2-compatibility `§` section-sign off canonical prompt templates (kept verbatim for v0.2 cross-version use during v0.3).
+> 4. Automate mac-side CI so future Stage 13 cuts don't need an operator paste.
+> 5. Bundle 2 (metadata-refinement, goals 1/2/3) and Bundle 3 (codex-handoff-UX, goals 4/6/8) — re-scope based on v0.3 real-world use, behind v0.4 simplification decisions.
+> 6. Move the v0.2-compatibility `§` section-sign off canonical prompt templates.
+> 7. UI base-only policy sunset anchor (per v0.3 brainstorm Sec. 9: v0.5 or first downstream `has_ui=true`, whichever first).
 
 ```
-Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 under single joint tag per M.6.
+Start v0.4 — retrospective + simplification. jDevFlow v0.3 released 2026-04-22 under single joint tag per M.6.
+
+v0.4 is deliberately a META release: no new bundles, no new features. The working hypothesis is that
+v0.3 became heavier than a "make projects easier" template should be. v0.4 retrospects the concrete
+friction and proposes simplifications. v0.5 carries the original v0.4 feature backlog (see
+CHANGELOG.md `[Unreleased]` "Planned for v0.5").
 
 Read first, in order:
 1. CLAUDE.md
-2. HANDOFF.md — confirm "v0.3 released; v0.4 planning open" status line and Recent Changes Stage 13 post-release entry
-3. WORKFLOW.md (skim Sec. 1–3 + Sec. 4 mode-selection for v0.4 mode choice)
-4. CHANGELOG.md `[Unreleased]` CI/infra + `[0.3.0]` "Deferred to v0.4" + v0.3 HANDOFF Next Session Prompt v0.4 backlog
-5. docs/notes/dev_history.md Entry 3.14 + Entry 3.15 (Stage 13 close + post-release)
-6. docs/notes/final_validation.md (group 1 approval carry-forward)
+2. HANDOFF.md — confirm "v0.4 = retrospective + simplification" status line and the 2026-04-23 Recent Changes entry
+3. CHANGELOG.md `[Unreleased]` "Planned for v0.4" + "Planned for v0.5" (reindex explanation at bottom of `[Unreleased]`)
+4. docs/notes/dev_history.md Entry 3.15 + Entry 3.16 (v0.3 post-release + v0.4 redefinition)
+5. docs/01_brainstorm/brainstorm.md (v0.3 brainstorm — to be revisited for UI policy + base-only sunset)
+6. docs/02_planning/plan_final.md (v0.3 plan_final — to be retrospected against)
 
 Project path: ~/projects/Jonelab_Platform/jDevFlow/
-Mode: TBD — decide at Stage 1 brainstorm (probably Standard or Strict-hybrid depending on whether Bundles 2/3 land together with doc/CI hardening)
-Validation group 2 candidates: Bundle 2 (metadata-refinement), Bundle 3 (codex-handoff-UX), plus Doc/CI v0.4 items above.
+Mode: TBD at v0.4 Stage 1 — likely lighter than Strict-hybrid (this is literally what the release is evaluating).
+Validation group: probably 1 (a single meta bundle). M.1/M.3/M.5/M.6 applicability is one of the things under retrospect.
 
-Stage 1 brainstorm task:
-- Decide v0.4 mode + bundles + validation groups (re-scope Bundles 2/3 from v0.2/v0.3 deferrals; assess whether to fold Doc/CI hardening into Bundle 4-equivalent).
-- Rank the six v0.4 backlog items above; pin a v0.4 release date target.
-- Record `has_ui`, `risk_level`, and (if the UI base-only policy from v0.3 brainstorm is revisited) the UI decision per plan_final.
+Stage 1 brainstorm task for v0.4:
+- Open the retrospective. Start by answering the three discovery questions deferred from session 7 close:
+  A. Top 1–3 friction points from the v0.3 build (candidates include: 13-stage count, R4 EN+KO ≤1-day sync, joint validation gates + M.1/M.3/M.5/M.6, Stage 11 fresh-session requirement, AC cross-bundle matrices, D4.x frontmatter rules, release_checklist + dev_history + HANDOFF + CHANGELOG quadruple-update burden, dual-language dogfooding, SKILL.md R2 read-only invariant).
+  B. Target difficulty for the "default mode" — Light / Default / current Strict.
+  C. v0.4's own progression mode — α (full 13-stage, changes land in v0.5), β (simplify live from Stage 2 onward), γ (keep 1/2/12/13 intact, compress 3–11).
+- Record the retrospective findings + proposed simplifications in a new `docs/01_brainstorm_v0.4/` (or equivalent) doc structure.
+- Decide whether v0.4 itself should pilot any simplifications (mode β or γ).
 
-Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
+Language policy: EN primary + KO pair — BUT one of the retrospective items is "is R4 ≤1-day the right default?" so the policy itself may shift during v0.4.
 Session-close git policy: CLAUDE.md subsection applies.
 ```
 
-> **Interim (still session 7): tag + push + post-release commit pending.** If session 7 ends before those steps complete, the next Claude session should resume from `release_checklist.md` Sec. 4–6 (repo hygiene + tag mechanics + post-release) rather than opening v0.4 planning. In that case use the old Stage 13 resume prompt (preserved in git history at commit `08a43fd`'s `HANDOFF.md` Sec. "Next Session Prompt" on the EN side) instead of the above v0.4 kickoff block.
+> **Interim (still session 7): tag + push + post-release + v0.4-redefinition commits pending push.** If session 7 ends before push completes, session 8 should still open with the retrospective scope above; the push is a pure operator-side action that does not block the Claude-side retrospective.
 
 ---
 ---
@@ -239,10 +251,10 @@ Session-close git policy: CLAUDE.md subsection applies.
 
 ## 현재 상태
 
-**현재 버전:** v0.3 released; v0.4 planning open
-**마지막 업데이트:** 2026-04-22 (UTC)
-**워크플로우 모드:** Strict-hybrid
-**현재 단계:** Stage 13 ✅ **v0.3 released; v0.4 planning open** (M.6 에 따른 단일 공동 태그, 2026-04-22 UTC, 세션 7). 태그 오브젝트 SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → 커밋 `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (태그 대상 = Stage 13 릴리스 준비; 부모 = `08a43fd` Stage 12 close). **Push + GitHub 릴리스 는 운영자 대기** (샌드박스에 git 크레덴셜 없음 — 운영자가 `git push origin main && git push origin v0.3` 후 `gh release create v0.3 -F <[0.3.0] 본문>` 혹은 GitHub UI; `docs/05_qa_release/release_checklist.md` Sec. 5.1 step 3/4 참조). CI 매트릭스 Linux 사이드 green (bundle1 10/10, bundle4 4/4, shellcheck 프록시 `sh -n` + `dash -n` + `bash -n` 전부 exit 0; 실제 `shellcheck` 는 v0.4 로 연기). Mac CI 행 (1.g–1.i) 은 사용자의 Stage 13 패턴-1 방향에 따라 비동기 operator-paste; v0.4 자동화. H1–H4 PASS; F1–F6 절차 current. has_ui=false; risk_level=medium.
+**현재 버전:** v0.3 released; **v0.4 = 회고 + 단순화** (메타 릴리스, 신규 번들 없음); 기능 백로그는 v0.5 로 reindex
+**마지막 업데이트:** 2026-04-23 (UTC)
+**워크플로우 모드:** Strict-hybrid (v0.3 close 기준; v0.4 모드는 자체 Stage 1 에서 결정)
+**현재 단계:** Stage 13 ✅ **v0.3 released; v0.4 는 회고/단순화 릴리스로 재정의** (M.6 에 따른 단일 공동 태그, 2026-04-22 UTC, 세션 7; v0.4 재정의는 세션 7 close, 2026-04-23 UTC). 태그 오브젝트 SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → 커밋 `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (태그 대상 = Stage 13 릴리스 준비; 부모 = `08a43fd` Stage 12 close). **Push + GitHub 릴리스 는 운영자 대기** (샌드박스에 git 크레덴셜 없음 — 운영자가 `git push origin main && git push origin v0.3` 후 `gh release create v0.3 -F <[0.3.0] 본문>` 혹은 GitHub UI; `docs/05_qa_release/release_checklist.md` Sec. 5.1 step 3/4 참조). CI 매트릭스 Linux 사이드 green (bundle1 10/10, bundle4 4/4, shellcheck 프록시 `sh -n` + `dash -n` + `bash -n` 전부 exit 0; 실제 `shellcheck` 는 v0.4 로 연기). Mac CI 행 (1.g–1.i) 은 사용자의 Stage 13 패턴-1 방향에 따라 비동기 operator-paste; v0.4 자동화. H1–H4 PASS; F1–F6 절차 current. has_ui=false; risk_level=medium.
 > ℹ️ **세션-종료 git 정책.** 세션 7 종료 시 사용자에게 지금 본인 로컬 셸에서 태그+GitHub 릴리스를 푸시할지, defer 할지 질문. Defer 시 태그+커밋은 `main` 의 `ebb1e98` 및 태그 `v0.3 → f2069cf` 로 다음 세션까지 로컬 유지.
 **has_ui:** false
 **risk_level:** medium
@@ -298,16 +310,16 @@ Session-close git policy: CLAUDE.md subsection applies.
 
 ### ⏭️ 다음 (운영자 사이드, 혹은 다음 세션)
 1. **태그+커밋을 origin 에 push** (운영자, 로컬 셸):
-   - `git push origin main` (`d453ea1` → `08a43fd` → `ebb1e98` 푸시).
-   - `git push origin v0.3` (annotated 태그 `f2069cf` 푸시).
+   - `git push origin main` (`d453ea1` → `08a43fd` → `ebb1e98` → `032a095` → 세션 7 close 에서 만든 v0.4-재정의 커밋까지 푸시).
+   - `git push origin v0.3` (annotated 태그 `f2069cf` 푸시; 태그는 여전히 `ebb1e98` 에 고정).
 2. **GitHub 릴리스 오픈** (운영자):
    - 선호: `gh release create v0.3 -F <(awk '/^## \[0.3.0\]/,/^## \[Unreleased\]/' CHANGELOG.md | head -n -2)`
    - Fallback: GitHub UI → Releases → Draft new release → 태그 `v0.3` → 본문 = `CHANGELOG.md` `[0.3.0]` 섹션.
-3. **Mac CI 페이스트 (비동기).** 운영자가 release_checklist.md Sec. 1.1 1.g / 1.h / 1.i 행 mac 결과 페이스트. 사용자의 Stage 13 패턴-1 방향에 따라 페이스트는 비동기; v0.4 자동화.
-4. **v0.4 planning kickoff** (다음 Claude 세션 — 세션 8). 아래 다음 세션 시작 프롬프트 블록 사용 ("Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 …"); 6 항목 v0.4 백로그는 이미 seed.
+3. **Mac CI 페이스트 (비동기).** 운영자가 release_checklist.md Sec. 1.1 1.g / 1.h / 1.i 행 mac 결과 페이스트. 사용자의 Stage 13 패턴-1 방향에 따라 비동기; 자동화는 v0.5 (v0.4 는 메타 릴리스이므로 포함하지 않음).
+4. **v0.4 회고/단순화 kickoff** (다음 Claude 세션 — 세션 8). **v0.4 는 기능 릴리스가 아니라 메타(회고+단순화) 릴리스**. 아래 다음 세션 시작 프롬프트 블록 사용 ("Start v0.4 — retrospective + simplification …"). 기존 6 항목 v0.4 기능 백로그는 v0.5 로 reindex 되어 CHANGELOG.md `[Unreleased]` "Planned for v0.5" 에 surface.
 
 ### 🚧 차단 요인
-- 없음. v0.3 는 로컬 완료. Push 와 GitHub 릴리스는 운영자 액션; Claude 사이드에서는 운영자가 push 하면 v0.4 planning 을 차단하는 요인 없음.
+- 없음. v0.3 는 로컬 완료. Push 와 GitHub 릴리스는 운영자 액션; Claude 사이드에서는 운영자가 push 하면 v0.4 회고를 차단하는 요인 없음.
 
 ---
 
@@ -326,6 +338,7 @@ Bundle 2·3는 v0.4로 이월.
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-23 | **v0.4 를 회고 + 단순화 릴리스로 재정의; v0.5 가 기존 v0.4 백로그 인계** (세션 7 close, 사용자 방향). 배경: v0.3 dogfooding 결과, "프로젝트를 쉽게 진행하기 위한 템플릿"이 13 stages × 2 bundles × EN+KO × joint validation 게이트 × D4.x 프론트매터 × 이중 하네스로 무거워졌다는 문제 제기. v0.4 는 이제 (a) v0.3 의 구체적 마찰점 회고 + (b) 워크플로우 자체의 단순화 제안 — 신규 번들 없음, 기능 추가 없음. 기존 6 항목 v0.4 백로그 (SKILL.md live-triple 갱신, tech_design Sec. 0 갱신, shellcheck 설치, mac CI 자동화, Bundle 2/3 re-scope, `§` 제거) 는 `CHANGELOG.md [Unreleased]` "Planned for v0.5" 로 reindex. v0.5 는 v0.3 brainstorm Sec. 9 의 UI base-only sunset 기본 앵커 역할도 동시에 수행. 상태 라인 flip; 다음 세션 시작 프롬프트를 v0.4 회고 모드로 재작성 (A/B/C discovery 질문은 세션 8 오픈 시 답변). |
 | 2026-04-22 | **v0.3 released (세션 7 종료)** — plan_final M.6 에 따른 단일 공동 태그. Annotated 태그 `v0.3` 로컬 생성: 태그 오브젝트 SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → 커밋 `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f` (Stage 13 릴리스 준비). Push + GitHub 릴리스 생성은 운영자 로컬 셸 대기 (샌드박스에 git 크레덴셜 없음). Post-release 산출물 랜딩: HANDOFF.md 상태 라인 → "v0.3 released; v0.4 planning open" + bundles YAML `stage: released` (EN + KO); `docs/notes/dev_history.{md,ko.md}` Entry 3.15 실제 태그 SHA 와 함께 (개정 로그 v1.8); `docs/05_qa_release/release_checklist.{md,ko.md}` Sec. 4–7 tick + Sec. 5.1 실행 로그 push-pending 메모 + status frontmatter `in_progress → signed_off`. v0.4 백로그 (6 항목) 는 HANDOFF 다음 세션 시작 프롬프트 + CHANGELOG `[Unreleased]` CI/infra 서브섹션에 seed. 세션-종료 git 정책 질문: 지금 푸시 / defer. |
 | 2026-04-22 | **Stage 13 릴리스 준비 + 태그 대상 커밋** (세션 7, UTC). Stage 12 close 커밋 `08a43fd` 가 태그 후보의 부모로 서빙. CI 매트릭스 Linux 사이드 green (bundle1 10/10, bundle4 4/4, shellcheck 프록시 `sh -n` + `dash -n` + `bash -n` 전부 exit 0). QA 게이트 H1–H4 PASS + F1–F6 절차 current 확인. 문서 게이트: `CHANGELOG.md` `[0.3.0] - 2026-04-22` 확정 및 `[Unreleased]` 를 빈 stub + CI/infra v0.4 백로그 seed (shellcheck 설치 + mac CI 자동화) 로 리셋; `docs/05_qa_release/release_checklist.md` (+ `.ko.md`) Sec. 1.1 결과 레저 채움 + Sec. 2–3 체크박스 tick; `HANDOFF.md` 양 섹션 + `docs/notes/dev_history.md` (+ `.ko.md`) Entry 3.14 추가. Mac CI 행 (1.g–1.i) 은 사용자의 "패턴 1 + 나중에 개선" 방향에 따라 operator-paste 로 캡처; 자동화는 v0.4. 태그 대상 커밋 = `ebb1e98` (6 파일, +221/−158). |
 | 2026-04-22 | **Stage 12 close 커밋** `08a43fd` — 세션 6 의 defer 선택을 세션 7 시작 시 해소. 12 파일 번들 (+1050/−93): `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. 부모 `d453ea1`. Inline `git -c user.name/email` 플래그 사용. |
@@ -376,39 +389,49 @@ Bundle 2·3는 v0.4로 이월.
 
 ## 📋 다음 세션 시작 프롬프트
 
-> 다음 Claude 세션 시작 시 복사해서 붙여넣으세요 — **세션 8 = v0.4 planning kickoff** (v0.3 릴리스가 origin + GitHub 릴리스 페이지에 완전히 랜딩된 후).
-> v0.3 Stage 13 은 세션 7 중반에 완료 (2026-04-22): 태그 대상 커밋, `v0.3` 태그 cut + push, GitHub 릴리스 오픈, post-release HANDOFF/dev_history 엔트리 랜딩. `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + CHANGELOG `[0.3.0] - 2026-04-22` 참조.
+> 다음 Claude 세션 시작 시 복사해서 붙여넣으세요 — **세션 8 = v0.4 회고 + 단순화 kickoff** (v0.3 릴리스가 origin + GitHub 릴리스 페이지에 완전히 랜딩된 후).
+> v0.3 Stage 13 은 세션 7 중반에 완료 (2026-04-22): 태그 대상 커밋, `v0.3` 태그 cut, post-release + v0.4-재정의 엔트리 랜딩. `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + Entry 3.16 + CHANGELOG `[0.3.0] - 2026-04-22` + CHANGELOG `[Unreleased]` "Planned for v0.4" / "Planned for v0.5" 참조.
 >
-> **v0.4 백로그 (v0.3 CHANGELOG `[Unreleased]` + `[0.3.0]` "Deferred to v0.4" 로부터 seed):**
-> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 위생; v0.4 Stage 1 에서 현재 HANDOFF triple 선택).
+> **v0.4 범위 (2026-04-23 세션 7 close 재정의): 회고 + 단순화 — 메타 릴리스, 기능 추가 없음.** 산출물 형태 (잠정): 브레인스토밍 1건 + 단순화 제안 문서 1건; 코드 변경 최소; 신규 번들 없음.
+>
+> **v0.5 백로그 (v0.3 Stage 13 이월에서 승계; v0.4 단순화 결정 이후 재평가):**
+> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 위생; v0.5 Stage 1 에서 현재 HANDOFF triple 선택).
 > 2. `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh (D4.x2/x3/x4) — AC.B1.8 tightening.
-> 3. Linux CI 러너에 `shellcheck` 설치; `release_checklist.md` Sec. 1.1 1.f 행 `sh -n` + `dash -n` 프록시 교체.
-> 4. mac 사이드 CI (`bash tests/bundle1/run_bundle1.sh`, `sh tests/run_bundle4.sh`, `shellcheck -S style scripts/update_handoff.sh`) 자동화 — 향후 Stage 13 cut 시 운영자 페이스트 불필요.
-> 5. Bundle 2 (metadata-refinement, goals 1/2/3) + Bundle 3 (codex-handoff-UX, goals 4/6/8) — v0.3 실사용 결과 기반 re-scope.
-> 6. Canonical 프롬프트 템플릿에서 v0.2-호환 `§` 섹션 기호 제거 (v0.3 기간에는 v0.2 cross-version 사용을 위해 verbatim 보존).
+> 3. Linux CI 러너에 `shellcheck` 설치; `release_checklist.md` Sec. 1.1 1.f 행 프록시 교체.
+> 4. mac 사이드 CI 자동화 — 향후 Stage 13 cut 시 운영자 페이스트 불필요.
+> 5. Bundle 2 (metadata-refinement, goals 1/2/3) + Bundle 3 (codex-handoff-UX, goals 4/6/8) — v0.3 실사용 + v0.4 단순화 결정 기반 re-scope.
+> 6. Canonical 프롬프트 템플릿에서 v0.2-호환 `§` 섹션 기호 제거.
+> 7. UI base-only sunset 앵커 (v0.3 brainstorm Sec. 9: v0.5 또는 첫 downstream `has_ui=true` 중 먼저).
 
 ```
-Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 under single joint tag per M.6.
+Start v0.4 — retrospective + simplification. jDevFlow v0.3 released 2026-04-22 under single joint tag per M.6.
 
-Read first, in order:
+v0.4 는 의도적으로 META 릴리스입니다: 신규 번들 없음, 신규 기능 없음. 작업 가설: v0.3 이
+"프로젝트를 쉽게 진행하기 위한 템플릿" 이라기엔 너무 무거워졌다. v0.4 는 구체적 마찰을 회고하고
+단순화 제안을 낸다. v0.5 가 기존 v0.4 기능 백로그를 승계 (CHANGELOG.md `[Unreleased]` "Planned for v0.5").
+
+읽기 순서:
 1. CLAUDE.md
-2. HANDOFF.md — confirm "v0.3 released; v0.4 planning open" status line and Recent Changes Stage 13 post-release entry
-3. WORKFLOW.md (skim Sec. 1–3 + Sec. 4 mode-selection for v0.4 mode choice)
-4. CHANGELOG.md `[Unreleased]` CI/infra + `[0.3.0]` "Deferred to v0.4" + v0.3 HANDOFF Next Session Prompt v0.4 backlog
-5. docs/notes/dev_history.md Entry 3.14 + Entry 3.15 (Stage 13 close + post-release)
-6. docs/notes/final_validation.md (group 1 approval carry-forward)
+2. HANDOFF.md — "v0.4 = 회고 + 단순화" 상태 라인 + 2026-04-23 최근 변경 항목 확인
+3. CHANGELOG.md `[Unreleased]` "Planned for v0.4" + "Planned for v0.5" (리인덱스 사유 하단)
+4. docs/notes/dev_history.md Entry 3.15 + Entry 3.16 (v0.3 post-release + v0.4 재정의)
+5. docs/01_brainstorm/brainstorm.md (v0.3 브레인스토밍 — UI 정책 + base-only sunset 재검토 대상)
+6. docs/02_planning/plan_final.md (v0.3 plan_final — 회고 기준선)
 
-Project path: ~/projects/Jonelab_Platform/jDevFlow/
-Mode: TBD — Stage 1 브레인스토밍에서 결정 (Bundles 2/3 를 Doc/CI 강화와 함께 내릴지에 따라 Standard 혹은 Strict-hybrid)
-Validation group 2 후보: Bundle 2 (metadata-refinement), Bundle 3 (codex-handoff-UX), 및 위 Doc/CI v0.4 항목.
+프로젝트 경로: ~/projects/Jonelab_Platform/jDevFlow/
+모드: v0.4 Stage 1 에서 결정 — 아마도 Strict-hybrid 보다 가벼움 (이 릴리스가 평가하려는 주제 그 자체).
+Validation group: 메타 번들 단독 1 개일 가능성. M.1/M.3/M.5/M.6 적용 여부 자체가 회고 대상.
 
-Stage 1 브레인스토밍 태스크:
-- v0.4 모드 + 번들 + validation group 결정 (v0.2/v0.3 에서 이월된 Bundles 2/3 re-scope; Doc/CI 강화를 Bundle 4-equivalent 로 묶을지 평가).
-- 위 6 개 v0.4 백로그 항목 우선순위 매기기; v0.4 릴리스 날짜 타깃 pin.
-- `has_ui`, `risk_level` 기록; v0.3 브레인스토밍의 UI base-only 정책을 재검토한다면 plan_final 에 따른 UI 결정 기록.
+v0.4 Stage 1 브레인스토밍 과제:
+- 회고 개시. 세션 7 close 에서 deferred 된 3 개 discovery 질문에 먼저 응답:
+  A. v0.3 빌드의 top 1–3 마찰점 (후보: 13-stage 수, R4 EN+KO ≤1일 동기화, joint validation + M.1/M.3/M.5/M.6, Stage 11 fresh-session, AC cross-bundle 매트릭스, D4.x 프론트매터, release_checklist + dev_history + HANDOFF + CHANGELOG 4 중 갱신 부담, 이중 언어 dogfooding, SKILL.md R2 읽기 전용 불변식).
+  B. "기본 모드" 목표 난이도 — Light / Default / 현재 Strict.
+  C. v0.4 자체 진행 모드 — α (13-stage 완전, 변경은 v0.5 에서 반영), β (Stage 2 부터 라이브로 단순화), γ (1/2/12/13 만 유지, 3–11 압축).
+- 회고 결과 + 단순화 제안을 새로운 `docs/01_brainstorm_v0.4/` (혹은 등가) 문서 구조에 기록.
+- v0.4 자체가 단순화 실험을 파일럿 할지 결정 (모드 β 혹은 γ).
 
-Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
-Session-close git policy: CLAUDE.md subsection applies.
+언어 정책: EN primary + KO pair — 단, "R4 ≤1일이 올바른 기본값인가?" 자체가 회고 항목이므로 v0.4 진행 중 정책이 바뀔 수 있음.
+세션 종료 git 정책: CLAUDE.md 서브섹션 적용.
 ```
 
-> **Interim (여전히 세션 7): 태그 + 푸시 + post-release 커밋 대기.** 세션 7 이 그 단계가 완료되기 전에 종료되면, 다음 Claude 세션은 위의 v0.4 kickoff 블록 대신 `release_checklist.md` Sec. 4–6 (리포 위생 + 태그 메커닉 + post-release) 에서 재개. 이 경우 커밋 `08a43fd` 의 `HANDOFF.md` EN "Next Session Prompt" 섹션에 git 히스토리로 보존된 이전 Stage 13 재개 프롬프트 사용.
+> **Interim (여전히 세션 7): 태그 + 푸시 + post-release + v0.4-재정의 커밋 모두 로컬. 푸시 대기.** 세션 7 이 푸시 전에 종료돼도 세션 8 은 위 회고 범위로 그대로 오픈; 푸시는 순수 운영자 액션이며 Claude 사이드 회고를 차단하지 않음.

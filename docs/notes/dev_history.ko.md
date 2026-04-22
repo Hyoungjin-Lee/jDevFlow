@@ -355,6 +355,30 @@
 
 ---
 
+### Entry 3.16 — v0.4 를 회고 + 단순화 릴리스로 재정의; v0.5 가 기존 v0.4 백로그 승계
+
+- **Stage:** housekeeping (세션 7 close, 사용자 방향 범위 변경).
+- **Owner:** Claude + user.
+- **Input:** 세션 7 close 에서 사용자의 문제 제기 — "프로젝트를 쉽게 진행하기 위해 만든 템플릿인데, 사용이 너무 복잡해지고 있다". v0.3 의 7 세션 빌드 (13 stages × 2 bundles × EN+KO 페어 × validation groups × M.1/M.3/M.5/M.6 게이트 × AC cross-bundle 매트릭스 × D4.x 프론트매터 × R4 ≤1일 freshness × R2 읽기 전용 불변식 × 이중 하네스 × release_checklist + dev_history + HANDOFF + CHANGELOG 4중 문서 갱신) 를 dogfooding 증거로 제시 — self-reflexive 역설: jDevFlow 로 jDevFlow 를 만드는 것이 무거웠다.
+- **결정 (명시적 사용자 지시):**
+  1. v0.3 리모트 push 는 운영자가 로컬 셸에서 실행 (세션 7 close 에 통합 push 명령 전달).
+  2. **기존 v0.4 의 6 항목 백로그를 v0.5 로 reindex.** 원래 항목: SKILL.md Sec. 6 live-triple refresh; `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh; Linux CI shellcheck 설치; mac 사이드 CI 자동화; Bundle 2 + Bundle 3 re-scope; canonical 프롬프트 템플릿에서 `§` 섹션 기호 제거.
+  3. **v0.4 는 회고 + 단순화 릴리스로 재정의** — 메타 범위, 신규 번들 없음, 기능 추가 없음. v0.4 의 역할은 (a) v0.3 빌드의 구체적 마찰점 catalogue, (b) 워크플로우 자체의 단순화 제안. 산출물 형태 (잠정): 브레인스토밍 1 건 + 단순화 제안 문서 1 건; 코드 변경 최소; 신규 번들 없음.
+- **Output (이 step 에서 랜딩한 artefacts):**
+  - `CHANGELOG.md` `[Unreleased]`: CI/infra 섹션을 "Planned for v0.5" 로 리네임 + 6 항목 인계 + 7 번째 항목 (UI base-only sunset 앵커, v0.3 brainstorm Sec. 9) 추가. 상단에 새 "Planned for v0.4 (retrospective + simplification release — meta scope, no feature adds)" 블록 추가. `[0.3.0]` 섹션의 "Deferred to v0.4" 헤더를 "Deferred to v0.5 (originally queued for v0.4; reindexed 2026-04-23 when v0.4 was redefined)" 로 리네임.
+  - `HANDOFF.md` (EN + KO): Status 라인을 "v0.3 released; v0.4 = 회고 + 단순화; 기능 백로그는 v0.5 로 reindex" 로 갱신; 마지막 업데이트 2026-04-23; 다음 세션 시작 프롬프트 (양 언어) 를 기능 계획 모드에서 회고 모드로 재작성 — v0.5 백로그 (7 항목), v0.4 범위 선언, 이번 세션 close 에서 deferred 된 A/B/C discovery 질문 포함. Recent Changes 상단 2026-04-23 엔트리 추가 (EN + KO).
+  - `docs/notes/dev_history.md` (+ `.ko.md`): 이 Entry 3.16 추가; 개정 로그 → v1.9.
+- **v0.4 가 메타가 아닌 기능 릴리스가 되지 않는 근거:** v0.3 dogfooding 이 자체 반증을 만들어냄 — "프로젝트를 쉽게" 하는 템플릿이 7 세션, 13 stages, 4 개 동기화 문서, 이중 언어 페어를 써서 자신을 릴리스한다면 이미 증상이다. 기존 6 항목 백로그로 v0.4 에 바로 진입하면 root cause 진단 없이 scope 만 쌓인다. 따라서 v0.4 는 introspection + 단순화 제안에 투입; v0.5 가 (바라건대) 더 가벼운 베이스 위에서 기능 작업을 재개.
+- **비결정 사항 (세션 8 오픈으로 명시 이월):**
+  - A. v0.3 의 top 1–3 마찰점 (후보는 HANDOFF 다음 세션 시작 프롬프트에 열거).
+  - B. "기본 모드" 목표 난이도 (Light / Default / 현재 Strict).
+  - C. v0.4 자체 진행 모드 (α = 13-stage 완전, 변경은 v0.5 에서 반영 / β = Stage 2 부터 라이브 단순화 / γ = 1/2/12/13 유지 + 3–11 압축).
+- **판정:** 범위 변경 기록; artefacts 가 CHANGELOG + HANDOFF + dev_history (EN + KO) 에 동기화; v0.3 태그는 `ebb1e98` 에 고정 유지 (태그 SHA `f2069cf`); 이 엔트리는 `main` 의 `032a095` (post-release) 이후 새 커밋에 랜딩. 문서 대규모 편집 후 양 하네스 재실행 green 으로 구조 regression 없음 확인.
+- **재진입:** 없음 — 세션 8 은 v0.4 회고로 바로 진입.
+- **세션 종료 사유:** 사용자가 오늘 세션을 v0.3 close 경계에서 끝내기를 요청; 회고 discovery (A/B/C 응답) 는 세션 8 오픈에서 개시.
+
+---
+
 ## Entry 템플릿 (향후 세션용)
 
 ```markdown
@@ -384,4 +408,5 @@
 | 2026-04-22 | v1.5 — Stage 11 joint validation 종료 (Entry 3.12) | Entry 3.12 추가 — 그룹 판정 APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 모두 APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 가 D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved) 와 함께 발행. Cross-bundle 검증: AC.B4.10 verbatim 일치 문자 단위 확인; AC.B4.11 구조상 vacuous; KO freshness 7 페어 / 0 일 델타 독립 재검증. Bundle 1 의 non-blocking 4 건 + Bundle 4 의 3 건 을 Stage 12 housekeeping 으로 forward. HANDOFF.md 갱신 (bundles stage 9→11, verdict minor 이월, Recent Changes 그룹 단위 노트, Next Session Prompt 를 Stage 12 kickoff 로 전환). EN 페어 동시 갱신. |
 | 2026-04-22 | v1.6 — Stage 12 QA & Release prep 종료 (Entry 3.13) | Entry 3.13 추가 — Stage 11 과 동일 세션 6 연속. 새 산출물: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy-path + F1–F6 failure/edge), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 gate, 0–8 절), `prompts/claude/v03/stage12_qa_release_prompt.md` (Stage 12 kickoff), `CHANGELOG.md` `[0.3.0]` 섹션 (TBD 날짜). On-tree 해소된 housekeeping: `tests/bundle1/run_bundle1.sh` 의 `rg` → `grep -E` 스왑 (POSIX cleanliness), `implementation_progress.md` + `.ko.md` 의 AC.B1.6/B1.8 라벨 스왑. v0.4 로 deferred: SKILL.md Sec. 6 live tool-picker triple, tech_design Sec. 0 verbatim refresh, CI matrix (mac + Linux), Bundle 4 non-blocking #3 (atomicity 문서화). 양 하네스 green (Bundle 1 10/10, Bundle 4 4/4). HANDOFF.md 갱신 (bundles stage 11→12, Next Session Prompt 를 Stage 13 tag kickoff 로 전환). Stage 11 close commit `d453ea1` 가 prerequisite. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.7 — Stage 13 릴리스 준비 + 태그 대상 (Entry 3.14) | Entry 3.14 추가 — 세션 7, Stage 13 릴리스-태그 메커닉. Pre-flight: Stage 12 close 커밋 `08a43fd` (12 파일, +1050/−93, 부모 `d453ea1`). CI 매트릭스 Linux 사이드 (release_checklist.md Sec. 1.1): 행 1.a–1.e 전부 green (하네스 + `sh -n` + `dash -n` + `bash -n` 프록시); 행 1.f 실제 `shellcheck` 사용 불가, `CHANGELOG.md` `[Unreleased]` CI/infra 블록에 v0.4 백로그 seed; 행 1.g–1.i mac operator-paste 는 사용자의 Stage 13 패턴-1 방향. QA 게이트: H1–H4 inline 증거와 함께 PASS; F1–F6 current. 문서 게이트: `CHANGELOG.md` `[0.3.0] - TBD` → `[0.3.0] - 2026-04-22` 확정; `[Unreleased]` stub 리셋 + CI/infra v0.4 백로그 seed. `release_checklist.md` (+ `.ko.md`) version 1→2, status draft→in_progress, Sec. 1.1 결과 레저 채움, Sec. 2–3 체크박스 tick. `HANDOFF.md` (EN + KO) Status 라인을 "Stage 13 태그 대상 커밋됨" 으로 flip, bundles YAML `stage 12→13`, 완료 리스트 +4 엔트리, Recent Changes 상단 2 엔트리, Next Session Prompt 를 v0.4 planning kickoff (6 항목 백로그 + fallback) 로 재작성. 세션-요약표 +4 행 (세션 4/5/6/7). |
+| 2026-04-23 | v1.9 — v0.4 를 회고 + 단순화 릴리스로 재정의 (Entry 3.16) | Entry 3.16 추가 — 세션 7 close, 사용자 방향 범위 변경. 기존 6 항목 v0.4 기능 백로그를 v0.5 로 reindex (SKILL.md Sec. 6 live-triple refresh, tech_design Sec. 0 verbatim-paste refresh, shellcheck 설치, mac CI 자동화, Bundle 2 + Bundle 3 re-scope, `§` 섹션 기호 제거) + 신규 7 번째 항목 (UI base-only sunset 앵커, v0.3 brainstorm Sec. 9). v0.4 를 메타 릴리스로 재정의: v0.3 dogfooding 마찰점 회고 + 워크플로우 단순화 제안; 신규 번들 없음, 기능 추가 없음. `CHANGELOG.md [Unreleased]` 는 "Planned for v0.4" 와 "Planned for v0.5" 블록 분리; `[0.3.0]` "Deferred to v0.4" → "Deferred to v0.5" 리네임. HANDOFF.md (EN + KO) Status 라인 + 다음 세션 시작 프롬프트 + Recent Changes 갱신; 마지막 업데이트 2026-04-23. 3 개 discovery 질문 (A: 주요 마찰점, B: 기본 모드 목표 난이도, C: v0.4 진행 모드) 은 이번 세션 close 에서 세션 8 오픈으로 이월. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.8 — Stage 13 post-release / v0.3 released (Entry 3.15) | Entry 3.15 추가 — 세션 7 연속. 태그 대상 커밋 `ebb1e98` (6 파일, +221/−158, 부모 `08a43fd`). Annotated 태그 `v0.3` 로컬 생성: 태그 오브젝트 SHA `f2069cfb7cbb041c125f885ed552aa06d66bb5b7` → 커밋 `ebb1e985dfeb3e53e75f281cd9588ea204af0b6f`. 리포 위생 tick (클린 트리, `.bak.*` 없음, 시크릿 없음). 샌드박스 push 시도 실패 (크레덴셜 없음) → release_checklist.md Sec. 5.1 에 따라 운영자 로컬 셸로 fallback. Post-release 산출물: HANDOFF.md (EN + KO) Status 라인 → "v0.3 released; v0.4 planning open", 양 번들 bundles YAML `stage: 13 → released`, Recent Changes 상단 신규 엔트리. `release_checklist.md` (+ `.ko.md`) Sec. 4 + Sec. 6 + Sec. 7 tick; Sec. 5.1 실행 로그 채움; frontmatter `version: 2→3`, `status: in_progress → signed_off`. v0.4 백로그는 이전 엔트리에서 이미 seed (추가 seed 없음). 운영자 사이드 잔여: `git push origin main && git push origin v0.3`; `gh release create v0.3` 혹은 GitHub UI. 세션-종료 git 정책 질문은 세션 종료 시 사용자 대화로 이관. |
