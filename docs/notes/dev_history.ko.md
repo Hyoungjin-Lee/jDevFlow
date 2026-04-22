@@ -230,6 +230,48 @@
 - **Stage 11 로 이월:** worked example 을 live Stage-2 트리플로 갱신 (Stage 11 산출물 생성 후); `tests/bundle1/run_bundle1.sh` 53 행의 `rg` 의존 — otherwise-POSIX 스크립트 안의 minor cross-platform-CI 이슈, Stage 11 mac + Linux 매트릭스로 이월.
 - **다음 세션:** Stage 10 Codex final review (`prompts/codex/final_review.md` 기반) 또는 곧바로 Stage 11 joint validation (fresh Claude 세션).
 
+### Entry 3.11 — Stage 11 prep housekeeping + session-close git policy 고정
+
+- **Stage:** 11-prep (Stage 9 마감과 Stage 11 fresh-session 진입 사이의 housekeeping).
+- **Owner:** Claude (세션 5 연속, DC.6 기준 QA-orchestrator 역할).
+- **Input:** 두 번들의 Stage 9 판정 (각 PASS — minor) + `prompts/claude/v03/stage11_joint_validation_prompt.md` Sec. "Pre-flight for the QA-orchestrator".
+- **Output (신규 3 + 수정 1):**
+  - `docs/notes/stage11_dossiers/bundle1_dossier.md` (신규, 135 줄) — DC.6 포맷, 7 섹션, ≤ 1 쪽 prose + pinned YAML / 결정 테이블 / grep / hook 블록을 key diff 로 고정.
+  - `docs/notes/stage11_dossiers/bundle4_dossier.md` (신규, 173 줄) — DC.6 포맷, 7 섹션, CLI 계약 + decisions 앵커 + CHANGELOG/CONTRIBUTING 스켈레톤 + Sec. 6 before→after 축약 diff 를 key diff 로 고정.
+  - `docs/notes/stage11_dossiers/ko_freshness.md` (신규) — KO-pair freshness 스크래치 표; Stage-5+ 과 Stage-1-4 페어 7 건 전부 0 일 델타 (`updated:` frontmatter + `git log -1` 날짜로 확인).
+  - `CLAUDE.md` (수정) — cross-tool handoff rule 근처 (라인 ~181) 에 "Session close — git policy" 서브섹션 신설. ask-first / verify-after 커밋 루프를 두 브랜치로 고정: (1) 지금 반영 → Claude 가 커밋 시도 또는 셸 블록 제시 후 `git log` 로 검증; (2) 보류 → HANDOFF.md 에 uncommitted 표면 기록, 다음 세션은 `git status` 먼저 확인.
+- **판정:** PASS (Stage 11 prep 완료; dossier 와 스크래치가 크기 예산 내; 테스트 하네스 재실행 green).
+- **Stage 10 처분:** **생략.** 두 번들 모두 Stage 9 PASS — minor 로 마감; WORKFLOW Sec. 10 은 Stage 10 진입 조건을 NEEDS REVISION 으로 게이트하므로 어느 번들도 해당되지 않음.
+- **신규 git policy 의 dogfooding:** 세션 5 종료 시점에 사용자가 branch 2 (보류) 선택. 정책에 따라 CLAUDE.md 편집은 on-disk uncommitted 로 유지; HANDOFF.md 의 Recent Changes + Status + Next-session 프롬프트에 이 사실을 명시해 Stage 11 세션이 `git status` 를 먼저 실행하도록 안내.
+- **Dossier 기록 시점 테스트 재실행:** `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS.
+- **Stage 11 로 이월:** 두 dossier 의 forward 리스트 (Bundle 1 의 POSIX 스크립트 내 `rg` + worked example 라이브 갱신; Bundle 4 의 `shellcheck -S style` + mac/Linux CI 매트릭스 + Stage 12 시점 CHANGELOG 0.3.0 엔트리).
+- **다음 세션:** **fresh Claude 세션** 에서 Stage 11 joint validation (M.3). Paste 블록은 HANDOFF.md Sec. "📋 다음 세션 시작 프롬프트" (표준 사본은 `prompts/claude/v03/stage11_joint_validation_prompt.md`).
+
+### Entry 3.12 — Stage 11 joint validation 마감 (APPROVED)
+
+- **Stage:** 11 (joint final validation, validation_group = 1).
+- **Owner:** Claude (세션 6, M.3 에 따른 새 세션 — 선행 채팅 컨텍스트 없음 확인).
+- **Input:** `CLAUDE.md`, `HANDOFF.md`, `WORKFLOW.md` (Sec. 14), `docs/02_planning/plan_final.md`, `docs/notes/stage11_dossiers/` 하위 3 개 dossier, `prompts/claude/final_review.md`, `prompts/claude/v03/stage11_joint_validation_prompt.md`.
+- **Output:** `docs/notes/final_validation.md` (EN, stage11_joint_validation_prompt Sec. "Output file format" 에 따른 7 섹션) + `final_validation.ko.md` (KO 페어, R4 에 따라 같은 세션). 두 파일 모두 D4.x2 frontmatter 소유 (`stage: 11`, `validation_group: 1`, `status: approved`).
+- **판정:** **APPROVED** (그룹, M.5 worst-of-two). Bundle 1 = APPROVED; Bundle 4 = APPROVED.
+- **Pre-flight 실행:**
+  - `git status` — 세션-5 uncommitted 표면 (`CLAUDE.md`, `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, 미추적 `docs/notes/stage11_dossiers/`) 을 인지된 상태로 포착.
+  - `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS.
+  - `sh tests/run_bundle4.sh` → 4/4 PASS.
+- **이번 단계 cross-bundle 검증:**
+  - **AC.B4.10** — `.skills/tool-picker/SKILL.md` 34–72 행은 `docs/notes/decisions.md` 24–62 행과 문자 단위 verbatim (ASCII dash `### D4.x2 - …` 헤더 동일, Decision/Scope/Rule/Rationale/Backlink 구조 동일, backlink 경로 동일). SKILL.md 30 행은 verbatim 인용 규칙도 명시. Cross-bundle 계약 유지.
+  - **AC.B4.11** — `grep -nE '\]\(' .skills/tool-picker/SKILL.md` 결과 0 매치; 스킬은 advisory 표면에서 Markdown 링크가 아니라 inline-code 표시 경로만 내보내므로 D4.x4 의 "no project-root-absolute, no file://, relative-to-current-file" 규칙은 구조상 vacuous. Verbatim 블록 내부의 backlink 는 이미 D4.x4 형식 (`../03_design/bundle4_doc_discipline/technical_design.md Sec. 0`).
+  - **D1.b ↔ D4.x2/x3/x4 파서 계약** — `tests/bundle4/test_04_frontmatter_and_stage1_4.sh` PASS (`tests/run_bundle4.sh` 4/4 의 일부) 로 Bundle 1 이 파싱하는 Stage-5+ frontmatter 형상이 여전히 안정임을 재확인.
+  - **KO freshness** — Stage-5+ 는 EN/KO `updated:` 필드, Stage 1–4 는 `git log -1` 로 7 쌍 독립 재조회; 전부 `2026-04-22` / 0 일 델타. 스크래치 `ko_freshness.md` 와 일치.
+- **Non-blocking forwards (Stage 12 housekeeping 대상):**
+  - Bundle 1: worked example live-state refresh (SKILL.md Sec. 6 합성 triple); `tests/bundle1/run_bundle1.sh` 53 행의 `rg` 의존성 (POSIX-clean 하게 `grep -E` 로 스왑하거나 CI 노트에 문서화); `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 표의 AC.B1.6 vs AC.B1.8 레이블 swap; AC.B1.8 의 tech_design Sec. 0 summary-vs-verbatim 위생 (SKILL.md 쪽은 verbatim, tech_design 쪽은 압축 불릿 — "no paraphrase" 조항 느슨한 준수).
+  - Bundle 4: CI 에서 `shellcheck -S style` (sandbox 는 설치 불가); mac + Linux CI 매트릭스 (AC.B4.13); `[0.3.0]` CHANGELOG 엔트리 (AC.B4.14, KaC v1.1.0 관행상 Stage 12 릴리스 시점 작성).
+- **HANDOFF.md 업데이트 기록:** `bundles[1].stage 9→11`, `bundles[4].stage 9→11`, 두 verdict `minor` 이월; Recent Changes 그룹 단위 엔트리 (Stage 11 APPROVED, M.5 outcome); Status 라인; Key Document Links 의 `final_validation.md` 행 ✅ 로 전환; Next Session Prompt 블록을 Stage 12 kickoff 로 교체; EN + KO 미러 모두 갱신.
+- **Dogfooding 메모:** 이번 세션에는 `scripts/update_handoff.sh` 를 사용하지 않음 — 업데이트가 bundles YAML, Next Session Prompt 재작성, Key Document Links, Recent Changes, Status 등 다수의 구조적 표면을 넘어 스크립트의 2-섹션 계약을 초과했기 때문. 수작업 단일 패스; 테스트 하네스 편집 전후 모두 green.
+- **세션-종료 git 정책 (CLAUDE.md):** 세션 6 종료 시 사용자에게 누적 uncommitted 작업 (세션 5 + 세션 6) 을 Stage 11 close 커밋으로 지금 묶을지, 보류할지 질문. 어느 쪽을 선택하든 결정은 세션 7 (Stage 12 kickoff) 로 이월.
+- **재진입:** 불필요 (그룹 APPROVED ⇒ Stage 4.5 루프 없음, Stage 10 회귀 없음). Stage 12 로 진행.
+- **다음 세션:** Stage 12 QA & Release prep (M.6 공동). Paste 블록은 HANDOFF.md Sec. "📋 다음 세션 시작 프롬프트" (Stage 12 kickoff, 지금 설치됨).
+
 ---
 
 ## Entry 템플릿 (향후 세션용)
@@ -257,3 +299,5 @@
 | 2026-04-22 | v1.1 — Stage 5 Bundle 4 종료 (Entry 3.7) | Stage 5 Bundle 4 기술 설계 (EN + KO 페어) Entry 3.7 추가. 세션 요약표 갱신. |
 | 2026-04-22 | v1.2 — Stage 5 Bundle 1 종료 (Entry 3.8) | Stage 5 Bundle 1 기술 설계 (EN + KO 페어) Entry 3.8 추가. 세션 요약표 갱신 (Bundle 1 을 세션 3 재개 행에 추가). 양 번들 Stage 5 완료; 다음 stage = Stage 8 Codex. EN 페어 동시 갱신. |
 | 2026-04-22 | v1.3 — Stage 8 + 9 Bundle 4 종료 backfill (Entry 3.9) + Stage 8 + 9 Bundle 1 종료 (Entry 3.10) | Entry 3.9 를 KO 미러로 backfill (EN 파일에는 이미 있었던 R4 누락 복구) + Entry 3.10 추가 (Stage 8 + 9 Bundle 1 마감, PASS — minor). Validation group 1 의 양 번들 Stage 9 모두 마감; 다음 stage = Stage 10/11. EN 페어 동시 갱신. |
+| 2026-04-22 | v1.4 — Stage 11 prep 종료 (Entry 3.11) | Entry 3.11 추가 (DC.6 dossier + ko_freshness 스크래치 산출; CLAUDE.md "Session close — git policy" 서브섹션 고정; 두 번들 PASS — minor 이므로 Stage 10 생략). CLAUDE.md 편집은 사용자 defer 선택에 따라 uncommitted 로 유지; HANDOFF.md 가 Stage 11 세션을 위해 해당 상태 플래그. EN 페어 동시 갱신. |
+| 2026-04-22 | v1.5 — Stage 11 joint validation 종료 (Entry 3.12) | Entry 3.12 추가 — 그룹 판정 APPROVED (M.5 worst-of-two), Bundle 1 + Bundle 4 모두 APPROVED, `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 가 D4.x2 frontmatter (stage: 11, validation_group: 1, status: approved) 와 함께 발행. Cross-bundle 검증: AC.B4.10 verbatim 일치 문자 단위 확인; AC.B4.11 구조상 vacuous; KO freshness 7 페어 / 0 일 델타 독립 재검증. Bundle 1 의 non-blocking 4 건 + Bundle 4 의 3 건 을 Stage 12 housekeeping 으로 forward. HANDOFF.md 갱신 (bundles stage 9→11, verdict minor 이월, Recent Changes 그룹 단위 노트, Next Session Prompt 를 Stage 12 kickoff 로 전환). EN 페어 동시 갱신. |
