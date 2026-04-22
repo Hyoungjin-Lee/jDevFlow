@@ -25,9 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - None yet.
 
-### CI / infra (v0.4 backlog seed, carried forward from v0.3 Stage 13)
+### Planned for v0.4 (retrospective + simplification release — meta scope, no feature adds)
+- **Retrospective** on v0.3 dogfooding experience: catalogue concrete friction points from the 7-session v0.3 build (13 stages × 2 bundles × EN+KO × validation groups × M.1/M.3/M.5/M.6 gates × AC matrices × D4.x frontmatter × R4 freshness × R2 read-only invariant × dual harness).
+- **Simplification pass** on the workflow itself — with the working hypothesis that the "default" mode should be materially lighter than v0.3's Strict-hybrid. Candidates for demotion / merger / removal: validation-group joint gates, R4 EN+KO sync rule, D4.x frontmatter, M.3 fresh-session requirement, per-AC cross-bundle matrices, dual EN/KO dev_history.
+- **Deliverable shape (tentative)**: one brainstorm doc + one simplification proposal doc; minimal code changes; no new bundles. v0.4 acts as the self-test of "can jOneFlow release something lightly?"
+
+### Planned for v0.5 (inherited backlog from original v0.3 Stage 13 deferrals — feature work resumes)
+- Live tool-picker triple refresh in `.skills/tool-picker/SKILL.md` Sec. 6 (AC.B1.5 hygiene; pick the current HANDOFF triple at v0.5 Stage 1).
+- `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh of D4.x2/x3/x4 (AC.B1.8 tightening).
 - Install `shellcheck` in the Linux CI runner so `shellcheck -S style scripts/update_handoff.sh` replaces the v0.3 proxy (`sh -n` + `dash -n` + `bash -n`). See `docs/05_qa_release/release_checklist.md` Sec. 1.1 row 1.f.
 - Automate mac-side CI (`bash tests/bundle1/run_bundle1.sh`, `sh tests/run_bundle4.sh`, `shellcheck -S style scripts/update_handoff.sh`) so Stage 13 no longer requires an operator paste (v0.3 used release_checklist.md Sec. 1.1 rows 1.g–1.i manual paste).
+- Bundle 2 (metadata-refinement, goals 1/2/3) and Bundle 3 (codex-handoff-UX, goals 4/6/8) — re-scope based on v0.3 real-world use (deferred from v0.3; now carried further to sit behind v0.4 simplification decisions).
+- Move the v0.2-compatibility `§` section-sign off canonical prompt templates (kept verbatim for v0.2 cross-version use during v0.3).
+- **UI base-only policy sunset** — per v0.3 brainstorm Sec. 9 / plan_final: UI base-only stays in effect through v0.5 or first downstream `has_ui=true`, whichever comes first. v0.5 is the nominal sunset anchor.
 
 ## [0.3.0] - 2026-04-22
 
@@ -57,7 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **AC.B1.6/B1.8 row label swap** in `docs/04_implementation/implementation_progress.md` Stage 9 Bundle 1 verdict table (Stage 12 housekeeping).
 - **`rg` → `grep -E`** swap in `tests/bundle1/run_bundle1.sh` line 53 — removes the ripgrep dependency so the harness is POSIX-clean end-to-end (Stage 12 housekeeping).
 
-### Deferred to v0.4
+### Deferred to v0.5 (originally queued for v0.4; reindexed 2026-04-23 when v0.4 was redefined as a retrospective/simplification release)
 
 - Live tool-picker triple refresh in `.skills/tool-picker/SKILL.md` Sec. 6 (Stage 11 non-blocking forward).
 - `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh of D4.x2/x3/x4 (AC.B1.8 tightening, Stage 11 non-blocking forward).
