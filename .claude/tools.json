@@ -1,7 +1,0 @@
-{
-  "_schema_version": "0.3",
-  "_note": "Project-scope tool catalog. Populated by .skills/tool-picker/SKILL.md when the user picks 'Custom' and asks to save the entry. See prompts/claude/v03_kickoff.md → Resolved decision D-C for the B+C hybrid storage rationale. Global user profile (~/.claude/tools.json) is v1.0 scope — do not use it here.",
-  "custom_executors": [],
-  "custom_ui_tools": [],
-  "defaults": {}
-}
