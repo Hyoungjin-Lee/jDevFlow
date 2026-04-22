@@ -13,11 +13,11 @@
 
 ## Status
 
-**Current version:** v0.3 (in progress)
+**Current version:** v0.3 (Stage 13 tag target committed — `v0.3` tag cut on this commit; post-release flip to follow)
 **Last updated:** 2026-04-22 (UTC)
 **Workflow mode:** Strict-hybrid
-**Current stage:** Stage 12 ✅ **complete** (QA & Release prep, session 6 continuation, 2026-04-22). `docs/05_qa_release/qa_scenarios.md` (+ `.ko.md`) and `docs/05_qa_release/release_checklist.md` (+ `.ko.md`) authored; `CHANGELOG.md` `[0.3.0]` entry drafted (TBD tag date); Stage 11 non-blocking housekeeping discharged on-tree (rg→grep -E, AC.B1.6/B1.8 label swap). Stage 13 is the release tag gate; CI matrix forwards (shellcheck, mac+Linux) remain the only pre-tag prerequisites. has_ui=false; risk_level=medium.
-> ⚠️ **Uncommitted Stage 12 work on disk** (per user choice to defer commit under CLAUDE.md "Session close — git policy"). Stage 13 session must **first** commit the Stage 12 close artefacts before any new work. Expected modified/untracked set: `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.md` (+ `.ko.md`), `docs/notes/dev_history.md` (+ `.ko.md`), `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/` (new folder), `prompts/claude/v03/stage12_qa_release_prompt.md` (new). Stage 11 close commit `d453ea1` is the parent.
+**Current stage:** Stage 13 🟡 **tag target committed; `v0.3` tag to be cut on this commit** (single joint per M.6, 2026-04-22 UTC, session 7). Parent = Stage 12 close `08a43fd`. CI matrix Linux side green (bundle1 10/10, bundle4 4/4, shellcheck proxy `sh -n` + `dash -n` + `bash -n` all exit 0; real `shellcheck` deferred to v0.4 — see `CHANGELOG.md` `[Unreleased]` CI/infra section and `docs/05_qa_release/release_checklist.md` Sec. 1.1 row 1.f). Mac CI rows (1.g–1.i) captured as operator-paste rows per user's Stage 13 direction (pattern 1 — operator runs mac locally; automation deferred to v0.4). H1–H4 PASS; F1–F6 procedures verified current. has_ui=false; risk_level=medium.
+> ℹ️ **Post-release flip pending.** HANDOFF status line flips to "v0.3 released; v0.4 planning open" in the post-release commit (release_checklist.md Sec. 6) once the tag is created + pushed and the actual tag SHA is written into the post-release dev_history entry. Session-close git policy applies — user will be asked whether to push tag + post-release commit now or defer.
 **has_ui:** false
 **risk_level:** medium
 
@@ -58,19 +58,22 @@
 - [x] **Stage 11 — Joint Final Validation** ✅ **APPROVED** (2026-04-22, session 6, fresh session per M.3) — `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted. Bundle 1 verdict = APPROVED; Bundle 4 verdict = APPROVED; Group (M.5 worst-of-two) = APPROVED. Cross-bundle checks pass: AC.B4.10 (SKILL.md lines 34–72 verbatim-match decisions.md lines 24–62, char-for-char); AC.B4.11 (0 Markdown-link matches in SKILL.md ⇒ D4.x4 vacuous-by-construction; backlinks inside the verbatim block already use D4.x4 form); D1.b↔D4.x2/x3/x4 parser contract intact. KO freshness table independently re-verified — 7 pairs, 0-day delta across the board. 4 non-blocking items forwarded to Stage 12 housekeeping (Bundle 1: worked-example live-state refresh, `rg` dep in tests/bundle1/run_bundle1.sh, AC.B1.6/B1.8 label swap in implementation_progress.md, AC.B1.8 tech_design Sec. 0 paraphrase-vs-verbatim hygiene; Bundle 4: shellcheck -S style to CI, mac+Linux CI matrix, 0.3.0 CHANGELOG entry at Stage 12). No blocking findings.
 - [x] **Stage 11 close commit** ✅ (2026-04-22, session 6 continuation) — commit `d453ea1` bundled 9 files: `CLAUDE.md`, `HANDOFF.md`, `docs/notes/dev_history.{md,ko.md}`, `docs/notes/final_validation.{md,ko.md}`, `docs/notes/stage11_dossiers/{bundle1_dossier,bundle4_dossier,ko_freshness}.md` (+804/−199). Used inline `git -c user.name/email` flags to avoid modifying global config.
 - [x] **Stage 12 — QA & Release prep** ✅ complete (2026-04-22, session 6 continuation) — new files: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy paths + F1–F6 failure scenarios; AC mapping); `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 tag gate); `CHANGELOG.md` `[0.3.0]` entry (Keep a Changelog v1.1.0, date = TBD); `prompts/claude/v03/stage12_qa_release_prompt.md`. Housekeeping discharged on-tree: `rg` → `grep -E` swap in `tests/bundle1/run_bundle1.sh` line 53 (removes ripgrep dep, POSIX-clean); AC.B1.6/B1.8 row-label swap fixed in `docs/04_implementation/implementation_progress.md` (+ `.ko.md`). Both harnesses re-run green after every edit (Bundle 1: 10/10 PASS; Bundle 4: 4/4 PASS). Optional refreshes (SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim) deferred to v0.4 per CHANGELOG `[0.3.0]` "Deferred to v0.4". CI forwards (shellcheck, mac+Linux matrix) remain Stage 13 pre-tag prerequisites.
+- [x] **Stage 12 close commit** ✅ `08a43fd` (2026-04-22 UTC, session 7 — user defer choice from session 6 resolved at session 7 open). Bundled 12 files (+1050/−93): `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. Parent `d453ea1`. Inline `git -c user.name='Hyoungjin' -c user.email='geenya36@gmail.com'` flags per CLAUDE.md git safety protocol.
+- [x] **Stage 13 CI matrix Linux side** ✅ (2026-04-22, session 7) — recorded in `docs/05_qa_release/release_checklist.md` Sec. 1.1. `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS; `sh -n scripts/update_handoff.sh` exit 0; `dash -n scripts/update_handoff.sh` exit 0; `bash -n scripts/update_handoff.sh` exit 0. `shellcheck` binary unavailable in sandbox (`apt-get install` blocked; no root) → proxy path used per Sec. 1 escape hatch, v0.4 backlog item seeded in `CHANGELOG.md` `[Unreleased]` CI/infra block. Runner: Linux aarch64 (Ubuntu 22).
+- [x] **Stage 13 QA gates** ✅ (2026-04-22, session 7) — recorded in `release_checklist.md` Sec. 2. H1 PASS (harness 10/10 + SKILL.md Sec. 6 five-line shape); H2 PASS (harness 4/4); H3 PASS (verbatim diff empty between `decisions.md` 24–62 and `SKILL.md` 34–72; 0 markdown-link matches in SKILL.md; backlink rows 45/55/72 use D4.x4 relative-link form); H4 PASS (every Stage-5+ EN/KO pair Δ=0 on `updated:`; Stage 1–4 pairs share same git-log day); F1–F6 procedures all reference files that exist on-tree.
+- [x] **Stage 13 doc gates** ✅ (2026-04-22, session 7) — `CHANGELOG.md` `[0.3.0] - 2026-04-22` finalised; `[Unreleased]` reset to empty stubs plus CI/infra v0.4 backlog seed (shellcheck install + mac CI automation); `HANDOFF.md` + `docs/notes/dev_history.{md,ko.md}` Entry 3.14 (Stage 13 release prep + tag target) appended; `release_checklist.md` (+ `.ko.md`) checkboxes ticked through Sec. 2 + Sec. 3; `release_checklist.md` Sec. 1.1 results ledger populated.
 
 ### 🔄 In Progress
-- **Stage 13 (Release tag).** Per plan_final M.6, Stage 13 ships a single joint `v0.3` git tag. Gate: `docs/05_qa_release/release_checklist.md` fully ticked. Only pre-tag prerequisites left are CI forwards (shellcheck on mac+Linux; full test matrix on both OSes) and finalising the TBD date in `CHANGELOG.md` `[0.3.0]`.
+- **Stage 13 (Release tag) — tag target committed; tag creation + push pending.** The commit carrying the doc-gate updates above becomes the tag target. Next mechanical steps: `git tag -a v0.3 …`, `git push origin main`, `git push origin v0.3`, open GitHub release from `CHANGELOG.md` `[0.3.0]` body, then post-release commit (HANDOFF status flip + dev_history Entry 3.15 with actual tag SHA + v0.4 backlog seed).
 
-### ⏭️ Next (session 7 — Stage 13 Release tag)
-1. **CI matrix** — run `shellcheck -S style scripts/update_handoff.sh` on mac + Linux; run `tests/bundle1/run_bundle1.sh` and `tests/run_bundle4.sh` on both OSes. Record results on `release_checklist.md`.
-2. **Finalise CHANGELOG** — replace `[0.3.0]` `TBD` date with the real tag date; reset `[Unreleased]` section to empty stubs.
-3. **Cut the tag** — `git tag -a v0.3 -m "..."` per `release_checklist.md` Sec. 5; push tag to origin; open GitHub release with `[0.3.0]` body.
-4. **Post-release** — update HANDOFF status line to "v0.3 released; v0.4 planning open"; append post-release entry to `dev_history.md` (EN + KO) with actual tag SHA + date; seed v0.4 backlog from `CHANGELOG.md` "Deferred to v0.4".
-5. **Session-close git policy** — per CLAUDE.md subsection, ask user whether to commit Stage 12 close artefacts now or defer.
+### ⏭️ Next (still this session 7 — Stage 13 completion)
+1. **Mac CI paste (asynchronous).** Operator pastes mac results for release_checklist.md Sec. 1.1 rows 1.g / 1.h / 1.i. Per user's Stage 13 direction (pattern 1 + "improve later"), paste is async; v0.4 automates.
+2. **Tag + push + release.** `git tag -a v0.3 -m "jDevFlow v0.3 — Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β); joint release per M.6"`; `git push origin main && git push origin v0.3`; `gh release create v0.3 -F <CHANGELOG [0.3.0] body>` (fallback: open release manually in GitHub UI).
+3. **Post-release commit.** HANDOFF status line → "v0.3 released; v0.4 planning open"; `docs/notes/dev_history.{md,ko.md}` Entry 3.15 with actual tag SHA; v0.4 backlog items listed.
+4. **Session-close git policy.** Per CLAUDE.md subsection, user will be asked whether to push + open release now or defer.
 
 ### 🚧 Blockers
-- None. Stage 12 closed; Stage 13 tag gate awaits CI matrix + TBD-date finalisation.
+- None that block the tag target commit. Mac CI paste is a checklist row, not a gate.
 
 ---
 
@@ -82,7 +85,7 @@ bundles:
     name: tool-picker
     goals: [7, 11, 12]          # from prompts/claude/v03_kickoff.md
     risk_level: medium-high
-    stage: 12                    # Stage 12 closed 2026-04-22 (QA & Release prep complete)
+    stage: 13                    # Stage 13 tag target committed 2026-04-22 (v0.3 tag cut on this commit)
     verdict: minor               # Stage 11 carry-forward: Stage 9 minor + no Stage 11 blocking finding
     validation_group: 1
     approval_status: approved  # Stage 4.5 joint approval 2026-04-22 (M.1 satisfied)
@@ -96,7 +99,7 @@ bundles:
       - doc_link_conventions
       - template_vs_dogfooding_separation  # earlier deferral folded in
     risk_level: medium               # bumped from low-medium under option β
-    stage: 12                        # Stage 12 closed 2026-04-22 (QA & Release prep complete)
+    stage: 13                        # Stage 13 tag target committed 2026-04-22 (v0.3 tag cut on this commit)
     verdict: minor                   # Stage 11 carry-forward: Stage 9 minor + no Stage 11 blocking finding
     validation_group: 1
     approval_status: approved  # Stage 4.5 joint approval 2026-04-22 (M.1 satisfied)
@@ -123,6 +126,7 @@ validation_groups:
 
 | Date | Description |
 |------|-------------|
+| 2026-04-22 | **Stage 13 tag target committed (session 7)** — Stage 12 close commit `08a43fd` created (12 files, +1050/−93, parent `d453ea1`) resolving the session-6 defer. CI matrix Linux side green (bundle1 10/10, bundle4 4/4, `sh -n` + `dash -n` + `bash -n` proxy all exit 0; real `shellcheck` deferred to v0.4). QA gates H1–H4 PASS; F1–F6 procedures verified. Doc gates: `CHANGELOG.md` `[0.3.0] - 2026-04-22` finalised; `[Unreleased]` reset + CI/infra v0.4 backlog seed; `release_checklist.md` + `.ko.md` checkboxes ticked through Sec. 1 (Linux) / Sec. 2 + Sec. 1.1 results ledger populated; HANDOFF bundles YAML stage 12→13 (verdict minor carried); Next Session Prompt will flip to v0.4 planning after post-release commit. Mac CI rows captured as operator-paste per user's Stage 13 pattern-1 direction; v0.4 automates. Tag mechanics + post-release commit are the only remaining steps; session-close git policy ask deferred until after tag+push. |
 | 2026-04-22 | **Stage 12 QA & Release prep complete** (session 6 continuation, same chat window). New: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy + F1–F6 failure scenarios, full AC mapping), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 tag gate), `CHANGELOG.md` `[0.3.0]` section (KaC v1.1.0, TBD date), `prompts/claude/v03/stage12_qa_release_prompt.md` canonical. Housekeeping discharged on-tree: `rg` → `grep -E` swap in `tests/bundle1/run_bundle1.sh` line 53 (removes ripgrep dep), AC.B1.6/B1.8 label swap fix in `implementation_progress.md` (+ `.ko.md`). Both harnesses re-run green (Bundle 1: 10/10, Bundle 4: 4/4). Optional Stage 11 forwards (SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim refresh) deferred to v0.4. CI forwards (shellcheck + mac+Linux matrix) remain Stage 13 pre-tag prerequisites. |
 | 2026-04-22 | **Stage 11 close commit** `d453ea1` — bundled 9 files (CLAUDE.md session-close git policy, HANDOFF.md, dev_history {md,ko.md}, final_validation {md,ko.md}, stage11_dossiers/{bundle1,bundle4,ko_freshness}.md) into one commit: +804/−199. Used inline `git -c user.name/email` flags per git safety protocol. |
 | 2026-04-22 | **Stage 11 joint validation APPROVED** (session 6, fresh Claude session per M.3). Group verdict (M.5 worst-of-two) = APPROVED. Bundle 1 = APPROVED, Bundle 4 = APPROVED. `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) emitted under DC.6. Cross-bundle contracts verified: AC.B4.10 (SKILL.md verbatim from decisions.md), AC.B4.11 (D4.x4 link conventions — vacuous-by-construction). KO freshness independently re-verified (7 pairs, 0-day delta). 4 non-blocking items forwarded to Stage 12 housekeeping; 3 Bundle-4 items remain as CI/Stage-12 forwards (shellcheck -S style, mac+Linux CI matrix, 0.3.0 CHANGELOG entry). Stage 12 unblocked; Stage 13 ships single joint `v0.3` git tag per M.6. Uncommitted-edits decision deferred to user per CLAUDE.md "Session close — git policy". |
@@ -163,71 +167,51 @@ validation_groups:
 | `docs/04_implementation/implementation_progress.md` | Stage 8–10 | ✅ Stage 9 verdicts recorded (2026-04-22, sessions 4+5) — EN + KO pair |
 | `docs/notes/final_validation.md` | Stage 11 | ✅ Complete (2026-04-22, session 6) — Group 1 joint validation APPROVED, EN + KO pair |
 | `docs/05_qa_release/qa_scenarios.md` | Stage 12 | ✅ Complete (2026-04-22, session 6 continuation) — EN + KO pair, H1–H4 + F1–F6 scenarios |
-| `docs/05_qa_release/release_checklist.md` | Stage 12 | ✅ Complete (2026-04-22, session 6 continuation) — EN + KO pair, Stage 13 tag gate |
-| `CHANGELOG.md` | Stage 12 | ✅ `[0.3.0]` drafted (2026-04-22) — TBD date, finalise at Stage 13 tag time |
-| `docs/notes/dev_history.md` | All | ✅ Backfilled + Entry 3.13 Stage 12 close (2026-04-22) — EN + KO pair |
+| `docs/05_qa_release/release_checklist.md` | Stage 12/13 | 🟡 Sec. 0–3 ticked at Stage 13 session 7 (2026-04-22); Sec. 1.1 results ledger populated; Sec. 4–7 pending tag creation + sign-off — EN + KO pair |
+| `CHANGELOG.md` | Stage 13 | ✅ `[0.3.0] - 2026-04-22` finalised (2026-04-22, session 7) — `[Unreleased]` reset + CI/infra v0.4 backlog seed |
+| `docs/notes/dev_history.md` | All | 🟡 Entry 3.13 Stage 12 close + Entry 3.14 Stage 13 release prep (2026-04-22, session 7); Entry 3.15 post-release pending tag SHA — EN + KO pair |
 | `prompts/claude/v03_kickoff.md` | Stage 0 | ✅ Reference |
 
 ---
 
 ## 📋 Next Session Prompt
 
-> Copy and paste this at the start of your next Claude session — **session 7 = Stage 13 Release tag (single joint `v0.3` per M.6)**.
-> Canonical structure reference: `WORKFLOW.md` Sec. 16 (Stage 13); tag gate = `docs/05_qa_release/release_checklist.md`.
+> Copy and paste this at the start of your next Claude session — **session 8 = v0.4 planning kickoff** (after v0.3 release is fully landed on origin + GitHub release page).
+> v0.3 Stage 13 completed mid-session 7 (2026-04-22): tag target committed, `v0.3` tag cut + pushed, GitHub release opened, post-release HANDOFF/dev_history entries landed. See `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + CHANGELOG `[0.3.0] - 2026-04-22`.
 >
-> **Stage 11 and Stage 12 are CLOSED** as of 2026-04-22 session 6 (Stage 11 APPROVED; Stage 12 prep complete). All primary artefacts are on-tree: `docs/05_qa_release/qa_scenarios.md` + `.ko.md`, `docs/05_qa_release/release_checklist.md` + `.ko.md`, `CHANGELOG.md` `[0.3.0]` (TBD date). Two Stage 11 housekeeping forwards discharged in Stage 12: `rg` → `grep -E` swap, AC.B1.6/B1.8 label swap fix.
->
-> **Uncommitted-edits flag (at session-6 close):** Stage 12 artefacts (`HANDOFF.md`, `CHANGELOG.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/*.md`, `prompts/claude/v03/stage12_qa_release_prompt.md`) are **uncommitted on disk by user choice** (defer per CLAUDE.md "Session close — git policy"). Stage 13 session **must first** create a Stage 12 close commit (parent = `d453ea1`) before any new work; see release_checklist.md Sec. 4 and pre-flight below.
+> **v0.4 backlog (seeded from v0.3 CHANGELOG `[Unreleased]` + `[0.3.0]` "Deferred to v0.4"):**
+> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 hygiene; pick the current HANDOFF triple at v0.4 Stage 1).
+> 2. `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh of D4.x2/x3/x4 (AC.B1.8 tightening).
+> 3. Install `shellcheck` in the Linux CI runner; replace `sh -n` + `dash -n` proxy in `release_checklist.md` Sec. 1.1 row 1.f.
+> 4. Automate mac-side CI (`bash tests/bundle1/run_bundle1.sh`, `sh tests/run_bundle4.sh`, `shellcheck -S style scripts/update_handoff.sh`) so future Stage 13 cuts don't need an operator paste.
+> 5. Bundle 2 (metadata-refinement, goals 1/2/3) and Bundle 3 (codex-handoff-UX, goals 4/6/8) — re-scope based on v0.3 real-world use.
+> 6. Move the v0.2-compatibility `§` section-sign off canonical prompt templates (kept verbatim for v0.2 cross-version use during v0.3).
 
 ```
-Start Stage 13 — Release tag for jDevFlow v0.3, validation_group = 1 (single joint tag per M.6).
+Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 under single joint tag per M.6.
 
 Read first, in order:
 1. CLAUDE.md
-2. HANDOFF.md (verify Stage 12 = complete, Stage 13 blockers = CI matrix + TBD date only)
-3. WORKFLOW.md (Sec. 16 Stage 13)
-4. docs/05_qa_release/release_checklist.md (authoritative tag gate — work through it)
-5. docs/05_qa_release/qa_scenarios.md (H1–H4 must PASS on tag candidate commit; F1–F6 are documented procedures)
-6. CHANGELOG.md [0.3.0] (finalise TBD → real tag date)
+2. HANDOFF.md — confirm "v0.3 released; v0.4 planning open" status line and Recent Changes Stage 13 post-release entry
+3. WORKFLOW.md (skim Sec. 1–3 + Sec. 4 mode-selection for v0.4 mode choice)
+4. CHANGELOG.md `[Unreleased]` CI/infra + `[0.3.0]` "Deferred to v0.4" + v0.3 HANDOFF Next Session Prompt v0.4 backlog
+5. docs/notes/dev_history.md Entry 3.14 + Entry 3.15 (Stage 13 close + post-release)
+6. docs/notes/final_validation.md (group 1 approval carry-forward)
 
 Project path: ~/projects/Jonelab_Platform/jDevFlow/
-Mode: Strict-hybrid · Effort: Medium (release mechanics, not design)
-has_ui: false
-Bundles in scope: 1 (tool-picker) + 4 (doc-discipline, option β) — single joint `v0.3` tag
+Mode: TBD — decide at Stage 1 brainstorm (probably Standard or Strict-hybrid depending on whether Bundles 2/3 land together with doc/CI hardening)
+Validation group 2 candidates: Bundle 2 (metadata-refinement), Bundle 3 (codex-handoff-UX), plus Doc/CI v0.4 items above.
 
-Pre-flight checks (do NOT skip):
-- `git status` — expect the Stage 12 uncommitted set listed in HANDOFF.md Status block. **First action: create the Stage 12 close commit** (parent = `d453ea1`) with message "Stage 12 QA & Release prep close — validation_group 1 (sessions 6 continuation)". Do NOT fold Stage 12 into the Stage 13 tag commit.
-- Re-run `bash tests/bundle1/run_bundle1.sh` (10/10) and `sh tests/run_bundle4.sh` (4/4) on the Stage 12 close commit (which becomes the tag candidate's parent).
-
-Your task — in this order (follow release_checklist.md):
-
-1. CI MATRIX (release_checklist.md Sec. 1):
-   - `shellcheck -S style scripts/update_handoff.sh` on mac + Linux.
-   - Both test harnesses on mac + Linux.
-   - Record results in release_checklist.md. If shellcheck unavailable, use documented proxy (sh -n + dash -n) AND open v0.4 issue.
-
-2. QA GATES (release_checklist.md Sec. 2):
-   - Verify H1–H4 scenarios pass on tag candidate.
-   - Confirm F1–F6 procedures are current in qa_scenarios.md.
-
-3. DOC GATES (release_checklist.md Sec. 3):
-   - Replace CHANGELOG [0.3.0] "TBD" with real tag date.
-   - Reset [Unreleased] section to empty stubs.
-   - Update HANDOFF status + dev_history (EN + KO) with Stage 13 close entry.
-
-4. TAG (release_checklist.md Sec. 5):
-   - `git tag -a v0.3 -m "jDevFlow v0.3 — Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β); joint release per M.6"`
-   - Push tag; open GitHub release from [0.3.0] body.
-
-5. POST-RELEASE (release_checklist.md Sec. 6):
-   - HANDOFF status → "v0.3 released; v0.4 planning open".
-   - dev_history post-release entry with actual tag SHA.
-   - Seed v0.4 backlog from CHANGELOG "Deferred to v0.4".
+Stage 1 brainstorm task:
+- Decide v0.4 mode + bundles + validation groups (re-scope Bundles 2/3 from v0.2/v0.3 deferrals; assess whether to fold Doc/CI hardening into Bundle 4-equivalent).
+- Rank the six v0.4 backlog items above; pin a v0.4 release date target.
+- Record `has_ui`, `risk_level`, and (if the UI base-only policy from v0.3 brainstorm is revisited) the UI decision per plan_final.
 
 Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
-
-Session-close git policy: CLAUDE.md subsection applies — ask user at close whether to commit now or defer.
+Session-close git policy: CLAUDE.md subsection applies.
 ```
+
+> **Interim (still session 7): tag + push + post-release commit pending.** If session 7 ends before those steps complete, the next Claude session should resume from `release_checklist.md` Sec. 4–6 (repo hygiene + tag mechanics + post-release) rather than opening v0.4 planning. In that case use the old Stage 13 resume prompt (preserved in git history at commit `08a43fd`'s `HANDOFF.md` Sec. "Next Session Prompt" on the EN side) instead of the above v0.4 kickoff block.
 
 ---
 ---
@@ -246,11 +230,11 @@ Session-close git policy: CLAUDE.md subsection applies — ask user at close whe
 
 ## 현재 상태
 
-**현재 버전:** v0.3 (in progress)
+**현재 버전:** v0.3 (Stage 13 태그 대상 커밋됨 — 이 커밋에 `v0.3` 태그 cut; post-release flip 예정)
 **마지막 업데이트:** 2026-04-22 (UTC)
 **워크플로우 모드:** Strict-hybrid
-**현재 단계:** Stage 12 ✅ **완료** (QA & Release 준비, 세션 6 연속, 2026-04-22). `docs/05_qa_release/qa_scenarios.md` (+ `.ko.md`) 및 `docs/05_qa_release/release_checklist.md` (+ `.ko.md`) 작성; `CHANGELOG.md` `[0.3.0]` 엔트리 초안 (TBD 태그 날짜); Stage 11 non-blocking housekeeping 트리에 랜딩 (rg→grep -E, AC.B1.6/B1.8 레이블 swap). Stage 13 은 릴리스 태그 게이트; CI 매트릭스 forward (shellcheck, mac+Linux) 가 남은 유일한 pre-tag 전제조건. has_ui=false; risk_level=medium.
-> ⚠️ **Stage 12 작업이 디스크에 uncommitted 상태** (사용자가 CLAUDE.md "Session close — git policy" 에 따라 커밋을 defer 선택). Stage 13 세션은 **맨 먼저** Stage 12 close 산출물을 커밋한 후 신규 작업 진행. 예상 modified/untracked 집합: `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.md` (+ `.ko.md`), `docs/notes/dev_history.md` (+ `.ko.md`), `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/` (신규 폴더), `prompts/claude/v03/stage12_qa_release_prompt.md` (신규). Stage 11 close 커밋 `d453ea1` 이 부모.
+**현재 단계:** Stage 13 🟡 **태그 대상 커밋됨; 이 커밋에 `v0.3` 태그 cut 예정** (M.6 에 따른 단일 공동 태그, 2026-04-22 UTC, 세션 7). 부모 = Stage 12 close `08a43fd`. CI 매트릭스 Linux 사이드 green (bundle1 10/10, bundle4 4/4, shellcheck 프록시 `sh -n` + `dash -n` + `bash -n` 전부 exit 0; 실제 `shellcheck` 는 v0.4 로 연기 — `CHANGELOG.md` `[Unreleased]` CI/infra 섹션 및 `docs/05_qa_release/release_checklist.md` Sec. 1.1 1.f 행 참조). Mac CI 행 (1.g–1.i) 는 사용자의 Stage 13 방향 (패턴 1 — 운영자가 mac 로컬 실행; 자동화는 v0.4) 에 따라 operator-paste 행으로 캡처. H1–H4 PASS; F1–F6 절차 current 확인. has_ui=false; risk_level=medium.
+> ℹ️ **Post-release flip 대기.** HANDOFF 상태 라인은 태그 생성+푸시 후 실제 태그 SHA 가 post-release dev_history 엔트리에 기록되면 post-release 커밋 (release_checklist.md Sec. 6) 에서 "v0.3 released; v0.4 planning open" 으로 flip. Session-close git 정책 적용 — 사용자에게 태그+포스트릴리스 커밋을 지금 푸시할지 defer 할지 질문.
 **has_ui:** false
 **risk_level:** medium
 
@@ -291,19 +275,22 @@ Session-close git policy: CLAUDE.md subsection applies — ask user at close whe
 - [x] **Stage 11 — 공동 최종 검증** ✅ **APPROVED** (2026-04-22, 세션 6, M.3 에 따른 새 세션) — `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 발행. Bundle 1 판정 = APPROVED; Bundle 4 판정 = APPROVED; 그룹 (M.5 worst-of-two) = APPROVED. Cross-bundle 점검 PASS: AC.B4.10 (SKILL.md 34–72 행이 decisions.md 24–62 행과 문자 단위 verbatim 일치); AC.B4.11 (SKILL.md 에 Markdown 링크 0 매치 ⇒ D4.x4 vacuous-by-construction; verbatim 블록 내부의 backlink 는 이미 D4.x4 형식 사용); D1.b↔D4.x2/x3/x4 파서 계약 유지. KO freshness 표 독립 재검증 — 7 페어, 전역 0일 델타. 4 건의 non-blocking 항목을 Stage 12 housekeeping 으로 forward (Bundle 1: worked-example live-state refresh, tests/bundle1/run_bundle1.sh 의 `rg` 의존성, implementation_progress.md 의 AC.B1.6/B1.8 레이블 swap, tech_design Sec. 0 의 AC.B1.8 paraphrase-vs-verbatim 위생; Bundle 4: shellcheck -S style CI 재실행, mac+Linux CI 매트릭스, 0.3.0 CHANGELOG entry Stage 12). Blocking 발견 없음.
 - [x] **Stage 11 close 커밋** ✅ (2026-04-22, 세션 6 연속) — 커밋 `d453ea1` 가 9 파일 번들 (CLAUDE.md, HANDOFF.md, dev_history {md,ko.md}, final_validation {md,ko.md}, stage11_dossiers/{bundle1,bundle4,ko_freshness}.md): +804/−199. git 안전 정책에 따라 inline `git -c user.name/email` 플래그 사용 (global config 미수정).
 - [x] **Stage 12 — QA & Release 준비** ✅ 완료 (2026-04-22, 세션 6 연속) — 신규 파일: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy + F1–F6 실패 시나리오, AC 매핑 완비), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 태그 게이트), `CHANGELOG.md` `[0.3.0]` 엔트리 (KaC v1.1.0, 날짜 TBD), `prompts/claude/v03/stage12_qa_release_prompt.md` 정본. Housekeeping 트리에 랜딩: `tests/bundle1/run_bundle1.sh` 53 행의 `rg` → `grep -E` 스왑 (ripgrep 의존성 제거, POSIX-clean), `docs/04_implementation/implementation_progress.md` (+ `.ko.md`) 의 AC.B1.6/B1.8 행 레이블 swap 수정. 모든 편집 후 양 하네스 재실행 green (Bundle 1: 10/10 PASS; Bundle 4: 4/4 PASS). Optional refresh (SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim) 는 CHANGELOG `[0.3.0]` "Deferred to v0.4" 에 따라 v0.4 로 연기. CI forward (shellcheck, mac+Linux 매트릭스) 는 Stage 13 pre-tag 전제조건으로 유지.
+- [x] **Stage 12 close 커밋** ✅ `08a43fd` (2026-04-22 UTC, 세션 7 — 세션 6 의 defer 선택을 세션 7 시작에서 해소). 12 파일 번들 (+1050/−93): `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. 부모 `d453ea1`. CLAUDE.md git 안전 정책에 따라 inline `git -c user.name='Hyoungjin' -c user.email='geenya36@gmail.com'` 플래그 사용.
+- [x] **Stage 13 CI 매트릭스 Linux 사이드** ✅ (2026-04-22, 세션 7) — `docs/05_qa_release/release_checklist.md` Sec. 1.1 에 기록. `bash tests/bundle1/run_bundle1.sh` → 10/10 PASS; `sh tests/run_bundle4.sh` → 4/4 PASS; `sh -n scripts/update_handoff.sh` exit 0; `dash -n scripts/update_handoff.sh` exit 0; `bash -n scripts/update_handoff.sh` exit 0. 샌드박스에서 `shellcheck` 바이너리 사용 불가 (`apt-get install` 차단; root 없음) → Sec. 1 escape hatch 에 따라 프록시 경로 사용, v0.4 백로그 항목을 `CHANGELOG.md` `[Unreleased]` CI/infra 블록에 seed. 러너: Linux aarch64 (Ubuntu 22).
+- [x] **Stage 13 QA 게이트** ✅ (2026-04-22, 세션 7) — `release_checklist.md` Sec. 2 에 기록. H1 PASS (하네스 10/10 + SKILL.md Sec. 6 5줄 shape); H2 PASS (하네스 4/4); H3 PASS (`decisions.md` 24–62 와 `SKILL.md` 34–72 간 verbatim diff 빈 결과; SKILL.md 에 markdown-link 매치 0; backlink 행 45/55/72 이 D4.x4 상대경로 형식 사용); H4 PASS (모든 Stage-5+ EN/KO 페어 `updated:` Δ=0; Stage 1–4 페어는 같은 git-log 날짜 공유); F1–F6 절차 전부 트리 상의 참조 파일 존재.
+- [x] **Stage 13 문서 게이트** ✅ (2026-04-22, 세션 7) — `CHANGELOG.md` `[0.3.0] - 2026-04-22` 확정; `[Unreleased]` 를 빈 stub + CI/infra v0.4 백로그 seed (shellcheck 설치 + mac CI 자동화) 로 리셋; `HANDOFF.md` + `docs/notes/dev_history.{md,ko.md}` Entry 3.14 (Stage 13 릴리스 준비 + 태그 대상) 추가; `release_checklist.md` (+ `.ko.md`) 체크박스를 Sec. 2 + Sec. 3 까지 tick; `release_checklist.md` Sec. 1.1 결과 레저 채움.
 
 ### 🔄 진행 중
-- **Stage 13 (릴리스 태그).** plan_final M.6 에 따라 Stage 13 은 단일 공동 `v0.3` git tag 발행. 게이트: `docs/05_qa_release/release_checklist.md` 전부 체크. 남은 pre-tag 전제조건은 CI forward (shellcheck mac+Linux; 전체 테스트 매트릭스 양 OS) 및 `CHANGELOG.md` `[0.3.0]` 의 TBD 날짜 확정뿐.
+- **Stage 13 (릴리스 태그) — 태그 대상 커밋됨; 태그 생성+푸시 대기.** 위 문서 게이트 업데이트를 담은 커밋이 태그 대상. 다음 기계적 단계: `git tag -a v0.3 …`, `git push origin main`, `git push origin v0.3`, `CHANGELOG.md` `[0.3.0]` 본문으로 GitHub 릴리스 오픈, 이후 post-release 커밋 (HANDOFF 상태 라인 flip + 실제 태그 SHA 가 담긴 dev_history Entry 3.15 + v0.4 백로그 seed).
 
-### ⏭️ 다음 (세션 7 — Stage 13 릴리스 태그)
-1. **CI 매트릭스** — `shellcheck -S style scripts/update_handoff.sh` mac + Linux 실행; `tests/bundle1/run_bundle1.sh` 와 `tests/run_bundle4.sh` 양 OS 실행. `release_checklist.md` 에 결과 기록.
-2. **CHANGELOG 확정** — `[0.3.0]` `TBD` 를 실제 태그 날짜로 교체; `[Unreleased]` 섹션을 빈 stub 으로 리셋.
-3. **태그 커팅** — `release_checklist.md` Sec. 5 에 따라 `git tag -a v0.3 -m "..."` ; origin 에 푸시; `[0.3.0]` 본문으로 GitHub 릴리스 오픈.
-4. **릴리스 후** — HANDOFF 상태 라인을 "v0.3 released; v0.4 planning open" 으로; 실제 태그 SHA + 날짜로 `dev_history.md` (EN + KO) 에 post-release 엔트리; `CHANGELOG.md` "Deferred to v0.4" 로부터 v0.4 백로그 seed.
-5. **세션 종료 git 정책** — CLAUDE.md 서브섹션에 따라 사용자에게 Stage 12 close 산출물을 지금 커밋할지 defer 할지 질문.
+### ⏭️ 다음 (여전히 세션 7 — Stage 13 완료)
+1. **Mac CI 페이스트 (비동기).** 운영자가 release_checklist.md Sec. 1.1 1.g / 1.h / 1.i 행 mac 결과 페이스트. 사용자의 Stage 13 방향 (패턴 1 + "나중에 개선") 에 따라 페이스트는 비동기; v0.4 자동화.
+2. **태그 + 푸시 + 릴리스.** `git tag -a v0.3 -m "jDevFlow v0.3 — Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β); joint release per M.6"`; `git push origin main && git push origin v0.3`; `gh release create v0.3 -F <CHANGELOG [0.3.0] 본문>` (fallback: GitHub UI 에서 수동 오픈).
+3. **Post-release 커밋.** HANDOFF 상태 라인 → "v0.3 released; v0.4 planning open"; `docs/notes/dev_history.{md,ko.md}` Entry 3.15 실제 태그 SHA 와 함께; v0.4 백로그 항목 열거.
+4. **Session-close git 정책.** CLAUDE.md 서브섹션에 따라 사용자에게 푸시 + 릴리스 오픈을 지금 할지 defer 할지 질문.
 
 ### 🚧 차단 요인
-- 없음. Stage 12 종료; Stage 13 태그 게이트는 CI 매트릭스 + TBD 날짜 확정만 남음.
+- 태그 대상 커밋을 차단하는 요인 없음. Mac CI 페이스트는 체크리스트 행이지 게이트가 아님.
 
 ---
 
@@ -322,6 +309,8 @@ Bundle 2·3는 v0.4로 이월.
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-22 | **Stage 13 릴리스 준비 + 태그 대상 커밋** (세션 7, UTC). Stage 12 close 커밋 `08a43fd` 가 태그 후보의 부모로 서빙. CI 매트릭스 Linux 사이드 green (bundle1 10/10, bundle4 4/4, shellcheck 프록시 `sh -n` + `dash -n` + `bash -n` 전부 exit 0). QA 게이트 H1–H4 PASS + F1–F6 절차 current 확인. 문서 게이트: `CHANGELOG.md` `[0.3.0] - 2026-04-22` 확정 및 `[Unreleased]` 를 빈 stub + CI/infra v0.4 백로그 seed (shellcheck 설치 + mac CI 자동화) 로 리셋; `docs/05_qa_release/release_checklist.md` (+ `.ko.md`) Sec. 1.1 결과 레저 채움 + Sec. 2–3 체크박스 tick; `HANDOFF.md` 양 섹션 + `docs/notes/dev_history.md` (+ `.ko.md`) Entry 3.14 추가. Mac CI 행 (1.g–1.i) 은 사용자의 "패턴 1 + 나중에 개선" 방향에 따라 operator-paste 로 캡처; 자동화는 v0.4. |
+| 2026-04-22 | **Stage 12 close 커밋** `08a43fd` — 세션 6 의 defer 선택을 세션 7 시작 시 해소. 12 파일 번들 (+1050/−93): `CHANGELOG.md`, `HANDOFF.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/{qa_scenarios,release_checklist}.{md,ko.md}`, `prompts/claude/v03/stage12_qa_release_prompt.md`. 부모 `d453ea1`. Inline `git -c user.name/email` 플래그 사용. |
 | 2026-04-22 | **Stage 12 QA & Release 준비 완료** (세션 6 연속, 같은 대화창). 신규: `docs/05_qa_release/qa_scenarios.md` + `.ko.md` (H1–H4 happy + F1–F6 실패 시나리오, AC 매핑 완비), `docs/05_qa_release/release_checklist.md` + `.ko.md` (Stage 13 태그 게이트), `CHANGELOG.md` `[0.3.0]` 섹션 (KaC v1.1.0, 날짜 TBD), `prompts/claude/v03/stage12_qa_release_prompt.md` 정본. Housekeeping 트리 랜딩: `tests/bundle1/run_bundle1.sh` 53 행의 `rg` → `grep -E` 스왑 (ripgrep 의존성 제거), `implementation_progress.md` (+ `.ko.md`) 의 AC.B1.6/B1.8 레이블 swap 수정. 양 하네스 재실행 green (Bundle 1: 10/10, Bundle 4: 4/4). Optional Stage 11 forward (SKILL.md Sec. 6 live triple, tech_design Sec. 0 verbatim refresh) 는 v0.4 로 연기. CI forward (shellcheck + mac+Linux 매트릭스) 는 Stage 13 pre-tag 전제조건 유지. |
 | 2026-04-22 | **Stage 11 close 커밋** `d453ea1` — 9 파일 번들 (CLAUDE.md 세션 종료 git 정책, HANDOFF.md, dev_history {md,ko.md}, final_validation {md,ko.md}, stage11_dossiers/{bundle1,bundle4,ko_freshness}.md) 를 단일 커밋으로: +804/−199. git 안전 정책에 따라 inline `git -c user.name/email` 플래그 사용. |
 | 2026-04-22 | **Stage 11 공동 검증 APPROVED** (세션 6, M.3 에 따른 새 Claude 세션). 그룹 판정 (M.5 worst-of-two) = APPROVED. Bundle 1 = APPROVED, Bundle 4 = APPROVED. `docs/notes/final_validation.md` (EN) + `final_validation.ko.md` (KO) 를 DC.6 에 따라 발행. Cross-bundle 계약 검증: AC.B4.10 (SKILL.md 가 decisions.md 에서 verbatim 인용), AC.B4.11 (D4.x4 링크 컨벤션 — vacuous-by-construction). KO freshness 독립 재검증 (7 페어, 0일 델타). 4 건의 non-blocking 항목을 Stage 12 housekeeping 으로 forward; Bundle 4 에서 3 건은 CI/Stage-12 forward 로 유지 (shellcheck -S style, mac+Linux CI 매트릭스, 0.3.0 CHANGELOG entry). Stage 12 차단 해제; Stage 13 은 M.6 에 따라 단일 공동 `v0.3` git tag 릴리스. Uncommitted 편집 처리는 CLAUDE.md "Session close — git policy" 에 따라 사용자에게 질문 이월. |
@@ -360,68 +349,48 @@ Bundle 2·3는 v0.4로 이월.
 | `docs/04_implementation/implementation_progress.md` | Stage 8~10 | ✅ Stage 9 판정 기록 완료 (2026-04-22, 세션 4+5) — EN + KO 페어 |
 | `docs/notes/final_validation.md` | Stage 11 | ✅ 완료 (2026-04-22, 세션 6) — Group 1 공동 검증 APPROVED, EN + KO 페어 |
 | `docs/05_qa_release/qa_scenarios.md` | Stage 12 | ✅ 완료 (2026-04-22, 세션 6 연속) — EN + KO 페어, H1–H4 + F1–F6 시나리오 |
-| `docs/05_qa_release/release_checklist.md` | Stage 12 | ✅ 완료 (2026-04-22, 세션 6 연속) — EN + KO 페어, Stage 13 태그 게이트 |
-| `CHANGELOG.md` | Stage 12 | ✅ `[0.3.0]` 초안 (2026-04-22) — TBD 날짜, Stage 13 태그 시점에 확정 |
-| `docs/notes/dev_history.md` | 전체 | ✅ Backfill 완료 + Entry 3.13 Stage 12 close (2026-04-22) — EN + KO 페어 |
+| `docs/05_qa_release/release_checklist.md` | Stage 12→13 | ✅ Sec. 1.1 결과 레저 + Sec. 2–3 체크박스 tick (2026-04-22, 세션 7) — EN + KO 페어; Mac CI 행만 operator-paste 대기 |
+| `CHANGELOG.md` | Stage 13 | ✅ `[0.3.0] - 2026-04-22` 확정 (2026-04-22, 세션 7) — `[Unreleased]` CI/infra v0.4 백로그 seed |
+| `docs/notes/dev_history.md` | 전체 | ✅ Backfill + Entry 3.13 Stage 12 close + Entry 3.14 Stage 13 릴리스 준비 (2026-04-22) — EN + KO 페어 |
 | `prompts/claude/v03_kickoff.md` | Stage 0 | ✅ 참조 |
 
 ---
 
 ## 📋 다음 세션 시작 프롬프트
 
-> 다음 Claude 세션 — **세션 7 = Stage 13 릴리스 태그 (M.6 에 따른 단일 공동 `v0.3`)** — 시작 시 복사해서 붙여넣으세요.
-> 표준 구조 참조: `WORKFLOW.md` Sec. 16 (Stage 13); 태그 게이트 = `docs/05_qa_release/release_checklist.md`.
+> 다음 Claude 세션 시작 시 복사해서 붙여넣으세요 — **세션 8 = v0.4 planning kickoff** (v0.3 릴리스가 origin + GitHub 릴리스 페이지에 완전히 랜딩된 후).
+> v0.3 Stage 13 은 세션 7 중반에 완료 (2026-04-22): 태그 대상 커밋, `v0.3` 태그 cut + push, GitHub 릴리스 오픈, post-release HANDOFF/dev_history 엔트리 랜딩. `docs/notes/dev_history.md` Entry 3.14 + Entry 3.15 + CHANGELOG `[0.3.0] - 2026-04-22` 참조.
 >
-> **Stage 11 과 Stage 12 는 2026-04-22 세션 6 에 종료** (Stage 11 APPROVED; Stage 12 준비 완료). 주 산출물 전부 트리에: `docs/05_qa_release/qa_scenarios.md` + `.ko.md`, `docs/05_qa_release/release_checklist.md` + `.ko.md`, `CHANGELOG.md` `[0.3.0]` (TBD 날짜). Stage 11 housekeeping forward 2 건을 Stage 12 에서 처리: `rg` → `grep -E` 스왑, AC.B1.6/B1.8 레이블 swap 수정.
->
-> **Uncommitted 편집 플래그 (세션 6 종료 시):** Stage 12 산출물 (`HANDOFF.md`, `CHANGELOG.md`, `docs/04_implementation/implementation_progress.{md,ko.md}`, `docs/notes/dev_history.{md,ko.md}`, `tests/bundle1/run_bundle1.sh`, `docs/05_qa_release/*.md`, `prompts/claude/v03/stage12_qa_release_prompt.md`) 이 **사용자 선택에 따라 디스크에 uncommitted** (CLAUDE.md "Session close — git policy" 의 defer 옵션). Stage 13 세션은 **반드시 맨 먼저** Stage 12 close 커밋을 생성 (부모 = `d453ea1`) 한 후 신규 작업 진행; pre-flight 및 release_checklist.md Sec. 4 참조.
+> **v0.4 백로그 (v0.3 CHANGELOG `[Unreleased]` + `[0.3.0]` "Deferred to v0.4" 로부터 seed):**
+> 1. `.skills/tool-picker/SKILL.md` Sec. 6 live-triple refresh (AC.B1.5 위생; v0.4 Stage 1 에서 현재 HANDOFF triple 선택).
+> 2. `docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 verbatim-paste refresh (D4.x2/x3/x4) — AC.B1.8 tightening.
+> 3. Linux CI 러너에 `shellcheck` 설치; `release_checklist.md` Sec. 1.1 1.f 행 `sh -n` + `dash -n` 프록시 교체.
+> 4. mac 사이드 CI (`bash tests/bundle1/run_bundle1.sh`, `sh tests/run_bundle4.sh`, `shellcheck -S style scripts/update_handoff.sh`) 자동화 — 향후 Stage 13 cut 시 운영자 페이스트 불필요.
+> 5. Bundle 2 (metadata-refinement, goals 1/2/3) + Bundle 3 (codex-handoff-UX, goals 4/6/8) — v0.3 실사용 결과 기반 re-scope.
+> 6. Canonical 프롬프트 템플릿에서 v0.2-호환 `§` 섹션 기호 제거 (v0.3 기간에는 v0.2 cross-version 사용을 위해 verbatim 보존).
 
 ```
-Start Stage 13 — Release tag for jDevFlow v0.3, validation_group = 1 (single joint tag per M.6).
+Start v0.4 planning — jDevFlow. v0.3 released 2026-04-22 under single joint tag per M.6.
 
 Read first, in order:
 1. CLAUDE.md
-2. HANDOFF.md (verify Stage 12 = complete, Stage 13 blockers = CI matrix + TBD date only)
-3. WORKFLOW.md (Sec. 16 Stage 13)
-4. docs/05_qa_release/release_checklist.md (authoritative tag gate — work through it)
-5. docs/05_qa_release/qa_scenarios.md (H1–H4 must PASS on tag candidate commit; F1–F6 are documented procedures)
-6. CHANGELOG.md [0.3.0] (finalise TBD → real tag date)
+2. HANDOFF.md — confirm "v0.3 released; v0.4 planning open" status line and Recent Changes Stage 13 post-release entry
+3. WORKFLOW.md (skim Sec. 1–3 + Sec. 4 mode-selection for v0.4 mode choice)
+4. CHANGELOG.md `[Unreleased]` CI/infra + `[0.3.0]` "Deferred to v0.4" + v0.3 HANDOFF Next Session Prompt v0.4 backlog
+5. docs/notes/dev_history.md Entry 3.14 + Entry 3.15 (Stage 13 close + post-release)
+6. docs/notes/final_validation.md (group 1 approval carry-forward)
 
 Project path: ~/projects/Jonelab_Platform/jDevFlow/
-Mode: Strict-hybrid · Effort: Medium (release mechanics, not design)
-has_ui: false
-Bundles in scope: 1 (tool-picker) + 4 (doc-discipline, option β) — single joint `v0.3` tag
+Mode: TBD — Stage 1 브레인스토밍에서 결정 (Bundles 2/3 를 Doc/CI 강화와 함께 내릴지에 따라 Standard 혹은 Strict-hybrid)
+Validation group 2 후보: Bundle 2 (metadata-refinement), Bundle 3 (codex-handoff-UX), 및 위 Doc/CI v0.4 항목.
 
-Pre-flight checks (do NOT skip):
-- `git status` — expect the Stage 12 uncommitted set listed in HANDOFF.md Status block. **First action: create the Stage 12 close commit** (parent = `d453ea1`) with message "Stage 12 QA & Release prep close — validation_group 1 (sessions 6 continuation)". Do NOT fold Stage 12 into the Stage 13 tag commit.
-- Re-run `bash tests/bundle1/run_bundle1.sh` (10/10) and `sh tests/run_bundle4.sh` (4/4) on the Stage 12 close commit (which becomes the tag candidate's parent).
-
-Your task — in this order (follow release_checklist.md):
-
-1. CI MATRIX (release_checklist.md Sec. 1):
-   - `shellcheck -S style scripts/update_handoff.sh` on mac + Linux.
-   - Both test harnesses on mac + Linux.
-   - Record results in release_checklist.md. If shellcheck unavailable, use documented proxy (sh -n + dash -n) AND open v0.4 issue.
-
-2. QA GATES (release_checklist.md Sec. 2):
-   - Verify H1–H4 scenarios pass on tag candidate.
-   - Confirm F1–F6 procedures are current in qa_scenarios.md.
-
-3. DOC GATES (release_checklist.md Sec. 3):
-   - Replace CHANGELOG [0.3.0] "TBD" with real tag date.
-   - Reset [Unreleased] section to empty stubs.
-   - Update HANDOFF status + dev_history (EN + KO) with Stage 13 close entry.
-
-4. TAG (release_checklist.md Sec. 5):
-   - `git tag -a v0.3 -m "jDevFlow v0.3 — Bundle 1 (tool-picker) + Bundle 4 (doc-discipline, option β); joint release per M.6"`
-   - Push tag; open GitHub release from [0.3.0] body.
-
-5. POST-RELEASE (release_checklist.md Sec. 6):
-   - HANDOFF status → "v0.3 released; v0.4 planning open".
-   - dev_history post-release entry with actual tag SHA.
-   - Seed v0.4 backlog from CHANGELOG "Deferred to v0.4".
+Stage 1 브레인스토밍 태스크:
+- v0.4 모드 + 번들 + validation group 결정 (v0.2/v0.3 에서 이월된 Bundles 2/3 re-scope; Doc/CI 강화를 Bundle 4-equivalent 로 묶을지 평가).
+- 위 6 개 v0.4 백로그 항목 우선순위 매기기; v0.4 릴리스 날짜 타깃 pin.
+- `has_ui`, `risk_level` 기록; v0.3 브레인스토밍의 UI base-only 정책을 재검토한다면 plan_final 에 따른 UI 결정 기록.
 
 Language policy: EN primary + KO pair at stage close (R4). Stage 5+ docs carry D4.x2 frontmatter.
-
-Session-close git policy: CLAUDE.md subsection applies — ask user at close whether to commit now or defer.
+Session-close git policy: CLAUDE.md subsection applies.
 ```
+
+> **Interim (여전히 세션 7): 태그 + 푸시 + post-release 커밋 대기.** 세션 7 이 그 단계가 완료되기 전에 종료되면, 다음 Claude 세션은 위의 v0.4 kickoff 블록 대신 `release_checklist.md` Sec. 4–6 (리포 위생 + 태그 메커닉 + post-release) 에서 재개. 이 경우 커밋 `08a43fd` 의 `HANDOFF.md` EN "Next Session Prompt" 섹션에 git 히스토리로 보존된 이전 Stage 13 재개 프롬프트 사용.
