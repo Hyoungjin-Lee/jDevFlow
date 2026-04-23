@@ -8,9 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- None yet.
+- **`.github/workflows/ci.yml`** — GitHub Actions CI: shellcheck (Linux), test harness (Linux + macOS). shellcheck auto-detects shell from shebang; severity=warning. macOS job runs `brew install shellcheck` + both harnesses.
+- **`scripts/run_tests.sh`** — local one-command test runner: runs bundle1 + bundle4 and exits non-zero on any failure. Removes operator paste burden for local test runs.
 
 ### Changed
+- **`CLAUDE.md` git policy** (EN + KO) — upgraded to v0.5: Claude now emits a single `sh scripts/git_checkpoint.sh "msg" file...` one-liner instead of a raw multi-line `git add && git commit` block. Forbidden anti-pattern documented. KO section added (was missing git policy section).
+- **`scripts/git_checkpoint.sh`** — removed `git add -A` fallback (was policy violation); removed automatic `git push` (sandbox has no auth); added explicit file-required guard and post-commit log output.
 - **`.skills/tool-picker/SKILL.md` Sec. 6** — worked example updated to v0.5 Stage 1 live triple (Standard · medium); was v0.3 Stage 2 Strict-hybrid values.
 - **`docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 (D4.x2)** — added note that `docs/notes/dev_history.md` was removed in v0.4 (replaced by `CHANGELOG.md`).
 - **`docs/notes/decisions.md` D4.x2** — same dev_history removal note added; decisions.md is now current.
@@ -24,12 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - None yet.
 
 ### Fixed
-- None yet.
+- **`tests/bundle1/run_bundle1.sh` worked example check** — updated assertions from v0.3 (`Stage 2 Plan Draft`, `Strict-hybrid`) to v0.5 (`Stage 1 Brainstorm`, `mode Standard`, `risk_level medium`). Fixes bundle1 check 7 failure introduced when Sec. 6 was refreshed in session 10.
 
 ### Security
 - None yet.
 
 ### Notes
+- **`update_handoff.sh` KO header support** (v0.5 backlog item 5): verified already implemented since v0.3. Both `## 현재 상태` and `## 최근 변경 이력` are fully recognized and written by the AWK engine. No code change needed; backlog item closed.
 - **UI base-only policy** (v0.3 brainstorm Sec. 9): v0.5 in progress, no downstream `has_ui=true` found → policy remains in effect. Sunset check deferred to v0.5 Stage 13 or first `has_ui=true`, whichever comes first.
 
 ## [0.4.0] - 2026-04-23

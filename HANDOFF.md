@@ -10,13 +10,13 @@
 
 **Current version:** v0.5 in progress (started 2026-04-23)
 **Last updated:** 2026-04-23
-**Current stage:** v0.5 Stage 1 complete — debt-clearance items 1–4 done. Items 5–7 pending.
+**Current stage:** v0.5 Stage 1 complete — all debt-clearance items 1–7 done.
 
 ## 현재 상태
 
 **현재 버전:** v0.5 진행 중 (시작 2026-04-23)
 **마지막 업데이트:** 2026-04-23
-**현재 단계:** v0.5 Stage 1 완료 — 빚 청산 항목 1–4 완료. 항목 5–7 대기 중.
+**현재 단계:** v0.5 Stage 1 완료 — 빚 청산 항목 1–7 전체 완료.
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-23 | Session 11: v0.5 Stage 1 — debt items 5–7 done (update_handoff.sh KO verified, shellcheck CI + macOS CI, run_tests.sh, bundle1 test refresh) |
 | 2026-04-23 | Session 10: v0.5 Stage 1 — debt items 1–4 done (§ removal, tool-picker Sec.6 refresh, D4.x2 dev_history note, UI sunset check) |
 | 2026-04-23 | Session 9: v0.4 Stage 13 — CHANGELOG [0.4.0] finalized; v0.4 tag/release pending operator |
 | 2026-04-23 | Session 9: CLAUDE.md simplified; WORKFLOW.md v2.1; plan_final.md created; dev_history retired |
@@ -38,6 +39,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-23 | 세션 11: v0.5 Stage 1 — 빚 청산 항목 5–7 완료 (update_handoff.sh KO 확인, shellcheck CI + macOS CI, run_tests.sh, bundle1 테스트 갱신) |
 | 2026-04-23 | 세션 10: v0.5 Stage 1 — 빚 청산 항목 1–4 완료 (§ 제거, tool-picker Sec.6 갱신, D4.x2 dev_history 노트, UI sunset 확인) |
 | 2026-04-23 | 세션 9: v0.4 Stage 13 — CHANGELOG [0.4.0] 완성; v0.4 tag/release 운영자 실행 대기 |
 | 2026-04-23 | 세션 9: CLAUDE.md 단순화; WORKFLOW.md v2.1; plan_final.md 작성; dev_history 폐기 |
@@ -54,11 +56,11 @@
 3. ✅ `technical_design.md` Sec. 0 + `decisions.md` D4.x2 — dev_history 제거 노트 추가
 4. ✅ UI base-only sunset 확인 — 정책 유지 (has_ui=true 없음)
 
-### 🔴 v0.5 미완료 (다음 세션)
+### 🟢 v0.5 완료 항목 (세션 11)
 
-5. **`update_handoff.sh` KO 헤더 지원** — Status/Recent Changes EN 헤더 → KO 헤더 인식 추가
-6. **shellcheck 설치 (Linux CI)** — CI 설정 수정
-7. **Mac CI 자동화** — 테스트 자동화 스크립트 (operator paste 제거)
+5. ✅ `update_handoff.sh` KO 헤더 지원 — 이미 구현되어 있음 확인 (EN/KO 모두 정상 인식)
+6. ✅ shellcheck CI (Linux) — `.github/workflows/ci.yml` 생성; bundle1 worked example 테스트도 v0.5 기준으로 갱신
+7. ✅ Mac CI 자동화 — ci.yml에 `macos-latest` job 추가; `scripts/run_tests.sh` 로컬 one-command 실행 스크립트 추가
 
 ### 🟡 보류 중 (v0.6 이월)
 
@@ -102,6 +104,6 @@
 
 ```
 HANDOFF.md Status 섹션 + "다음 할 일" 참조해서 이어가죠.
-세션 11 = v0.5 빚 청산 항목 5–7 (update_handoff.sh KO 헤더, shellcheck CI, Mac CI 자동화).
-전제: 세션 10 커밋 완료.
+세션 12 = v0.5 보류 항목 중 우선순위 결정 (Bundle 2/3 re-scope, Claude Code Hooks, gstack 설계).
+전제: 세션 11 커밋 완료 (bundle1 test refresh + CI 워크플로 + run_tests.sh).
 ```
