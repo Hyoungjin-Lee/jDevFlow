@@ -9,14 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Model selection policy (v0.5 — Max x5 기준)** — Stage별 Sonnet/Opus 배정 기준 확정. Stage 1=Sonnet, Stage 2–4/5/9/11=Opus, Stage 6–7/12–13=Sonnet. CLAUDE.md Sec.3, WORKFLOW.md Sec.9–10, `.claude/settings.json` schema v0.3에 반영.
+- **Bundle 2/3 re-scope 완료** — Goal별 처리 방향 확정. Goal 2/6 드롭, Goal 1/4/8 글로벌 공개 버전 이월, Goal 3/Hooks v0.6 이월. gstack ETHOS + autoplan + /investigate 참조 대상 확정.
 - **`.github/workflows/ci.yml`** — GitHub Actions CI: shellcheck (Linux), test harness (Linux + macOS). shellcheck auto-detects shell from shebang; severity=warning. macOS job runs `brew install shellcheck` + both harnesses.
 - **`scripts/run_tests.sh`** — local one-command test runner: runs bundle1 + bundle4 and exits non-zero on any failure. Removes operator paste burden for local test runs.
 
 ### Changed
+- **`CLAUDE.md`** — EN+KO 병기 → KO only 전환. 741줄 → 188줄 (75% 감소). Anthropic 권장 500줄 이하 달성.
+- **`WORKFLOW.md`** — EN+KO 병기 → KO only 전환. 790줄 → 279줄 (65% 감소). R2 읽기 비용 57% 절감.
 - **`.claude/settings.json` schema v0.3** — planner Stage 2–4 Sonnet→Opus, reviewer Stage 9 Sonnet→Opus. schema_version 0.2→0.3.
-- **`WORKFLOW.md` Sec.3** — Stage 1 Opus→Sonnet, Stage 2–4 Sonnet→Opus, Stage 9 Sonnet→Opus, Stage 11 Sonnet/Opus→Opus.
-- **`WORKFLOW.md` Sec.9–10** — Model selection guide 전체 재작성. Cowork 세션 운영 규칙 + agent composition 모델 배정 업데이트.
-- **`CLAUDE.md` Sec.3** — 모델 선택 정책 섹션 신규 추가 (EN + KO).
+- **`WORKFLOW.md` Sec.3/9/10** — Stage 표 모델 업데이트. Model selection guide 전체 재작성. Cowork 세션 운영 규칙 추가.
+- **`CLAUDE.md` Sec.3** — 모델 선택 정책 섹션 신규 추가.
 - **`CLAUDE.md` git policy** (EN + KO) — upgraded to v0.5: Claude now emits a single `sh scripts/git_checkpoint.sh "msg" file...` one-liner instead of a raw multi-line `git add && git commit` block. Forbidden anti-pattern documented. KO section added (was missing git policy section).
 - **`scripts/git_checkpoint.sh`** — removed `git add -A` fallback (was policy violation); removed automatic `git push` (sandbox has no auth); added explicit file-required guard and post-commit log output.
 - **`.skills/tool-picker/SKILL.md` Sec. 6** — worked example updated to v0.5 Stage 1 live triple (Standard · medium); was v0.3 Stage 2 Strict-hybrid values.
