@@ -8,20 +8,20 @@
 
 ## Status
 
-**Current version:** v0.4 (in progress — retrospective + simplification)
+**Current version:** v0.4 released (2026-04-23) → v0.5 next
 **Last updated:** 2026-04-23
-**Current stage:** v0.4 Stage 2 complete — plan_final written; CLAUDE.md + WORKFLOW.md simplified (session 9). Awaiting operator commit + plan_final approval.
+**Current stage:** v0.4 Stage 13 complete — released. v0.5 planning pending.
 
 ## 현재 상태
 
-**현재 버전:** v0.4 진행 중 (회고 + 단순화 메타 릴리스)
+**현재 버전:** v0.4 릴리스 완료 (2026-04-23) → v0.5 준비 중
 **마지막 업데이트:** 2026-04-23
-**현재 단계:** v0.4 Stage 2 완료 — plan_final 작성; CLAUDE.md + WORKFLOW.md 단순화 반영 (세션 9). 운영자 커밋 + plan_final 승인 대기 중.
+**현재 단계:** v0.4 Stage 13 완료 — 릴리스됨. v0.5 기획 대기 중.
 
 | 항목 | 내용 |
 |------|------|
 | 워크플로 모드 | 하이브리드 (Stage 1 = Cowork 1:1, Stage 2–13 = Claude Code 에이전트 팀) |
-| v0.3 태그 | `v0.3` → commit `ebb1e98` (push + GitHub release: 운영자 로컬 쉘에서 실행 필요) |
+| v0.4 태그 | `v0.4` → 릴리스 예정 (아래 커밋 후 운영자 로컬 실행) |
 
 ---
 
@@ -29,40 +29,32 @@
 
 | Date | Description |
 |------|-------------|
-| 2026-04-23 | Session 9: CLAUDE.md simplified (Stage 11 fresh-session removed, git 3-case policy, dev_history→CHANGELOG); WORKFLOW.md v2.1 (plan_draft removed from Standard default, Stage 11 high-risk only); docs/02_planning_v0.4/plan_final.md created |
-| 2026-04-23 | Session 8: v0.4 Stage 1 complete (retrospective + simplification direction decided); settings.json schema v0.2; dev_history retirement decided |
+| 2026-04-23 | Session 9: v0.4 Stage 13 — CHANGELOG [0.4.0] finalized; v0.4 tag/release pending operator |
+| 2026-04-23 | Session 9: CLAUDE.md simplified; WORKFLOW.md v2.1; plan_final.md created; dev_history retired |
+| 2026-04-23 | Session 8: v0.4 Stage 1 complete; settings.json schema v0.2 |
 | 2026-04-22 | Session 7: v0.3 released (tag v0.3, commit 62e32a1) |
 
 ## 최근 변경 이력
 
 | 날짜 | 설명 |
 |------|------|
-| 2026-04-23 | 세션 9: CLAUDE.md 단순화 (Stage 11 fresh-session 폐지, git 3-경우 정책, dev_history→CHANGELOG); WORKFLOW.md v2.1 (plan_draft Standard 기본값 제거, Stage 11 고위험 한정); docs/02_planning_v0.4/plan_final.md 작성 |
-| 2026-04-23 | 세션 8: v0.4 Stage 1 완료 (회고 + 단순화 방향 확정); settings.json schema v0.2; dev_history 폐기 결정 |
+| 2026-04-23 | 세션 9: v0.4 Stage 13 — CHANGELOG [0.4.0] 완성; v0.4 tag/release 운영자 실행 대기 |
+| 2026-04-23 | 세션 9: CLAUDE.md 단순화; WORKFLOW.md v2.1; plan_final.md 작성; dev_history 폐기 |
+| 2026-04-23 | 세션 8: v0.4 Stage 1 완료; settings.json schema v0.2 |
 | 2026-04-22 | 세션 7: v0.3 릴리스 (tag v0.3, commit 62e32a1) |
 
 ---
 
 ## 다음 할 일
 
-### 🔴 미완료 (세션 9 완료 후 운영자 실행 필요)
+### 🔴 미완료 (운영자 로컬 실행 필요)
 
-1. **dev_history 파일 git rm** — 운영자 로컬 쉘:
-   ```bash
-   cd ~/projects/Jonelab_Platform/jDevFlow
-   git rm docs/notes/dev_history.md docs/notes/dev_history.ko.md
-   ```
-2. **세션 9 변경사항 일괄 커밋** — 운영자 로컬 쉘 (세션 종료 시 커밋 블록 제공)
-3. **v0.3 push + GitHub release** — 운영자 로컬 쉘:
-   ```bash
-   git push origin main && git push origin v0.3
-   gh release create v0.3 -F <(awk '/^## \[0.3.0\]/,/^## \[0\.2/' CHANGELOG.md | head -n -1)
-   ```
+1. **v0.4 커밋 + tag + release** — 아래 커밋 블록 참조
+2. **v0.5 Stage 1 킥오프** — 세션 10에서 진행
 
-### 🟡 세션 10 예정
+### 🟡 v0.5 예정 (세션 10+)
 
-- v0.4 Stage 12/13 — CHANGELOG `[Unreleased]` → `[0.4.0]` 완성 + v0.4 tag/release
-- plan_final.md 운영자 승인 확인 (`docs/02_planning_v0.4/plan_final.md`)
+- v0.5 Stage 1 브레인스토밍 (백로그 항목 우선순위 선정)
 
 ### 🟡 보류 중
 
@@ -103,7 +95,6 @@
 
 ```
 HANDOFF.md Status 섹션 + "다음 할 일" 참조해서 이어가죠.
-세션 10 = v0.4 Stage 12/13 (CHANGELOG [0.4.0] 완성 + v0.4 tag/release).
-전제: 운영자가 세션 9 커밋 블록 + dev_history git rm + v0.3 push 를 로컬에서 실행 완료.
-plan_final.md 운영자 승인 여부 확인 후 진행.
+세션 10 = v0.5 Stage 1 킥오프.
+전제: 운영자가 v0.4 커밋 + tag + release 로컬 실행 완료.
 ```
