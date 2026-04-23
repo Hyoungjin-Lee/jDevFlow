@@ -3,7 +3,7 @@
 > Owner: 🔍 Reviewer | Model: Opus | Output: `docs/notes/final_validation.md`
 > Runs in: **Standard** (High effort) and **Strict** (XHigh effort).
 > Skipped in Lite when the change has no shared-state impact; downgraded to Sonnet/High for low-risk Standard changes.
-> ⚠️ In **Strict mode this must run in an independent Claude session** with no prior context. See WORKFLOW.md §14.
+> ⚠️ In **Strict mode this must run in an independent Claude session** with no prior context. See WORKFLOW.md.
 
 ---
 

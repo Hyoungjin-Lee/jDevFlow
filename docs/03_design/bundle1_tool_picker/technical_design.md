@@ -41,7 +41,7 @@ Check after KO pair is written:
 
 > **Source.** `docs/03_design/bundle4_doc_discipline/technical_design.md` Sec. 0, locked 2026-04-22. The three decisions below are quoted verbatim (Bundle 1 must bind to them, not re-decide them). Any change requires re-entry to Stage 5 Bundle 4.
 
-- **D4.x2 — Internal doc header schema.** YAML frontmatter on Stage-5-and-later docs only; Stage 1–4 narrative / bilingual docs remain prose-only. Minimum required fields: `title, stage, bundle, version, language, paired_with, created, updated` (optional: `status, supersedes, validation_group`).
+- **D4.x2 — Internal doc header schema.** YAML frontmatter on Stage-5-and-later docs only; Stage 1–4 narrative / bilingual docs remain prose-only. Minimum required fields: `title, stage, bundle, version, language, paired_with, created, updated` (optional: `status, supersedes, validation_group`). Note: `docs/notes/dev_history.md` removed in v0.4 — replaced by `CHANGELOG.md`; no longer listed as a no-frontmatter example.
 - **D4.x3 — Bundle folder naming convention.** `bundle{id}_{name}/` with snake_case `{name}`. Regex `^bundle(\d+)_(.+)$` extracts `{id}` and `{name}` deterministically.
 - **D4.x4 — Doc link conventions.** Always relative to the current file; no project-root-absolute paths. Anchor style is GitHub's: lowercase, spaces-to-hyphens, punctuation dropped. `file.md#section-header-lowercased-hyphenated`.
 

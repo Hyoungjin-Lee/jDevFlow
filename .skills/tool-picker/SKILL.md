@@ -123,34 +123,26 @@ _Advisory only — not blocking. Say "skip" to dismiss, or ask a follow-up._
 
 ## 6. Worked example
 
-This example uses the live field names from the current `HANDOFF.md` and a
-Stage 2 entry value with the same shape.
+This example uses the live field names from the current `HANDOFF.md` (updated
+at v0.5 Stage 1, 2026-04-23).
 
 1. `HANDOFF.md` status excerpt is read.
-2. `**Current stage:** Stage 2 Plan Draft`
-3. `**Workflow mode:** Strict-hybrid`
+2. `**Current stage:** Stage 1 Brainstorm`
+3. `**Workflow mode:** Standard`
 4. `**risk_level:** medium`
-5. The stage row resolves to `2 Plan Draft`.
-6. The mode-risk column resolves to `Strict-hybrid · medium`.
-7. The selected cell is:
-   `prompts/claude/planning_draft.md` + `docs/02_planning/plan_draft.md` ·
-   `docs/02_planning/plan_final.md` Sec. 8 · top-3 risk depth
-8. The advisory is printed:
-   > **jOneFlow tool-picker advisory** — (stage 2, mode Strict-hybrid, risk_level medium)
+5. The stage row has no dedicated row — use the fallback row.
+6. Fallback: prefer the canonical file under `prompts/claude/` that matches
+   the stage name → `prompts/claude/brainstorm.md`.
+7. The advisory is printed:
+   > **jOneFlow tool-picker advisory** — (stage 1, mode Standard, risk_level medium)
    >
    > **Next step (primary):**
-   > 1. Open `prompts/claude/planning_draft.md` and `docs/02_planning/plan_draft.md`.
-   >
-   > **Checklist to keep open:**
-   > - Keep `docs/02_planning/plan_final.md` Sec. 8 visible.
-   >
-   > **Watch-out:**
-   > - Keep top-3 risk depth explicit before leaving Stage 2.
+   > 1. Open `prompts/claude/brainstorm.md` and discuss direction with the operator.
    >
    > _Advisory only — not blocking. Say "skip" to dismiss, or ask a follow-up._
-9. The user replies: "skip".
-10. The advisory stops there.
-11. If the user instead asks for detail, keep the same primary and expand only
+8. The user replies: "skip".
+9. The advisory stops there.
+10. If the user instead asks for detail, keep the same primary and expand only
     the checklist or watch-out text.
 
 ## 7. Failure modes

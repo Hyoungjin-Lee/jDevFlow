@@ -28,7 +28,7 @@ Review the code produced by Codex against `docs/03_design/technical_design.md` (
 - [ ] Follows project coding style
 - [ ] Non-obvious logic is commented
 - [ ] No unnecessary duplication
-- [ ] Security considerations (from Technical Design §Security) are verifiably addressed
+- [ ] Security considerations (from Technical Design "Security" section) are verifiably addressed
 - [ ] Every acceptance criterion listed in Technical Design is met
 
 ## Output
