@@ -106,18 +106,18 @@ This is the reference flow. Lite and Standard are subsets of it. Do not treat th
 
 | # | Stage | Type | Owner | Model | Effort | Input | Output | Typical time |
 |---|-------|------|-------|-------|--------|-------|--------|--------------|
-| 1 | **Brainstorm** ⚠️ | ideation | Claude + User | Opus | Medium | User request | `docs/01_brainstorm/brainstorm.md` | 15–30 min |
-| 2 | **Plan Draft** | planning | Claude | Sonnet | Medium | Brainstorm result | `docs/02_planning/plan_draft.md` | 15–30 min |
-| 3 | **Plan Review** | planning | Claude | Sonnet | High | Plan draft | `docs/02_planning/plan_review.md` | 10–20 min |
-| 4 | **Plan Final** ⚠️ | planning | Claude | Sonnet | Medium | Draft + review | `docs/02_planning/plan_final.md` | 10–15 min |
+| 1 | **Brainstorm** ⚠️ | ideation | Claude + User | Sonnet | Medium | User request | `docs/01_brainstorm/brainstorm.md` | 15–30 min |
+| 2 | **Plan Draft** | planning | Claude | Opus | Medium | Brainstorm result | `docs/02_planning/plan_draft.md` | 15–30 min |
+| 3 | **Plan Review** | planning | Claude | Opus | High | Plan draft | `docs/02_planning/plan_review.md` | 10–20 min |
+| 4 | **Plan Final** ⚠️ | planning | Claude | Opus | Medium | Draft + review | `docs/02_planning/plan_final.md` | 10–15 min |
 | 4.5 | **User Approval** 🔴 | approval_gate | User | — | — | plan_final.md | Approval confirmed | — |
 | 5 | **Technical Design** | design | Claude | Opus | High | Approved plan | `docs/03_design/technical_design.md` | 30–60 min |
 | 6 | **UI/UX Requirements** *(if `has_ui`)* | design | Claude | Sonnet | Medium | Technical design | `docs/03_design/ui_requirements.md` | 15–30 min |
 | 7 | **UI Flow** *(if `has_ui`)* | design | Claude | Sonnet | Medium | UI requirements | `docs/03_design/ui_flow.md` | 20–40 min |
 | 8 | **Implementation** | implementation | Codex | — | High | Design + UI flow | Code + tests + commit | 1–8 hrs |
-| 9 | **Code Review** | review | Claude | Sonnet | High | Codex output | `docs/04_implementation/implementation_progress.md` | 15–30 min |
+| 9 | **Code Review** | review | Claude | Opus | High | Codex output | `docs/04_implementation/implementation_progress.md` | 15–30 min |
 | 10 | **Revision** | implementation | Codex | — | Medium | Review feedback | Revised code + tests | 30 min–2 hrs |
-| 11 | **Final Validation** *(high-risk only)* | validation | Claude | Sonnet/Opus | High* | Revised code + test results | `docs/notes/final_validation.md` | 30 min–1 hr |
+| 11 | **Final Validation** *(high-risk only)* | validation | Claude | Opus | High* | Revised code + test results | `docs/notes/final_validation.md` | 30 min–1 hr |
 | 12 | **QA & Release** | qa_release | Claude | Sonnet | Medium | Validated code | `docs/05_qa_release/qa_scenarios.md` + `release_checklist.md` | 15–30 min |
 | 13 | **Deploy & Archive** | archive | Codex | — | Medium | QA-approved code | Merged code + updated `HANDOFF.md` | varies |
 
@@ -302,11 +302,19 @@ At session start, check `HANDOFF.md`:
 
 | Task type | Primary | Fallback | Reason |
 |-----------|---------|----------|--------|
-| Brainstorm, architecture | **Opus** | Sonnet | Strong reasoning on ambiguous/creative problems |
-| Planning, design review | **Sonnet** | Opus | Fast iteration, sufficient depth |
-| Code review, validation | **Sonnet** or **Opus** | — | Routine → Sonnet; critical path → Opus |
-| Implementation | **Codex** | — | Specialized coding environment |
-| Documentation, summary | **Haiku** | Sonnet | Fast and cost-efficient |
+| Brainstorm (Stage 1) | **Sonnet** | Opus | 방향 대화 — 깊은 추론보다 빠른 iteration이 중요 |
+| Planning (Stage 2–4) | **Opus** | Sonnet | 계획 오류가 구현 전체를 망가뜨림 — 앞에 투자 |
+| Technical design (Stage 5) | **Opus** | — | 아키텍처 결정 — 최고 추론 필요 |
+| UI/UX design (Stage 6–7) | **Sonnet** | Opus | 반복 속도 우선 |
+| Code review (Stage 9) | **Opus** | Sonnet | 깊은 검토 — 버그/보안 놓치면 Stage 10 재작업 비용 큼 |
+| Final validation (Stage 11) | **Opus** | — | 고위험 작업 전용 — XHigh effort |
+| QA / Release (Stage 12–13) | **Sonnet** | — | 체크리스트 수준 — Sonnet으로 충분 |
+| Implementation | **Codex** | — | 전문 코딩 환경 |
+| Documentation, summary | **Haiku** | Sonnet | 빠르고 비용 효율적 |
+
+> **Cowork 세션 운영 규칙:** 모델은 세션 시작 시에만 선택 가능 (대화 중 변경 불가).
+> Stage 1 → Sonnet으로 새 세션 시작. Stage 2+ → Opus로 새 세션 시작.
+> HANDOFF.md 다음 세션 프롬프트에 권장 모델이 명시됨.
 
 ### Effort decision tree
 
@@ -332,17 +340,18 @@ Four dedicated agents. Codex is an external implementation tool, not an agent.
 
 | Agent | Stages | Primary model | Effort |
 |-------|--------|---------------|--------|
-| 🧠 Planner | 1, 2, 3, 4 | Sonnet (Opus for Stage 1) | Medium–High |
+| 🧠 Planner | 1, 2, 3, 4 | Sonnet (Stage 1) / Opus (Stage 2–4) | Medium–High |
 | 🏗️ Designer | 5, 6, 7 | Opus (Stage 5) / Sonnet (6–7) | Medium–High |
-| 🔍 Reviewer | 9, 11 | Sonnet (9) / Opus (11) | High–XHigh |
+| 🔍 Reviewer | 9, 11 | Opus | High–XHigh |
 | 🧪 QA Engineer | 12, 13 | Sonnet | Medium |
 | ⚙️ Codex (external) | 8, 10 | — | — |
 
 ### Design principles
 
 1. **Designer ≠ Reviewer** — the agent that designed something must not sign off on it (confirmation bias).
-2. **Stage 1 uses Opus** — getting direction wrong at brainstorm breaks everything downstream.
-3. **Codex is a tool** — keep it out of the agent composition. Stages 8 and 10 belong to Codex.
+2. **Stage 1 uses Sonnet** — 브레인스토밍은 방향 대화. 빠른 iteration이 깊은 추론보다 중요.
+3. **Stage 2–4, 9, 11 uses Opus** — 계획 오류와 리뷰 누락은 하류 비용이 크다. Max 요금제 환경에서 앞에 투자.
+4. **Codex is a tool** — keep it out of the agent composition. Stages 8 and 10 belong to Codex.
 
 ### Lite agent composition
 

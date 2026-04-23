@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-24 | Session 12: Model selection policy 확정 — Stage별 Sonnet/Opus 배정. CLAUDE.md Sec.3 + WORKFLOW.md Sec.9–10 + settings.json schema v0.3 반영. |
 | 2026-04-23 | Session 11: v0.5 Stage 1 — debt items 5–7 done (update_handoff.sh KO verified, shellcheck CI + macOS CI, run_tests.sh, bundle1 test refresh) |
 | 2026-04-23 | Session 10: v0.5 Stage 1 — debt items 1–4 done (§ removal, tool-picker Sec.6 refresh, D4.x2 dev_history note, UI sunset check) |
 | 2026-04-23 | Session 9: v0.4 Stage 13 — CHANGELOG [0.4.0] finalized; v0.4 tag/release pending operator |
@@ -39,6 +40,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-24 | 세션 12: 모델 선택 정책 확정 — Stage별 Sonnet/Opus 배정. CLAUDE.md Sec.3 + WORKFLOW.md Sec.9–10 + settings.json schema v0.3 반영. |
 | 2026-04-23 | 세션 11: v0.5 Stage 1 — 빚 청산 항목 5–7 완료 (update_handoff.sh KO 확인, shellcheck CI + macOS CI, run_tests.sh, bundle1 테스트 갱신) |
 | 2026-04-23 | 세션 10: v0.5 Stage 1 — 빚 청산 항목 1–4 완료 (§ 제거, tool-picker Sec.6 갱신, D4.x2 dev_history 노트, UI sunset 확인) |
 | 2026-04-23 | 세션 9: v0.4 Stage 13 — CHANGELOG [0.4.0] 완성; v0.4 tag/release 운영자 실행 대기 |
@@ -104,6 +106,7 @@
 
 ```
 HANDOFF.md Status 섹션 + "다음 할 일" 참조해서 이어가죠.
-세션 12 = v0.5 보류 항목 중 우선순위 결정 (Bundle 2/3 re-scope, Claude Code Hooks, gstack 설계).
-전제: 세션 11 커밋 완료 (bundle1 test refresh + CI 워크플로 + run_tests.sh).
+세션 13 = R2 경량화 논의 + v0.5 보류 항목 우선순위 결정 (Bundle 2/3 re-scope, Claude Code Hooks, gstack).
+⚠️ 이 세션은 Sonnet으로 여세요 (Stage 1 브레인스토밍 계속).
+전제: 세션 12 커밋 완료 (model policy — CLAUDE.md + WORKFLOW.md + settings.json).
 ```

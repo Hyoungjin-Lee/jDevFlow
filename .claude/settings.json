@@ -1,6 +1,7 @@
 {
-  "_comment": "AI Workflow settings — schema v0.2 (hybrid mode: Cowork desktop for Stage 1 + CLI agent team for Stages 2–13; schema user-configurable in v0.3+). CLI 실행: claude --teammate-mode tmux",
-  "schema_version": "0.2",
+  "_comment": "AI Workflow settings — schema v0.3 (hybrid mode: Cowork desktop for Stage 1 Sonnet + CLI agent team Opus for Stages 2–13; schema user-configurable in v0.4+). CLI 실행: claude --teammate-mode tmux",
+  "_comment_model_policy": "Max x5 요금제 기준. Stage 1=Sonnet(방향대화), Stage 2–4=Opus(계획투자), Stage 5=Opus(아키텍처), Stage 9/11=Opus(리뷰/검증), 나머지=Sonnet.",
+  "schema_version": "0.3",
   "language": "ko",
   "teammateMode": "tmux",
   "env": {
@@ -9,11 +10,12 @@
   "agents": {
     "planner": {
       "stages": [2, 3, 4],
-      "_comment_stage1": "Stage 1 브레인스토밍은 Cowork 데스크탑에서 운영자 + Claude 1:1 진행 (CLI 에이전트 팀 범위 외)",
+      "_comment_stage1": "Stage 1 브레인스토밍은 Cowork 데스크탑에서 운영자 + Claude 1:1 진행 (Sonnet). CLI 에이전트 팀 범위 외.",
+      "_comment_model": "Stage 2–4: Opus — 계획 오류가 구현 전체를 망가뜨림. Max 요금제 환경에서 앞에 투자.",
       "models": {
-        "stage_2": "claude-sonnet-4-6",
-        "stage_3": "claude-sonnet-4-6",
-        "stage_4": "claude-sonnet-4-6"
+        "stage_2": "claude-opus-4-7",
+        "stage_3": "claude-opus-4-7",
+        "stage_4": "claude-opus-4-7"
       },
       "effort": {
         "stage_2": "medium",
@@ -36,8 +38,9 @@
     },
     "reviewer": {
       "stages": [9, 11],
+      "_comment_model": "Stage 9: Opus — 깊은 리뷰 누락 시 Stage 10 재작업 비용 큼. Stage 11: Opus XHigh — 고위험 검증 전용.",
       "models": {
-        "stage_9": "claude-sonnet-4-6",
+        "stage_9": "claude-opus-4-7",
         "stage_11": "claude-opus-4-7"
       },
       "effort": {

@@ -255,7 +255,36 @@ doc path, and sees full detail whenever something actually needs their decision.
 
 ---
 
-## 3. Absolute Rules (Security)
+## 3. Model Selection Policy (v0.5 — Max x5 기준)
+
+### Stage별 권장 모델
+
+| Stage | 모델 | 이유 |
+|-------|------|------|
+| Stage 1 Brainstorm | **Sonnet** | 방향 대화 — 빠른 iteration이 중요 |
+| Stage 2–4 Planning | **Opus** | 계획 오류가 구현 전체를 망가뜨림 |
+| Stage 5 Technical Design | **Opus** | 아키텍처 결정 — 최고 추론 필요 |
+| Stage 6–7 UI/UX | **Sonnet** | 반복 속도 우선 |
+| Stage 9 Code Review | **Opus** | 깊은 리뷰 누락 시 Stage 10 재작업 비용 큼 |
+| Stage 11 Validation | **Opus** | 고위험 작업 전용 |
+| Stage 12–13 QA/Release | **Sonnet** | 체크리스트 수준 |
+
+### Cowork 세션 운영 규칙
+
+- 모델은 **세션 시작 시에만 선택 가능** (대화 중 변경 불가).
+- Stage 1 → **Sonnet**으로 새 세션 시작.
+- Stage 2+ → **Opus**로 새 세션 시작.
+- HANDOFF.md 다음 세션 프롬프트에 권장 모델 명시됨 — 세션 열기 전에 확인.
+- 모델 불일치 시 (예: Stage 5를 Sonnet으로 시작): Claude가 세션 시작 시 경고 후 계속 여부 확인.
+
+### Claude Code CLI 에이전트 팀
+
+- 모델 배정은 `.claude/settings.json` (schema v0.3) 참조.
+- Stage 2–4 Opus, Stage 5 Opus, Stage 9/11 Opus — settings.json에 반영 완료.
+
+---
+
+## 3a. Absolute Rules (Security)
 
 ```
 ❌ Never expose API keys, account numbers, or tokens in code or logs
@@ -590,7 +619,36 @@ EOF
 
 ---
 
-## 3. 절대 규칙 (보안)
+## 3. 모델 선택 정책 (v0.5 — Max x5 기준)
+
+### Stage별 권장 모델
+
+| Stage | 모델 | 이유 |
+|-------|------|------|
+| Stage 1 브레인스토밍 | **Sonnet** | 방향 대화 — 빠른 iteration이 중요 |
+| Stage 2–4 기획 | **Opus** | 계획 오류가 구현 전체를 망가뜨림 |
+| Stage 5 기술 설계 | **Opus** | 아키텍처 결정 — 최고 추론 필요 |
+| Stage 6–7 UI/UX | **Sonnet** | 반복 속도 우선 |
+| Stage 9 코드 리뷰 | **Opus** | 깊은 리뷰 누락 시 Stage 10 재작업 비용 큼 |
+| Stage 11 검증 | **Opus** | 고위험 작업 전용 |
+| Stage 12–13 QA/릴리스 | **Sonnet** | 체크리스트 수준 |
+
+### Cowork 세션 운영 규칙
+
+- 모델은 **세션 시작 시에만 선택 가능** (대화 중 변경 불가).
+- Stage 1 → **Sonnet**으로 새 세션 시작.
+- Stage 2+ → **Opus**로 새 세션 시작.
+- HANDOFF.md 다음 세션 프롬프트에 권장 모델 명시됨 — 세션 열기 전에 확인.
+- 모델 불일치 시 (예: Stage 5를 Sonnet으로 시작): Claude가 세션 시작 시 경고 후 계속 여부 확인.
+
+### Claude Code CLI 에이전트 팀
+
+- 모델 배정은 `.claude/settings.json` (schema v0.3) 참조.
+- Stage 2–4 Opus, Stage 5 Opus, Stage 9/11 Opus — settings.json에 반영 완료.
+
+---
+
+## 3a. 절대 규칙 (보안)
 
 ```
 ❌ API키·계좌번호·토큰을 코드/로그에 평문 노출 금지
