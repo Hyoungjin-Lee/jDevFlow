@@ -11,7 +11,7 @@ _AI_PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 alias aiinit="bash $_AI_PROJECT_ROOT/scripts/init_project.sh"
 alias aisec="bash $_AI_PROJECT_ROOT/scripts/setup_security.sh"
 alias aigit='bash $_AI_PROJECT_ROOT/scripts/git_checkpoint.sh'
-alias aihist='bash $_AI_PROJECT_ROOT/scripts/append_history.sh'
+alias airelease='bash $_AI_PROJECT_ROOT/scripts/release.sh'
 
 # Stage runners
 alias aib="bash $_AI_PROJECT_ROOT/scripts/ai_step.sh brainstorm"
