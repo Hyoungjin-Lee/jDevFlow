@@ -82,8 +82,8 @@ Use **Strict** when:
 | Stage | Stage type | Lite | Standard | Strict |
 |-------|-----------|------|----------|--------|
 | 1 Brainstorm | ideation | skip | run (light) | run |
-| 2 Plan Draft | planning | skip | run | run |
-| 3 Plan Review | planning | skip | optional | run |
+| 2 Plan Draft | planning | skip | skip (→ plan_final directly) | optional |
+| 3 Plan Review | planning | skip | skip | skip |
 | 4 Plan Final | planning | minimal note | run | run |
 | 4.5 User Approval | approval_gate | optional | run | run (stricter) |
 | 5 Technical Design | design | skip / inline | run | run |
@@ -92,7 +92,7 @@ Use **Strict** when:
 | 8 Implementation | implementation | run | run | run |
 | 9 Code Review | review | light | run | run |
 | 10 Revision | implementation | if review failed | if review failed | if review failed |
-| 11 Final Validation | validation | skip or Sonnet | run (High) | run (XHigh) |
+| 11 Final Validation | validation | skip | skip (unless high-risk) | high-risk only (same session OK) |
 | 12 QA & Release | qa_release | checklist only | run | run |
 | 13 Deploy & Archive | archive | run (simple) | run | run |
 
@@ -117,7 +117,7 @@ This is the reference flow. Lite and Standard are subsets of it. Do not treat th
 | 8 | **Implementation** | implementation | Codex | — | High | Design + UI flow | Code + tests + commit | 1–8 hrs |
 | 9 | **Code Review** | review | Claude | Sonnet | High | Codex output | `docs/04_implementation/implementation_progress.md` | 15–30 min |
 | 10 | **Revision** | implementation | Codex | — | Medium | Review feedback | Revised code + tests | 30 min–2 hrs |
-| 11 | **Final Validation** | validation | Claude | Opus | XHigh or High* | Revised code + test results | `docs/notes/final_validation.md` | 30 min–1 hr |
+| 11 | **Final Validation** *(high-risk only)* | validation | Claude | Sonnet/Opus | High* | Revised code + test results | `docs/notes/final_validation.md` | 30 min–1 hr |
 | 12 | **QA & Release** | qa_release | Claude | Sonnet | Medium | Validated code | `docs/05_qa_release/qa_scenarios.md` + `release_checklist.md` | 15–30 min |
 | 13 | **Deploy & Archive** | archive | Codex | — | Medium | QA-approved code | Merged code + updated `HANDOFF.md` | varies |
 
@@ -126,7 +126,7 @@ This is the reference flow. Lite and Standard are subsets of it. Do not treat th
 - **XHigh** — security, architecture, irreversible production changes
 - **High** — most feature validation, code review, design decisions
 - **Medium** — planning, documentation, routine review
-- `*` Stage 11 default is **High**; escalate to **XHigh** only when Strict mode criteria apply
+- `*` Stage 11 runs only for high-risk tasks (Strict mode). Same-session validation is acceptable; fresh session only if Claude judges the risk warrants it. Default effort = **High**; escalate to **XHigh** for security/payment/irreversible changes.
 
 ⚠️ stages must not be skipped silently. Skipping is a mode decision recorded in `HANDOFF.md` or `dev_history.md`.
 
@@ -169,7 +169,7 @@ A stage is not "always on." Each stage has a condition. Conditions can be evalua
 | 8 Implementation | Always | — |
 | 9 Code Review | Always (depth scales with mode) | Never fully skipped |
 | 10 Revision | Stage 9 result = NEEDS REVISION | Stage 9 result = PASS |
-| 11 Final Validation | `risk_level >= medium` OR `mode == Strict` | Lite changes with no shared-state impact |
+| 11 Final Validation | `risk_level == high` OR (`mode == Strict` AND Claude judges it necessary) | All Standard and Lite; routine Strict work |
 | 12 QA & Release | `mode ∈ {Standard, Strict}` | Lite docs-only changes |
 | 13 Deploy & Archive | Always | — |
 
@@ -243,8 +243,8 @@ Real workflows are not linear. A stage can fail or be rejected, and the workflow
 
 ### 7.2 Rollback principles
 
-- Rolling back **does not** mean deleting prior documents. Append a new revision section instead, so dev_history stays auditable.
-- Every rollback must be logged in `docs/notes/dev_history.md` with the trigger, the stage it returned to, and the reason.
+- Rolling back **does not** mean deleting prior documents. Append a new revision section instead, so the audit trail stays intact.
+- Every rollback must be noted in `HANDOFF.md` Recent Changes and `CHANGELOG.md` with the trigger, the stage it returned to, and the reason.
 - If the same loop (e.g., Stage 9 → 10) happens three times on the same change, pause and escalate to Strict mode. Repeated loops are usually a signal that design is wrong, not that code is wrong.
 
 ### 7.3 Flow sketch (Standard mode)
@@ -391,9 +391,9 @@ These operations do not change the canonical flow today. They are noted here so 
 ### Write order (end of session)
 
 1. Update the current stage document
-2. Append to `docs/notes/dev_history.md`: stage number, date, what was done, blockers, output links
-3. Update `HANDOFF.md`: current mode, current status, next session tasks, blockers, document links
-4. Write or refresh the "next session prompt" at the bottom of `HANDOFF.md`
+2. Update `HANDOFF.md`: current mode, current status, next session tasks, blockers, document links
+3. Update `CHANGELOG.md` `[Unreleased]` section with any notable changes
+4. Emit the next-session pointer-prompt in chat (not buried in HANDOFF.md)
 
 ### Next-session prompt rules
 
@@ -409,30 +409,37 @@ When the user says "set me up to continue next session":
 - State the next task clearly (file names and stage numbers)
 - Include relevant file paths
 - Include key design decisions (so the next session does not re-debate them)
+- **Emit directly in chat** — do not bury the prompt inside HANDOFF.md
 
 ---
 
-## 14. Independent validation protocol
+## 14. Validation protocol (v0.4)
 
-**Required for Stage 11 in Strict mode. Recommended for any complex logic change.**
+**Stage 11 runs only for high-risk tasks (Strict mode). Same-session validation is the default.**
 
-Reviewing code in the session that produced it introduces confirmation bias. Use a fresh Claude session with no prior context.
+Use a fresh Claude session only when the change touches security, payment, irreversible infrastructure, or when Claude explicitly judges the risk warrants it.
 
-### Steps
+### Steps (same-session)
 
-1. Start a new Claude session (no context from the current session)
-2. Paste only the changed code and minimal background
-3. Ask for: bug/logic errors, security vulnerabilities, exception handling, improvements
-4. Apply findings back to the current session
+1. Pause implementation context; review the full diff with fresh eyes
+2. Check: bug/logic errors, security, exception handling, edge cases
+3. Record result explicitly: **APPROVED** or **CHANGES REQUESTED**
 
-### When to apply
+### Steps (fresh-session — high-risk only)
 
-| Change size | Validation method |
-|------------|-------------------|
-| 1–10 lines | Current-session self-review is fine |
-| 10–50 lines | Independent validation recommended |
-| 50+ lines or a new file | Independent validation required |
-| New agent or orchestrator | Independent validation required |
+1. Open a new Claude session with the project folder
+2. Point it to the changed files and minimal background
+3. Ask for: bug/logic errors, security vulnerabilities, exception handling
+4. Apply findings back to the working session
+
+### When to escalate to fresh session
+
+| Trigger | Action |
+|---------|--------|
+| Security / payment / auth change | Fresh session required |
+| Irreversible infrastructure change | Fresh session required |
+| Claude judges bias risk is high | Claude asks operator; proceed on approval |
+| All other changes | Same-session review sufficient |
 
 ---
 
@@ -469,9 +476,8 @@ project-root/
 │  │  ├─ qa_scenarios.md             ← Stage 12
 │  │  └─ release_checklist.md        ← Stage 12
 │  └─ notes/
-│     ├─ dev_history.md              ← Cumulative log of every stage + mode + rollback
 │     ├─ decisions.md                ← Decision rationale
-│     └─ final_validation.md         ← Stage 11
+│     └─ final_validation.md         ← Stage 11 (high-risk only)
 │
 ├─ prompts/
 │  ├─ claude/                        ← Reusable prompts for Claude stages
@@ -532,6 +538,7 @@ source ~/projects/my-project/scripts/zsh_aliases.sh
 
 | Date | Version | Changes |
 |------|---------|---------|
+| 2026-04-23 | 2.1 | v0.4 simplification: plan_draft/plan_review removed from Standard default; Stage 11 restricted to high-risk tasks, same-session validation allowed; dev_history.md retired (CHANGELOG is now the cumulative record); session write order updated; fresh-session requirement removed. |
 | 2026-04-21 | 2.0 | Introduced Lite / Standard / Strict modes. Reframed 13-stage flow as Canonical Strict Flow. Added stage types, execution conditions, completion criteria, re-entry rules. Noted future operation-level breakdown for Codex stages. |
 | 2026-04-21 | 1.0 | Initial release. Generalized from stockpilot workflow. KIS/stock-specific content removed. Cross-platform security module added. |
 
@@ -621,8 +628,8 @@ jDevFlow는 **문서 중심, 역할 분리 개발 프로세스**다.
 | 단계 | Stage type | Lite | Standard | Strict |
 |------|-----------|------|----------|--------|
 | 1 Brainstorm | ideation | 생략 | 간단 수행 | 수행 |
-| 2 Plan Draft | planning | 생략 | 수행 | 수행 |
-| 3 Plan Review | planning | 생략 | 선택 | 수행 |
+| 2 Plan Draft | planning | 생략 | 생략 (→ plan_final 직행) | 선택 |
+| 3 Plan Review | planning | 생략 | 생략 | 생략 |
 | 4 Plan Final | planning | 최소 노트 | 수행 | 수행 |
 | 4.5 Approval | approval_gate | 선택 | 수행 | 더 엄격 |
 | 5 Technical Design | design | 생략/인라인 | 수행 | 수행 |
@@ -631,7 +638,7 @@ jDevFlow는 **문서 중심, 역할 분리 개발 프로세스**다.
 | 8 Implementation | implementation | 수행 | 수행 | 수행 |
 | 9 Code Review | review | 경량 | 수행 | 수행 |
 | 10 Revision | implementation | 리뷰 실패 시 | 리뷰 실패 시 | 리뷰 실패 시 |
-| 11 Final Validation | validation | 생략 또는 Sonnet | 수행 (High) | 수행 (XHigh) |
+| 11 Final Validation | validation | 생략 | 생략 (고위험 아니면) | 고위험 한정 (동일 세션 가능) |
 | 12 QA & Release | qa_release | 체크리스트만 | 수행 | 수행 |
 | 13 Deploy & Archive | archive | 수행 (단순) | 수행 | 수행 |
 
@@ -654,7 +661,7 @@ jDevFlow는 **문서 중심, 역할 분리 개발 프로세스**다.
 | 8 | **구현** | implementation | Codex | — | High | 기술 설계 | 코드 + 테스트 + 커밋 | 1~8시간 |
 | 9 | **코드 리뷰** | review | Claude | Sonnet | High | Codex 결과 | `docs/04_implementation/implementation_progress.md` | 15~30분 |
 | 10 | **수정** | implementation | Codex | — | Medium | 리뷰 피드백 | 수정된 코드 | 30분~2시간 |
-| 11 | **최종 검증** | validation | Claude | Opus | XHigh 또는 High* | 수정된 코드 | `docs/notes/final_validation.md` | 30분~1시간 |
+| 11 | **최종 검증** *(고위험 한정)* | validation | Claude | Sonnet/Opus | High* | 수정된 코드 | `docs/notes/final_validation.md` | 30분~1시간 |
 | 12 | **QA & 릴리스** | qa_release | Claude | Sonnet | Medium | 검증된 코드 | `docs/05_qa_release/qa_scenarios.md` | 15~30분 |
 | 13 | **배포 & 아카이브** | archive | Codex | — | Medium | QA 승인 | 병합 + HANDOFF 업데이트 | 가변 |
 
@@ -716,8 +723,8 @@ jDevFlow는 **문서 중심, 역할 분리 개발 프로세스**다.
 
 **원칙:**
 
-- 롤백은 문서를 **지우지 않는다**. 새 revision 섹션을 덧붙여 dev_history의 감사 가능성을 유지한다.
-- 모든 롤백은 `docs/notes/dev_history.md`에 트리거/복귀지점/이유와 함께 기록한다.
+- 롤백은 문서를 **지우지 않는다**. 새 revision 섹션을 덧붙여 감사 가능성을 유지한다.
+- 모든 롤백은 `HANDOFF.md` Recent Changes와 `CHANGELOG.md`에 트리거/복귀지점/이유와 함께 기록한다.
 - 같은 루프(예: 9→10)가 3회 반복되면 멈추고 Strict로 승격한다. 반복 루프는 보통 **코드 문제가 아니라 설계 문제**의 신호다.
 
 ---
@@ -765,9 +772,9 @@ jDevFlow는 **문서 중심, 역할 분리 개발 프로세스**다.
 **쓰기 순서 (세션 종료):**
 
 1. 현재 단계 문서 업데이트
-2. `docs/notes/dev_history.md` 항목 추가 (단계 번호/날짜/완료 내용/모드/차단 요인)
-3. `HANDOFF.md` 업데이트 (모드, 상태, 다음 작업, 문서 링크)
-4. `HANDOFF.md` 하단 "다음 세션 프롬프트" 갱신
+2. `HANDOFF.md` 업데이트 (모드, 상태, 다음 작업, 문서 링크)
+3. `CHANGELOG.md` `[Unreleased]` 갱신 (주목할 변경 사항)
+4. 다음 세션 프롬프트를 **채팅에 직접 출력** (HANDOFF.md 에 묻지 않음)
 
 ---
 

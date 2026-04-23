@@ -1,18 +1,21 @@
 {
-  "_comment": "AI Workflow settings — v0.1 (model/effort fixed; user-configurable in v0.2+)",
-  "version": "0.1",
-  "language": "en",
+  "_comment": "AI Workflow settings — schema v0.2 (hybrid mode: Cowork desktop for Stage 1 + CLI agent team for Stages 2–13; schema user-configurable in v0.3+). CLI 실행: claude --teammate-mode tmux",
+  "schema_version": "0.2",
+  "language": "ko",
+  "teammateMode": "tmux",
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
   "agents": {
     "planner": {
-      "stages": [1, 2, 3, 4],
+      "stages": [2, 3, 4],
+      "_comment_stage1": "Stage 1 브레인스토밍은 Cowork 데스크탑에서 운영자 + Claude 1:1 진행 (CLI 에이전트 팀 범위 외)",
       "models": {
-        "stage_1": "claude-opus-4-5",
-        "stage_2": "claude-sonnet-4-5",
-        "stage_3": "claude-sonnet-4-5",
-        "stage_4": "claude-sonnet-4-5"
+        "stage_2": "claude-sonnet-4-6",
+        "stage_3": "claude-sonnet-4-6",
+        "stage_4": "claude-sonnet-4-6"
       },
       "effort": {
-        "stage_1": "medium",
         "stage_2": "medium",
         "stage_3": "high",
         "stage_4": "medium"
@@ -21,9 +24,9 @@
     "designer": {
       "stages": [5, 6, 7],
       "models": {
-        "stage_5": "claude-opus-4-5",
-        "stage_6": "claude-sonnet-4-5",
-        "stage_7": "claude-sonnet-4-5"
+        "stage_5": "claude-opus-4-7",
+        "stage_6": "claude-sonnet-4-6",
+        "stage_7": "claude-sonnet-4-6"
       },
       "effort": {
         "stage_5": "high",
@@ -34,8 +37,8 @@
     "reviewer": {
       "stages": [9, 11],
       "models": {
-        "stage_9": "claude-sonnet-4-5",
-        "stage_11": "claude-opus-4-5"
+        "stage_9": "claude-sonnet-4-6",
+        "stage_11": "claude-opus-4-7"
       },
       "effort": {
         "stage_9": "high",
@@ -45,8 +48,8 @@
     "qa_engineer": {
       "stages": [12, 13],
       "models": {
-        "stage_12": "claude-sonnet-4-5",
-        "stage_13": "claude-sonnet-4-5"
+        "stage_12": "claude-sonnet-4-6",
+        "stage_13": "claude-sonnet-4-6"
       },
       "effort": {
         "stage_12": "medium",
