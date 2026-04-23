@@ -178,7 +178,7 @@ where `<block identifier>` is one of (in order of preference for stability):
 - Within-session Claude-to-Claude handoffs (same chat, same file access) can
   use pure pointer ("다음 단계는 파일 X 참고") without the paste-wrapper.
 
-### 🔴 Session close — git policy (v0.4)
+### 🔴 Session close — git policy (v0.5)
 
 **Commit only in these three cases:**
 
@@ -189,24 +189,33 @@ where `<block identifier>` is one of (in order of preference for stability):
 
 **How to commit (sandbox has no git write access):**
 
-Claude hands the operator a single fenced shell block:
+Claude emits a **single one-line shell block** using `git_checkpoint.sh`.
+The operator pastes it into their local terminal — nothing else needed.
 
-```bash
-git add <specific-paths> && git commit -m "$(cat <<'EOF'
-<type>: <subject>
+```sh
+sh scripts/git_checkpoint.sh "type: subject" path/a path/b path/c
+```
 
-<body>
+- Always name specific file paths. Never omit them (script rejects bare calls).
+- `git_checkpoint.sh` handles `-c user.name/email`, Co-Authored-By footer,
+  and post-commit verification automatically.
+- After the operator runs the block and shares the output, Claude checks
+  `git log --oneline -3` output to confirm success.
+- If verification fails, Claude emits a corrected one-liner.
+- Uncommitted work is flagged in `HANDOFF.md` so the next session knows.
+- `git push` is **not** included — operator runs that separately if needed.
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+**❌ Anti-pattern — do NOT emit multi-line raw git blocks:**
+
+```sh
+# Forbidden form
+git add a b c && git commit -m "$(cat <<'EOF'
+...
 EOF
 )"
 ```
 
-- Never use `git add -A` / `git add .` — always name specific paths.
-- After the operator confirms the commit, Claude verifies:
-  `git log --oneline -5 && git status --short`
-- If verification fails, report and hand back a corrected block.
-- Uncommitted work is flagged in `HANDOFF.md` so the next session knows.
+This shifts work onto the operator. Always use `git_checkpoint.sh` one-liner.
 
 ### 🔴 Chat output rule — summary by default, plain language, detail only for issues
 
@@ -506,6 +515,42 @@ Antigravity, 프로젝트가 열린 새 Claude 세션) 가 그 파일을 직접 
   쌍을 블록 양쪽에 삽입 — 이후 포인터-프롬프트가 안정적으로 참조 가능.
 - 동일 세션 내 Claude→Claude 핸드오프 (같은 채팅, 같은 파일 접근) 는
   붙여넣기 wrapper 없이 순수 포인터만으로 충분 ("다음 단계는 파일 X 참고").
+
+### 🔴 세션 종료 — git 정책 (v0.5)
+
+**커밋하는 세 가지 경우:**
+
+1. **버전 종료** — v0.x 태그 + 릴리스 시.
+2. **일과 마감** — 운영자가 명시적으로 마무리할 때.
+3. **Claude 판단으로 중요 변경** — 커밋 전 승인 요청:
+   > "이번 작업이 중요 변경이라 커밋을 제안합니다. 지금 반영할까요?"
+
+**커밋 방법 — 운영자는 한 줄 쉘 명령어만 붙여넣으면 끝:**
+
+Claude 가 아래 형식의 한 줄 블록을 채팅에 꺼낸다:
+
+```sh
+sh scripts/git_checkpoint.sh "type: subject" path/a path/b path/c
+```
+
+- 파일 경로를 반드시 명시. 미지정 시 스크립트가 거부함 (`git add -A` 사용 안 함).
+- `git_checkpoint.sh` 가 `-c user.name/email`, Co-Authored-By 꼬리말,
+  커밋 후 검증(`git log --oneline -3`)을 자동 처리.
+- 운영자가 실행 후 출력을 공유하면 Claude 가 SHA를 확인.
+- 실패 시 Claude 가 수정된 one-liner 재발행.
+- `git push` 는 포함하지 않음 — 운영자가 별도로 실행.
+
+**❌ 금지 — Claude 가 직접 여러 줄 git 블록 주지 않기:**
+
+```sh
+# 이런 형태 금지
+git add a b c && git commit -m "$(cat <<'EOF'
+...
+EOF
+)"
+```
+
+운영자 수고를 늘리는 패턴. 반드시 `git_checkpoint.sh` one-liner 로 대체.
 
 ### 🔴 채팅 출력 규칙 — 기본값 써머리, 비전공자 친화 언어, 이슈 있을 때만 상세
 

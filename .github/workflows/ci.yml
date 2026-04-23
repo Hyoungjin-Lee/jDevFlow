@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  shellcheck:
+    name: shellcheck (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: sudo apt-get update -qq && sudo apt-get install -y shellcheck
+
+      - name: Run shellcheck (scripts/ + tests/)
+        # shellcheck auto-detects shell from shebang; no --shell flag needed.
+        # severity=warning catches real issues while ignoring style hints.
+        run: |
+          find scripts/ tests/ -name "*.sh" | sort | xargs shellcheck --severity=warning
+
+  test-linux:
+    name: harness (Linux)
+    runs-on: ubuntu-latest
+    needs: shellcheck
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: bundle1 (10 checks)
+        run: bash tests/bundle1/run_bundle1.sh
+
+      - name: bundle4 (4 tests)
+        run: sh tests/run_bundle4.sh
+
+  test-mac:
+    name: harness (macOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: brew install shellcheck
+
+      - name: Run shellcheck (scripts/ + tests/)
+        run: |
+          find scripts/ tests/ -name "*.sh" | sort | xargs shellcheck --severity=warning
+
+      - name: bundle1 (10 checks)
+        run: bash tests/bundle1/run_bundle1.sh
+
+      - name: bundle4 (4 tests)
+        run: sh tests/run_bundle4.sh

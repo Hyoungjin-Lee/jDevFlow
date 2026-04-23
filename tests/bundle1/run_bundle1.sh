@@ -125,8 +125,9 @@ in_block { count++ }
 END { print count + 0 }
 ' "$SKILL")
 [ "$example_lines" -ge 15 ] || fail "worked example too short ($example_lines)"
-grep -q 'Stage 2 Plan Draft' "$SKILL" || fail "worked example missing Stage 2 entry"
-grep -q 'Strict-hybrid' "$SKILL" || fail "worked example missing Strict-hybrid"
+grep -q 'Stage 1 Brainstorm' "$SKILL" || fail "worked example missing Stage 1 Brainstorm entry"
+grep -q 'mode Standard' "$SKILL" || fail "worked example missing mode Standard"
+grep -q 'risk_level medium' "$SKILL" || fail "worked example missing risk_level medium"
 printf 'PASS worked example (%s lines)\n' "$example_lines"
 
 printf '==> R2 grep\n'
