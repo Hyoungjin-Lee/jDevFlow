@@ -8,23 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- None yet.
+
+### Changed
+- None yet.
+
+### Deprecated
+- None yet.
+
+### Removed
+- None yet.
+
+### Fixed
+- None yet.
+
+### Security
+- None yet.
+
+## [0.4.0] - 2026-04-23
+
+> Retrospective + simplification meta-release. No new features or bundles. Self-test of "can jOneFlow release something lightly?"
+
+### Added
 - **docs/02_planning_v0.4/plan_final.md** — v0.4 단순화 실행 계획 (Stage 2 산출물).
+- **docs/01_brainstorm_v0.4/brainstorm.md** — v0.4 회고 + 단순화 방향 브레인스토밍 (Stage 1 산출물).
+- **HANDOFF.archive.v0.3.md** — v0.3 HANDOFF 아카이브.
 
 ### Changed
 - **WORKFLOW.md v2.1** — plan_draft/plan_review 단계 Standard 기본값에서 제거 (plan_final 직행); Stage 11 고위험 작업 한정 + 동일 세션 허용; 세션 쓰기 순서에서 dev_history 제거; 롤백 로깅을 HANDOFF.md + CHANGELOG로 전환; 독립 검증 프로토콜 섹션 재작성 (fresh-session 요구 폐지).
 - **CLAUDE.md** — Stage 11 fresh-session 요구 폐지 (고위험 한정 + 동일 세션 허용); git 정책을 3-경우 최소화로 교체 (버전 종료 / 일과 마감 / Claude 판단); 핵심 파일 테이블에서 dev_history → CHANGELOG로 교체.
-
-### Deprecated
-- None.
+- **.claude/settings.json schema v0.2** — 에이전트 팀 활성화 (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), tmux 모드, 최신 모델 (claude-sonnet-4-6, claude-opus-4-7).
+- **HANDOFF.md** 경량화 — Status + Next + 주의사항 중심으로 재구성; `update_handoff.sh` 호환성 유지.
 
 ### Removed
-- `docs/notes/dev_history.md` + `docs/notes/dev_history.ko.md` 폐기 (git rm — 운영자 로컬 실행 대기 중). CHANGELOG.md가 누적 변경 기록 대체.
-
-### Fixed
-- None.
-
-### Security
-- None.
+- `docs/notes/dev_history.md` + `docs/notes/dev_history.ko.md` — CHANGELOG.md가 누적 변경 기록 대체.
 
 ### Planned for v0.4 (retrospective + simplification release — meta scope, no feature adds)
 - **Retrospective** on v0.3 dogfooding experience: catalogue concrete friction points from the 7-session v0.3 build (13 stages × 2 bundles × EN+KO × validation groups × M.1/M.3/M.5/M.6 gates × AC matrices × D4.x frontmatter × R4 freshness × R2 read-only invariant × dual harness).
