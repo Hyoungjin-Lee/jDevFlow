@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - None yet.
 
 ### Changed
-- None yet.
+- **`.skills/tool-picker/SKILL.md` Sec. 6** — worked example updated to v0.5 Stage 1 live triple (Standard · medium); was v0.3 Stage 2 Strict-hybrid values.
+- **`docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 (D4.x2)** — added note that `docs/notes/dev_history.md` was removed in v0.4 (replaced by `CHANGELOG.md`).
+- **`docs/notes/decisions.md` D4.x2** — same dev_history removal note added; decisions.md is now current.
+- **`prompts/claude/final_review.md`** — removed `§14` section reference from WORKFLOW.md link (section numbering removed in v0.4).
+- **`prompts/claude/code_review.md`** — replaced `§Security` with `"Security" section` (§ symbol removed per v0.5 backlog item 6).
 
 ### Deprecated
 - None yet.
@@ -24,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Security
 - None yet.
+
+### Notes
+- **UI base-only policy** (v0.3 brainstorm Sec. 9): v0.5 in progress, no downstream `has_ui=true` found → policy remains in effect. Sunset check deferred to v0.5 Stage 13 or first `has_ui=true`, whichever comes first.
 
 ## [0.4.0] - 2026-04-23
 

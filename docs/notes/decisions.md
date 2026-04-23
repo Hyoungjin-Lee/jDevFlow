@@ -28,7 +28,7 @@ Source of record: `../03_design/bundle4_doc_discipline/technical_design.md` Sec.
 **Scope.**
 
 - Docs that carry frontmatter: every file at `docs/03_design/**/technical_design.md`, `docs/04_implementation/implementation_progress.md`, `docs/notes/final_validation.md`, `docs/05_qa_release/qa_scenarios.md`, `docs/05_qa_release/release_checklist.md`, and their `.ko.md` pairs.
-- Docs that do NOT carry frontmatter: `docs/01_brainstorm/**`, `docs/02_planning/**`, `docs/notes/dev_history.md`, `HANDOFF.md`, `CLAUDE.md`, `WORKFLOW.md`, any `README.md`.
+- Docs that do NOT carry frontmatter: `docs/01_brainstorm/**`, `docs/02_planning/**`, `HANDOFF.md`, `CLAUDE.md`, `WORKFLOW.md`, any `README.md`. (Note: `docs/notes/dev_history.md` removed in v0.4 — replaced by `CHANGELOG.md`.)
 
 **Rationale.** Stage-5+ docs are machine-parsed by Bundle 1 tool-picker (D1.b) and by Stage 11 dossier generation; a stable frontmatter keeps that parse trivial. Earlier-stage docs are narrative, bilingual, and human-first - frontmatter would add noise without a consumer.
 
