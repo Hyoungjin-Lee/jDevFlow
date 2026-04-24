@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **`docs/01_brainstorm_v0.6/brainstorm.md`** — v0.6 Stage 1 브레인스토밍 산출물. CLI 자동화 레이어, 운영 패턴 3종, team_mode 3종, init_project.sh / switch_team.sh 설계 확정.
+- **`docs/02_planning_v0.6/`** — v0.6 Stage 2–4 기획 산출물 3종 (plan_draft/review/final). Jonelab AI팀 tmux 팀모드로 작성. plan_final 6/6 승인 체크리스트 완료.
+
+### Changed
+- **`CLAUDE.md` 세션 종료 규칙** — 오케스트레이터가 커밋 직접 실행 (운영자 paste 금지). 세션 종료 시 "바로 다음 세션 / 오늘은 여기까지" 두 가지 옵션 필수 제시.
 
 ## [0.5.0] - 2026-04-24
 
