@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **`docs/01_brainstorm_v0.6/brainstorm.md`** — v0.6 Stage 1 브레인스토밍 산출물. CLI 자동화 레이어, 운영 패턴 3종, team_mode 3종, init_project.sh / switch_team.sh 설계 확정.
+
+## [0.5.0] - 2026-04-24
+
+> Meta-release: KO only 전환 + 모델 선택 정책 + CI 자동화 + Bundle 2/3 re-scope. 기능 번들 없음.
+
+### Added
 - **Model selection policy (v0.5 — Max x5 기준)** — Stage별 Sonnet/Opus 배정 기준 확정. Stage 1=Sonnet, Stage 2–4/5/9/11=Opus, Stage 6–7/12–13=Sonnet. CLAUDE.md Sec.3, WORKFLOW.md Sec.9–10, `.claude/settings.json` schema v0.3에 반영.
 - **Bundle 2/3 re-scope 완료** — Goal별 처리 방향 확정. Goal 2/6 드롭, Goal 1/4/8 글로벌 공개 버전 이월, Goal 3/Hooks v0.6 이월. gstack ETHOS + autoplan + /investigate 참조 대상 확정.
 - **`.github/workflows/ci.yml`** — GitHub Actions CI: shellcheck (Linux), test harness (Linux + macOS). shellcheck auto-detects shell from shebang; severity=warning. macOS job runs `brew install shellcheck` + both harnesses.
@@ -19,29 +26,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`.claude/settings.json` schema v0.3** — planner Stage 2–4 Sonnet→Opus, reviewer Stage 9 Sonnet→Opus. schema_version 0.2→0.3.
 - **`WORKFLOW.md` Sec.3/9/10** — Stage 표 모델 업데이트. Model selection guide 전체 재작성. Cowork 세션 운영 규칙 추가.
 - **`CLAUDE.md` Sec.3** — 모델 선택 정책 섹션 신규 추가.
-- **`CLAUDE.md` git policy** (EN + KO) — upgraded to v0.5: Claude now emits a single `sh scripts/git_checkpoint.sh "msg" file...` one-liner instead of a raw multi-line `git add && git commit` block. Forbidden anti-pattern documented. KO section added (was missing git policy section).
-- **`scripts/git_checkpoint.sh`** — removed `git add -A` fallback (was policy violation); removed automatic `git push` (sandbox has no auth); added explicit file-required guard and post-commit log output.
+- **`CLAUDE.md` git policy** — v0.5 업그레이드: `sh scripts/git_checkpoint.sh "msg" file...` one-liner 방식. raw multi-line git 블록 금지 패턴 문서화.
+- **`scripts/git_checkpoint.sh`** — removed `git add -A` fallback (was policy violation); removed automatic `git push`; added explicit file-required guard and post-commit log output.
 - **`.skills/tool-picker/SKILL.md` Sec. 6** — worked example updated to v0.5 Stage 1 live triple (Standard · medium); was v0.3 Stage 2 Strict-hybrid values.
 - **`docs/03_design/bundle1_tool_picker/technical_design.md` Sec. 0 (D4.x2)** — added note that `docs/notes/dev_history.md` was removed in v0.4 (replaced by `CHANGELOG.md`).
-- **`docs/notes/decisions.md` D4.x2** — same dev_history removal note added; decisions.md is now current.
-- **`prompts/claude/final_review.md`** — removed `§14` section reference from WORKFLOW.md link (section numbering removed in v0.4).
-- **`prompts/claude/code_review.md`** — replaced `§Security` with `"Security" section` (§ symbol removed per v0.5 backlog item 6).
-
-### Deprecated
-- None yet.
-
-### Removed
-- None yet.
+- **`docs/notes/decisions.md` D4.x2** — same dev_history removal note added.
+- **`prompts/claude/final_review.md`** — removed `§14` section reference.
+- **`prompts/claude/code_review.md`** — replaced `§Security` with `"Security" section`.
 
 ### Fixed
-- **`tests/bundle1/run_bundle1.sh` worked example check** — updated assertions from v0.3 (`Stage 2 Plan Draft`, `Strict-hybrid`) to v0.5 (`Stage 1 Brainstorm`, `mode Standard`, `risk_level medium`). Fixes bundle1 check 7 failure introduced when Sec. 6 was refreshed in session 10.
-
-### Security
-- None yet.
+- **`tests/bundle1/run_bundle1.sh` check 7** — updated assertions from v0.3 (`Stage 2 Plan Draft`, `Strict-hybrid`) to v0.5 (`Stage 1 Brainstorm`, `mode Standard`, `risk_level medium`).
+- **`tests/bundle1/run_bundle1.sh` check 10** — CLAUDE read-order hook assertion을 KO only 전환 후 문구에 맞게 substring match로 완화 (EN exact-match → `.skills/tool-picker/SKILL.md` substring).
 
 ### Notes
-- **`update_handoff.sh` KO header support** (v0.5 backlog item 5): verified already implemented since v0.3. Both `## 현재 상태` and `## 최근 변경 이력` are fully recognized and written by the AWK engine. No code change needed; backlog item closed.
-- **UI base-only policy** (v0.3 brainstorm Sec. 9): v0.5 in progress, no downstream `has_ui=true` found → policy remains in effect. Sunset check deferred to v0.5 Stage 13 or first `has_ui=true`, whichever comes first.
+- **`update_handoff.sh` KO header support** — verified already implemented since v0.3. No code change needed.
+- **UI base-only policy** — no downstream `has_ui=true` found; policy remains in effect.
 
 ## [0.4.0] - 2026-04-23
 

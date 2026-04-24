@@ -8,15 +8,15 @@
 
 ## Status
 
-**Current version:** v0.5 in progress (started 2026-04-23)
+**Current version:** v0.6 진행 중 (시작 2026-04-24)
 **Last updated:** 2026-04-24
-**Current stage:** v0.5 Stage 1 완료 — 세션 12 브레인스토밍 완료 (모델 정책, KO only 전환, Bundle 2/3 re-scope, Hooks, gstack 검토).
+**Current stage:** v0.6 Stage 1 완료 — 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init/switch 스크립트 설계 확정.
 
 ## 현재 상태
 
-**현재 버전:** v0.5 진행 중 (시작 2026-04-23)
+**현재 버전:** v0.6 진행 중 (시작 2026-04-24)
 **마지막 업데이트:** 2026-04-24
-**현재 단계:** v0.5 Stage 1 완료 — 세션 12 브레인스토밍 완료.
+**현재 단계:** v0.6 Stage 1 완료 — 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init/switch 스크립트 설계 확정.
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,8 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-24 | Session 13: v0.6 Stage 1 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init_project.sh / switch_team.sh 설계 확정. brainstorm.md 작성. |
+| 2026-04-24 | Session 13: bundle1 check 10 수정 (KO only 전환 후 EN exact-match → substring). ALL PASS. CHANGELOG [0.5.0] 확정. |
 | 2026-04-24 | Session 12: CLAUDE.md + WORKFLOW.md KO only 전환 (75%/65% 감소). Bundle 2/3 re-scope 완료. Hooks + gstack 검토 완료. |
 | 2026-04-24 | Session 12: Model selection policy 확정 — Stage별 Sonnet/Opus 배정. CLAUDE.md Sec.3 + WORKFLOW.md Sec.9–10 + settings.json schema v0.3 반영. |
 | 2026-04-23 | Session 11: v0.5 Stage 1 — debt items 5–7 done (update_handoff.sh KO verified, shellcheck CI + macOS CI, run_tests.sh, bundle1 test refresh) |
@@ -41,6 +43,8 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-24 | 세션 13: v0.6 Stage 1 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init_project.sh / switch_team.sh 설계 확정. brainstorm.md 작성. |
+| 2026-04-24 | 세션 13: bundle1 check 10 수정 (KO only 전환 후 EN exact-match → substring). ALL PASS. CHANGELOG [0.5.0] 확정. |
 | 2026-04-24 | 세션 12: CLAUDE.md + WORKFLOW.md KO only 전환 (75%/65% 감소). Bundle 2/3 re-scope 완료. Hooks + gstack 검토 완료. |
 | 2026-04-24 | 세션 12: 모델 선택 정책 확정 — Stage별 Sonnet/Opus 배정. CLAUDE.md Sec.3 + WORKFLOW.md Sec.9–10 + settings.json schema v0.3 반영. |
 | 2026-04-23 | 세션 11: v0.5 Stage 1 — 빚 청산 항목 5–7 완료 (update_handoff.sh KO 확인, shellcheck CI + macOS CI, run_tests.sh, bundle1 테스트 갱신) |
@@ -74,17 +78,31 @@
 11. ✅ Claude Code Hooks 검토 — PostToolUse(py_compile/shellcheck 자동화) 유효, Stop 훅은 불필요
 12. ✅ gstack 검토 — ETHOS(Boil the Lake 등) + autoplan 패턴 + /investigate 참조 대상 확정
 
-### 🟡 v0.6 이월 항목
+### 🟡 v0.6 과업 (Stage 1 브레인스토밍 확정)
 
-| 항목 | 조건 |
+**우선순위 상 — v0.6 핵심:**
+
+| 과업 | 내용 |
+|------|------|
+| `scripts/init_project.sh` | 운영방식(3종) + team_mode(3종) 선택 → settings.json 자동 세팅 |
+| `settings.json` schema v0.4 | workflow_mode, team_mode, stage_assignments 필드 추가 |
+| `scripts/switch_team.sh` | 백그라운드 프로세스 체크 + team_mode 즉시 변경 or 차단 |
+| `docs/guides/switching.md` | 패턴 전환 시나리오 가이드 |
+| `ai_step.sh` 오케스트레이터 | Stage 2–13 자동화. team_mode 분기 처리 |
+
+**우선순위 중:**
+
+| 과업 | 조건 |
+|------|------|
+| Hooks PostToolUse 자동화 | CLI 워크플로우 정착 후 |
+| gstack ETHOS → CLAUDE.md | 오케스트레이터 설계 철학 반영 |
+
+**우선순위 하 (글로벌 공개 버전 시):**
+
+| 과업 | 조건 |
 |------|------|
 | Goal 1 언어 선택 마법사 | 글로벌 공개 버전 시 |
 | Goal 4 `.skills/examples/` 확장 | 글로벌 공개 버전 시 |
-| Goal 8 `ai_step.sh` CLI | CLI 적극 사용 시작 후 |
-| Goal 3 세션 부트스트랩 훅 | Claude Code Hooks 작업 시 통합 |
-| Hooks PostToolUse 자동화 | CLI 워크플로우 정착 후 |
-| gstack ETHOS → CLAUDE.md 반영 | v0.6 Stage 1 |
-| Stage 자동화 오케스트레이터 | gstack autoplan 패턴 참조, CLI 정착 후 |
 | `/investigate` 스킬 참조 | 글로벌 공개 버전 시 |
 
 | 드롭 항목 | 이유 |
@@ -92,6 +110,8 @@
 | Goal 2 eval 러너 | 운영자가 필요성 인지 못함 — 드롭 |
 | Goal 6 모드 선택 트리 스킬 | tool-picker로 커버됨 — 드롭 |
 | `/canary` | 브라우저 데몬 의존 — 해당 없음 |
+
+> 상세: `docs/01_brainstorm_v0.6/brainstorm.md`
 
 ---
 
