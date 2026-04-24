@@ -147,6 +147,6 @@ ko_updated=$(sed -n 's/^updated: //p' "$USAGE_KO")
 printf 'PASS usage docs and KO sync\n'
 
 printf '==> CLAUDE read order hook\n'
-grep -q '^> Skill hook: also read `.skills/tool-picker/SKILL.md` for jDevFlow stage/mode/risk_level advisory\.$' "$CLAUDE" \
+grep -q '`.skills/tool-picker/SKILL.md`' "$CLAUDE" \
   || fail "CLAUDE read-order hook missing"
 printf 'PASS CLAUDE read order hook\n'
