@@ -18,7 +18,23 @@
 
 ---
 
-## 2. 워크플로우 역할 규칙 (`WORKFLOW.md` 전체 모델 참고)
+## 2. 도구 역할 구분
+
+```
+Cowork = 임원급 회의실
+         - 제이원랩 전략/방향/워크플로우 논의
+         - jDevFlow 자체 개선, 로드맵, 아이디어
+         - 운영자 + Claude 1:1 브레인스토밍
+
+Code   = 작업실
+         - 실제 프로젝트 브레인스토밍 + 실행
+         - Jonelab AI팀 가동 (tmux 팀모드)
+         - Stage 1–13 자동화 루프
+```
+
+---
+
+## 3. 워크플로우 역할 규칙 (`WORKFLOW.md` 전체 모델 참고)
 
 jDevFlow v2는 **계층형 워크플로우 모델**을 사용합니다. 모드는 Lite / Standard / Strict 세 가지. 13단계는 **Strict canonical reference flow**이지 모든 작업의 기본값이 아닙니다.
 
@@ -125,7 +141,7 @@ sh scripts/git_checkpoint.sh "type: subject" path/a path/b path/c
 
 ---
 
-## 3. 모델 선택 정책 (v0.5 — Max x5 기준)
+## 4. 모델 선택 정책 (v0.5 — Max x5 기준)
 
 ### Stage별 권장 모델
 
@@ -154,7 +170,7 @@ sh scripts/git_checkpoint.sh "type: subject" path/a path/b path/c
 
 ---
 
-## 4. 절대 규칙 (보안)
+## 5. 절대 규칙 (보안)
 
 ```
 ❌ API키·계좌번호·토큰을 코드/로그에 평문 노출 금지
@@ -175,7 +191,7 @@ api_key = load_secret("MY_API_KEY")   # OS 키체인에서 로드
 
 ---
 
-## 5. 스크립트 실행
+## 6. 스크립트 실행
 
 ```bash
 python3 security/secret_loader.py --setup   # 최초 보안 설정
@@ -186,7 +202,7 @@ sh scripts/run_tests.sh                     # 전체 테스트 실행
 
 ---
 
-## 6. 핵심 파일
+## 7. 핵심 파일
 
 | 파일 | 역할 |
 |------|------|
@@ -197,7 +213,7 @@ sh scripts/run_tests.sh                     # 전체 테스트 실행
 
 ---
 
-## 7. 코드 검증 가이드
+## 8. 코드 검증 가이드
 
 - 문법 검사: `python3 -m py_compile src/<파일>.py`
 - 복잡한 로직(50줄 이상/신규 파일): Opus 서브에이전트(high effort)로 독립 검증
