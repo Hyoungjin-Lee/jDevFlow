@@ -8,6 +8,7 @@
 
 set -eu
 
+# shellcheck disable=SC1007  # CDPATH= is the standard unset-and-cd idiom.
 ROOT=$(CDPATH= cd -- "$(dirname "$0")/.." && pwd)
 status=0
 
@@ -24,6 +25,14 @@ if sh "$ROOT/tests/run_bundle4.sh"; then
   printf 'bundle4: PASS\n\n'
 else
   printf 'bundle4: FAIL\n\n'
+  status=1
+fi
+
+printf '=== v0.6 (3 unit tests) ===\n'
+if bash "$ROOT/tests/v0.6/run.sh"; then
+  printf 'v0.6: PASS\n\n'
+else
+  printf 'v0.6: FAIL\n\n'
   status=1
 fi
 
