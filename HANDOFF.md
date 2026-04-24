@@ -149,6 +149,7 @@
 ## 📋 다음 세션 시작 프롬프트
 
 ```
+v0.6 Stage 5 기술 설계 시작
 HANDOFF.md "다음 할 일" + docs/02_planning_v0.6/plan_final.md 참조해서 이어가죠.
 세션 15 = v0.6 Stage 5 Technical Design — D1~D5 단일 trail.
 ⚠️ 이 세션은 Opus로 여세요 (Stage 5 기술 설계 — 아키텍처 결정 최고 추론).
