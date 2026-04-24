@@ -9,14 +9,14 @@
 ## Status
 
 **Current version:** v0.6 진행 중 (시작 2026-04-24)
-**Last updated:** 2026-04-24
-**Current stage:** v0.6 Stage 1 완료 — 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init/switch 스크립트 설계 확정.
+**Last updated:** 2026-04-24 (세션 14)
+**Current stage:** v0.6 Stage 2–4 완료 (세션 14) — plan_draft/review/final 3종 작성, 운영자 승인 완료. Stage 5 Technical Design 대기 (Opus, D1→D5 단일 trail).
 
 ## 현재 상태
 
 **현재 버전:** v0.6 진행 중 (시작 2026-04-24)
-**마지막 업데이트:** 2026-04-24
-**현재 단계:** v0.6 Stage 1 완료 — 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init/switch 스크립트 설계 확정.
+**마지막 업데이트:** 2026-04-24 (세션 14)
+**현재 단계:** v0.6 Stage 2–4 완료 (세션 14) — plan_draft/review/final 3종 작성, 운영자 승인 완료. Stage 5 Technical Design 대기 (Opus, D1→D5 단일 trail).
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-24 | Session 14: v0.6 Stage 2–4 기획 완료 (Opus + tmux 팀모드 3 서브에이전트 drafter/reviewer/finalizer). plan_draft/review/final 3종 작성 (docs/02_planning_v0.6/). 운영자 승인 완료. scope 축소(D6/D7 → v0.6.1), jq 비의존, pending_team_mode 제거, R2 설계 제약 commit. |
 | 2026-04-24 | Session 13: v0.6 Stage 1 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init_project.sh / switch_team.sh 설계 확정. brainstorm.md 작성. |
 | 2026-04-24 | Session 13: bundle1 check 10 수정 (KO only 전환 후 EN exact-match → substring). ALL PASS. CHANGELOG [0.5.0] 확정. |
 | 2026-04-24 | Session 12: CLAUDE.md + WORKFLOW.md KO only 전환 (75%/65% 감소). Bundle 2/3 re-scope 완료. Hooks + gstack 검토 완료. |
@@ -43,6 +44,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-24 | 세션 14: v0.6 Stage 2–4 기획 완료 (Opus + tmux 팀모드 3 서브에이전트 drafter/reviewer/finalizer). plan_draft/review/final 3종 작성 (docs/02_planning_v0.6/). 운영자 승인 완료. scope 축소(D6/D7 → v0.6.1), jq 비의존, pending_team_mode 제거, R2 설계 제약 commit. |
 | 2026-04-24 | 세션 13: v0.6 Stage 1 브레인스토밍 완료. CLI 자동화 레이어 + team_mode 3종 + init_project.sh / switch_team.sh 설계 확정. brainstorm.md 작성. |
 | 2026-04-24 | 세션 13: bundle1 check 10 수정 (KO only 전환 후 EN exact-match → substring). ALL PASS. CHANGELOG [0.5.0] 확정. |
 | 2026-04-24 | 세션 12: CLAUDE.md + WORKFLOW.md KO only 전환 (75%/65% 감소). Bundle 2/3 re-scope 완료. Hooks + gstack 검토 완료. |
@@ -78,24 +80,23 @@
 11. ✅ Claude Code Hooks 검토 — PostToolUse(py_compile/shellcheck 자동화) 유효, Stop 훅은 불필요
 12. ✅ gstack 검토 — ETHOS(Boil the Lake 등) + autoplan 패턴 + /investigate 참조 대상 확정
 
-### 🟡 v0.6 과업 (Stage 1 브레인스토밍 확정)
+### 🟡 v0.6 과업 (Stage 4 승인 완료 — 세션 14)
 
-**우선순위 상 — v0.6 핵심:**
+**v0.6 본 릴리스 — D1~D5 (Stage 5 Technical Design 대상):**
 
-| 과업 | 내용 |
-|------|------|
-| `scripts/init_project.sh` | 운영방식(3종) + team_mode(3종) 선택 → settings.json 자동 세팅 |
-| `settings.json` schema v0.4 | workflow_mode, team_mode, stage_assignments 필드 추가 |
-| `scripts/switch_team.sh` | 백그라운드 프로세스 체크 + team_mode 즉시 변경 or 차단 |
-| `docs/guides/switching.md` | 패턴 전환 시나리오 가이드 |
-| `ai_step.sh` 오케스트레이터 | Stage 2–13 자동화. team_mode 분기 처리 |
+| ID | 과업 | 요구사항 요점 (plan_final 반영) |
+|----|------|-----------------------------|
+| D1 | `settings.json` schema v0.4 | workflow_mode, team_mode, stage_assignments 필드. **`pending_team_mode` 필드 미포함** [F-D3]. 1줄 1키 POSIX 파싱 가능 구조. |
+| D2 | `scripts/init_project.sh` | 운영방식(3종) + team_mode(3종) 대화. **★추천★ 마커 brainstorm verbatim** [F-n1]. `jq` 비의존 [F-D2]. |
+| D3 | `scripts/switch_team.sh` | 백그라운드 프로세스 체크. **2분기만**(차단/즉시). 차단 메시지 **brainstorm Sec.5 한글 verbatim** [F-n2]. `jq` 비의존 [F-D2]. |
+| D4 | `docs/guides/switching.md` | 패턴 전환 시나리오 가이드. |
+| D5 | `ai_step.sh` 오케스트레이터 | Stage 2–13 자동화. **실행 결정 시 `team_mode` 리터럴 비참조, `stage_assignments`만 파싱** (표시 경로 예외) [F-2-a]. |
 
-**우선순위 중:**
+**v0.6.1 패치 이월 [F-D1]:** Hooks PostToolUse, gstack ETHOS → CLAUDE.md. v0.6 본 릴리스 관측(최소 1일) 후 kickoff.
 
-| 과업 | 조건 |
-|------|------|
-| Hooks PostToolUse 자동화 | CLI 워크플로우 정착 후 |
-| gstack ETHOS → CLAUDE.md | 오케스트레이터 설계 철학 반영 |
+**Non-goal (v0.6 본 릴리스):**
+- `@openai/codex` CLI 오케스트레이터 자동화 호출 [F-n3] — 수동 보조 전용.
+- settings.json 자동 마이그레이션 도구 / CI 인프라 변경 / v0.5 문서 재작업.
 
 **우선순위 하 (글로벌 공개 버전 시):**
 
@@ -111,7 +112,8 @@
 | Goal 6 모드 선택 트리 스킬 | tool-picker로 커버됨 — 드롭 |
 | `/canary` | 브라우저 데몬 의존 — 해당 없음 |
 
-> 상세: `docs/01_brainstorm_v0.6/brainstorm.md`
+> 상세: `docs/02_planning_v0.6/plan_final.md` (상위 근거: `docs/01_brainstorm_v0.6/brainstorm.md`).
+> 개정 발견 추적: `docs/02_planning_v0.6/plan_review.md` F-D1~F-D3, F-2-a, F-5-a, F-n1~F-n3.
 
 ---
 
@@ -147,8 +149,11 @@
 ## 📋 다음 세션 시작 프롬프트
 
 ```
-HANDOFF.md "다음 할 일" 참조해서 이어가죠.
-세션 13 = v0.5 Stage 1 마무리 + v0.6 계획 수립 (브레인스토밍).
-⚠️ 이 세션은 Sonnet으로 여세요 (Stage 1 브레인스토밍 계속).
-전제: 세션 12 커밋 완료 (KO only 전환 + Bundle 2/3 re-scope + HANDOFF 갱신).
+HANDOFF.md "다음 할 일" + docs/02_planning_v0.6/plan_final.md 참조해서 이어가죠.
+세션 15 = v0.6 Stage 5 Technical Design — D1~D5 단일 trail.
+⚠️ 이 세션은 Opus로 여세요 (Stage 5 기술 설계 — 아키텍처 결정 최고 추론).
+전제: 세션 14 plan_final 운영자 승인 완료. Stage 5 설계 제약 흡수 필수:
+  - D1: `pending_team_mode` 필드 미포함, 1줄 1키 POSIX 파싱 스키마
+  - D2/D3: `jq` 비의존, brainstorm verbatim 메시지 보존
+  - D5: `team_mode` 리터럴 비참조, `stage_assignments`만 파싱
 ```
