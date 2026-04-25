@@ -9,14 +9,14 @@
 ## Status
 
 **Current version:** v0.6 진행 중 (시작 2026-04-24)
-**Last updated:** 2026-04-25 (세션 16)
-**Current stage:** v0.6 Stage 8 M1 완료 (세션 16, A/B 실험). Round 2(Claude 구현) 승자 채택, main FF 머지 (SHA 15b663a). D1 schema v0.4 + `scripts/lib/settings.sh` + `tests/v0.6/` 유닛 3종 + CLAUDE.md Sec.3 정책 개정(Claude 구현 금지 완화). M2 (D2 `init_project.sh`) 진입 대기.
+**Last updated:** 2026-04-25 (세션 17)
+**Current stage:** v0.6 Stage 8 M2 완료 (세션 17). D2 `scripts/init_project.sh` — brainstorm Sec.4 verbatim 2블록(★추천★ 보존, F-n1) + Case A/B/C/--force-reinit 분기 + POSIX atomic write. 신규 테스트 2건 (golden file + 통합) 추가, v0.6 테스트 5/5 PASS, shellcheck CLEAN, AC-5-1/2/9 게이트 통과. M3 (D3 `switch_team.sh` + D4 `switching.md`) 진입 대기.
 
 ## 현재 상태
 
 **현재 버전:** v0.6 진행 중 (시작 2026-04-24)
-**마지막 업데이트:** 2026-04-25 (세션 16)
-**현재 단계:** v0.6 Stage 8 M1 완료 (세션 16, A/B 실험 → Round 2 승자). 다음 = M2 (`init_project.sh` 대화 + POSIX 쓰기) 구현 진입.
+**마지막 업데이트:** 2026-04-25 (세션 17)
+**현재 단계:** v0.6 Stage 8 M2 완료 (세션 17). 다음 = M3 (D3 `switch_team.sh` 백그라운드 체크 + D4 `switching.md` 시나리오 가이드) 구현 진입.
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-25 | Session 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
 | 2026-04-25 | Session 16: v0.6 Stage 8 M1 완료 — A/B 실험(Round 1 Codex / Round 2 Claude) 둘 다 AC 6/6. Round 2 승자(SHA 15b663a) main FF 머지. CLAUDE.md Sec.3 "Claude 구현 금지" 정책 완화 — stage_assignments 기반으로 통일. 조직도 + 승인 스킵 + 호출 방식 + tmux 레이아웃 + 자동 왓처 지침 확정 (메모리 5건). 다음 = M2 init_project.sh. |
 | 2026-04-25 | Session 15: v0.6 Stage 5 Technical Design 완료 (Opus). docs/03_design/v0.6_cli_automation/technical_design.md 단일 trail D1→D5. AC 12건 commit. Q1(fail-closed 복구) / Q2(pgrep -fl) / Q3(unknown executor exit 2) 답변. 설계 제약 8건 전량 흡수. |
 | 2026-04-24 | Session 14: v0.6 Stage 2–4 기획 완료 (Opus + tmux 팀모드 3 서브에이전트 drafter/reviewer/finalizer). plan_draft/review/final 3종 작성 (docs/02_planning_v0.6/). 운영자 승인 완료. scope 축소(D6/D7 → v0.6.1), jq 비의존, pending_team_mode 제거, R2 설계 제약 commit. |
@@ -46,6 +47,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-25 | 세션 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
 | 2026-04-25 | 세션 16: v0.6 Stage 8 M1 완료 — A/B 실험(Round 1 Codex / Round 2 Claude) 둘 다 AC 6/6 만점. Round 2 승자(SHA 15b663a) main FF 머지. CLAUDE.md Sec.3 "Claude 구현 금지" 정책 완화 — stage_assignments 기반으로 통일. 조직도 + 승인 스킵 + 호출 방식 + tmux 레이아웃 + 자동 왓처 지침 확정 (메모리 5건). 다음 = M2 init_project.sh. |
 | 2026-04-25 | 세션 15: v0.6 Stage 5 Technical Design 완료 (Opus). docs/03_design/v0.6_cli_automation/technical_design.md 단일 trail D1→D5. AC 12건 commit. Q1(fail-closed 복구) / Q2(pgrep -fl) / Q3(unknown executor exit 2) 답변. 설계 제약 8건 전량 흡수. |
 | 2026-04-24 | 세션 14: v0.6 Stage 2–4 기획 완료 (Opus + tmux 팀모드 3 서브에이전트 drafter/reviewer/finalizer). plan_draft/review/final 3종 작성 (docs/02_planning_v0.6/). 운영자 승인 완료. scope 축소(D6/D7 → v0.6.1), jq 비의존, pending_team_mode 제거, R2 설계 제약 commit. |
@@ -165,47 +167,52 @@
 
 ---
 
-## 📋 다음 세션 시작 프롬프트 (세션 17 — Stage 8 M2 `init_project.sh`)
+## 📋 다음 세션 시작 프롬프트 (세션 18 — Stage 8 M3 `switch_team.sh` + `switching.md`)
 
 ```
-v0.6 Stage 8 M2 구현 — D2 scripts/init_project.sh 대화 + POSIX 쓰기
+v0.6 Stage 8 M3 구현 — D3 scripts/switch_team.sh + D4 docs/guides/switching.md
 읽기 순서:
   CLAUDE.md (Sec.2.5 조직도 + Sec.3 승인 스킵/호출 방식 정책 숙지)
-  → HANDOFF.md (세션 16 Stage 8 M1 완료 + A/B 실험 결과)
-  → docs/03_design/v0.6_cli_automation/technical_design.md Sec.3 (D2 설계)
-  → docs/04_implementation_v0.6_stage8/ab_comparison.md (M1 실험 결과, team_mode 선택 참고)
-  → scripts/lib/settings.sh (M1 산출물, D2 소비자)
+  → HANDOFF.md (세션 17 Stage 8 M2 완료 결과)
+  → docs/03_design/v0.6_cli_automation/technical_design.md Sec.4 (D3 설계) + Sec.5 (D4 가이드 골격)
+  → scripts/lib/settings.sh (M1 산출물 — settings_write_stage_assign_block 사용)
+  → scripts/init_project.sh (M2 산출물 — verbatim 패턴/POSIX 쓰기 참고)
+  → docs/01_brainstorm_v0.6/brainstorm.md Sec.5 L116–124 (차단 메시지 verbatim 원본)
 
-세션 17 = M2 (D2 init_project.sh) 구현 + 검증.
+세션 18 = M3 (D3 switch_team.sh + D4 switching.md) 구현 + 검증.
 
-전제 (세션 16 확정):
-  - M1 완료: D1 schema v0.4 + scripts/lib/settings.sh + tests/v0.6/ (main SHA 15b663a).
-  - CLAUDE.md Sec.3 "Claude 구현 금지" 정책 완화 — stage_assignments 기반으로 실행자 결정.
-  - team_mode 기본값 = claude-only (운영자 선호에 따라 변경 가능).
-  - 승인 스킵 정책 적용 (로컬+commit 자동, push/외부 API만 수동).
-  - tmux 레이아웃 재생성은 scripts/setup_tmux_layout.sh 사용.
-  - 자동 왓처 기본값 (장시간 작업). 운영자 먼저 완료 시그널 오면 왓처 kill.
+전제 (세션 17 확정):
+  - M2 완료: scripts/init_project.sh + tests/v0.6/test_init_project_{verbatim,cases}.sh.
+  - v0.6 테스트 5/5 PASS, shellcheck CLEAN, AC-5-1/2/9 통과.
+  - settings.sh API: settings_path / settings_require_v04 / settings_read_key / settings_read_stage_assign / settings_write_key / settings_write_stage_assign_block.
+  - JDEVFLOW_ROOT env로 테스트 격리 가능 (M2 패턴 그대로 재사용).
+  - 승인 스킵 정책 (로컬+commit 자동), team_mode 기본 claude-only.
   - ★한국어 응답 필수★
 
 진행 순서:
   1. tmux 세션 기동 (필요 시): scripts/setup_tmux_layout.sh jdevflow 2
-  2. team_mode 선택 (기본 claude-only, 또는 A/B 결과 기반으로 운영자 선택).
-  3. M2 Stage 8 구현 (executor = stage_assignments.stage8_impl):
-     - scripts/init_project.sh — 기존 폴더 생성 로직 + 신규 대화 2블록
-     - [1/2] workflow_mode 선택 (brainstorm Sec.4 verbatim, 3종)
-     - [2/2] team_mode 선택 (brainstorm Sec.4 verbatim, ★추천★ 마커 보존 [F-n1])
-     - 입력 결과를 tech_design Sec.2.5 매핑표로 stage_assignments 계산
-     - scripts/lib/settings.sh의 settings_write_key / settings_write_stage_assign_block 사용
-     - Case A (부재): heredoc 템플릿 전체 생성
-     - Case B (v0.3 존재): awk로 신규 필드 삽입 + schema_version bump
-     - Case C (v0.4 존재): --force-reinit 플래그 없으면 skip
-  4. Golden file 테스트 (tech_design Sec.11.1 5행):
-     - [1/2], [2/2] 블록이 brainstorm.md verbatim과 diff 0 bytes
-  5. Stage 9 코드 리뷰 (집중 AC):
-     - AC-5-4 verbatim 보존 [F-n1]
-     - AC-5-11 전제: switching.md 시나리오는 M3에서 생성 예정
-     - AC-5-5 team_mode 리터럴 실행 분기 금지 static gate [F-2-a]
-  6. 완료 시 main에 FF 머지 + HANDOFF 갱신 + M3 (D3 switch_team.sh) 진입 대기.
+  2. team_mode 확인 (현재 settings.json: claude-impl-codex-review).
+  3. M3 Stage 8 구현 (executor = stage_assignments.stage8_impl):
+     - scripts/switch_team.sh — 신규 생성. Sec.4 데이터 플로우.
+       · 인터페이스: <mode> | <mode> --force | --status | (대화 모드, brainstorm Sec.4 [2/2] verbatim 재사용)
+       · 백그라운드 감지: pgrep -fl 'claude.*--teammate-mode', '(codex-plugin-cc|/codex:(rescue|review|status))'
+       · 차단 메시지: brainstorm Sec.5 L116–124 verbatim [F-n2] + exit 1
+       · --force 우회 시 settings_write_stage_assign_block 호출 (team_mode + 4 stage 라인 atomic 교체)
+       · --status: workflow_mode/team_mode/stage_assignments/bg 프로세스 출력 (표시 경로 team_mode 리터럴 OK)
+       · pending_team_mode 금지 [F-D3], jq 금지 [F-D2], 2분기만 (차단/즉시) [Sec.4.3]
+     - docs/guides/switching.md — Sec.5.2 골격 그대로 사용. 시나리오 4종 (각 전제/커맨드/효과 3요소).
+  4. 신규 테스트 추가 (tests/v0.6/):
+     - test_switch_team_block.sh: 차단 메시지 verbatim diff 0 bytes vs brainstorm.md L116–124 [F-n2, AC-5-4]
+     - test_switch_team_apply.sh: 3종 team_mode 전환 → stage_assignments 매핑 검증
+     - test_switch_team_status.sh: --status 필드 전체 출력
+     - test_switch_team_bg.sh: 더미 sleep 99999 & --teammate-mode 프로세스 spawn → 차단 + --force 우회
+     - tests/v0.6/run.sh에 등록.
+  5. shellcheck + AC 게이트:
+     - AC-5-2 (pending_team_mode 0 hits)
+     - AC-5-4 (verbatim diff 0 bytes)
+     - AC-5-9 (codex CLI 0 hits)
+     - AC-5-12 (exit code 0/1/2/3/4/5 통일)
+  6. 완료 시 main에 FF 커밋 + HANDOFF 갱신 + M4 (D5 ai_step.sh) 진입 대기.
 
 Stage 8 구현 제약 (동일):
   - jq 금지 [F-D2], pending_team_mode 금지 [F-D3], team_mode 실행분기 금지 [F-2-a]
