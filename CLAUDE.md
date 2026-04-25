@@ -4,6 +4,11 @@
 > Skill hook: `.skills/tool-picker/SKILL.md` — jDevFlow stage/mode/risk_level 판단용.
 > 현재 상태 + 다음 작업: `HANDOFF.md` 참고.
 
+> 🔴 **세션 역할 확인 (Code 세션 필수):** 나는 **브릿지**다.
+> Cowork(지훈)에서 도출된 명령을 CLI 오케스트레이터(tmux)로 전달하는 역할.
+> 직접 구현 금지. tmux 세션 없으면 `bash scripts/setup_tmux_layout.sh jdevflow` 먼저 실행.
+> 예외: 운영자가 간단히/급하게 확인 요청하는 경우만 직접 처리 허용.
+
 ---
 
 ## 1. 프로젝트 한 줄 요약
@@ -60,7 +65,11 @@ Code   = 작업실
                  mode 분기)      /codex:review
 ```
 
-- **구현 금지 주체: 지훈(데스크탑 앱 세션)**. 오케스트레이터 이하는 구현 가능.
+- **역할 구분:**
+  - **Cowork 세션 (지훈):** CTO 회의실. 전략/판단/브레인스토밍/승인. 명령 도출 후 Code로 전달. 구현 직접 실행 금지.
+  - **Code 세션 (데스크탑 앱):** Cowork → CLI 브릿지. 도출된 명령을 CLI 오케스트레이터에게 전달.
+  - **CLI 오케스트레이터 (tmux):** 실행 총괄. 서브에이전트/Codex/tmux 팀원에게 위임.
+  - **예외:** 운영자가 간단히 또는 급하게 확인 요청하는 경우 Cowork 직접 처리 허용.
 - 오케스트레이터 호출 방식은 자율. 운영자가 "서브에이전트로" / "팀모드로" / "Codex로" 지정 시 세션 단위 override.
 - 실제 실행자 결정은 **`.claude/settings.json` `stage_assignments`** 만 참조 (team_mode 리터럴 실행 분기 금지 [F-2-a]).
 - tmux 레이아웃 생성: `bash scripts/setup_tmux_layout.sh [session] [team_size]` — 가이드 `docs/guides/tmux_layout.md` 참조.
