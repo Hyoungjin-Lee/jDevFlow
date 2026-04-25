@@ -71,12 +71,22 @@ if [ "$_lock_count" -gt 0 ]; then
 fi
 _pass "stale lock 사후 검증 (0건)"
 
-# 4. 백업 브랜치 부재 확인 (이전 시도 흔적 없음) -----------------------
+# 4. 백업 브랜치 idempotent 확인 (옵션 C patch) ------------------------
+#    - 부재: 9단계에서 신규 생성 (정상 흐름)
+#    - 존재 + SHA == HEAD: 이미 안전망 보존 → PASS (rename_n1 phase1 재호출 시나리오)
+#    - 존재 + SHA != HEAD: 이전 시도 흔적 가능 → FAIL (잘못된 백업)
 if git show-ref --verify --quiet "refs/heads/$BACKUP_BRANCH"; then
-    _fail "백업 브랜치 '$BACKUP_BRANCH' 이미 존재 - 이전 시도 흔적 가능" \
-          "이전 결과 확인 후 git branch -D $BACKUP_BRANCH (혹은 다른 이름 사용)"
+    _backup_sha=$(git rev-parse "$BACKUP_BRANCH")
+    _head_sha=$(git rev-parse HEAD)
+    if [ "$_backup_sha" = "$_head_sha" ]; then
+        _pass "백업 브랜치 존재 + SHA == HEAD ($_head_sha) - idempotent PASS"
+    else
+        _fail "백업 브랜치 '$BACKUP_BRANCH' SHA 불일치 (backup=$_backup_sha vs HEAD=$_head_sha)" \
+              "이전 시도 흔적 - 이전 결과 확인 후 git branch -D $BACKUP_BRANCH"
+    fi
+else
+    _pass "백업 브랜치 부재 확인 (이전 시도 흔적 없음)"
 fi
-_pass "백업 브랜치 부재 확인 (이전 시도 흔적 없음)"
 
 # 5. expressions.txt 존재 + 정확히 3 매핑 (S1) -------------------------
 [ -f "$EXPR_FILE" ] || _fail "expressions.txt 부재" "scripts/v0.6.1/expressions.txt 작성"
@@ -131,9 +141,11 @@ printf '    [ ] VSCode / JetBrains / 기타 IDE 종료\n'
 printf '    [ ] 본 tmux 외 claude --teammate-mode 세션 종료\n'
 printf '    [ ] 본 repo의 다른 터미널 작업 종료\n'
 
-# 9. 백업 브랜치 생성 (Change-1: 영구 보존) ----------------------------
+# 9. 백업 브랜치 생성 (Change-1: 영구 보존) — idempotent ----------------
 if [ "$DRY_RUN" = "1" ]; then
     _info "DRY_RUN: git branch $BACKUP_BRANCH (실행 생략)"
+elif git show-ref --verify --quiet "refs/heads/$BACKUP_BRANCH"; then
+    _info "백업 브랜치 이미 존재 (4번 게이트에서 SHA 동일 PASS) - 신규 생성 skip"
 else
     git branch "$BACKUP_BRANCH"
     if git show-ref --verify --quiet "refs/heads/$BACKUP_BRANCH"; then
