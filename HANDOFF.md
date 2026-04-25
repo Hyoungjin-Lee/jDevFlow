@@ -8,15 +8,15 @@
 
 ## Status
 
-**Current version:** v0.6 진행 중 (시작 2026-04-24)
-**Last updated:** 2026-04-25 (세션 19)
-**Current stage:** v0.6 Stage 8 M4 완료 (세션 19). D5 `scripts/ai_step.sh` 전면 재작성 (550 라인) — `stage_assignments` 기반 dispatch + 3-signal stage completion + fail-closed + v0.5 호환 모드 + 6 공개 함수(resolve_executor/check_complete/dispatch/log_transition/run_next/run_auto) + 외부 인터페이스 5종(--stage/--status/--next/--auto/--resume). 분담: 팀원1(본체) + 팀원2(테스트 4종) Agent 병렬 spawn 후 오케스트레이터가 통합. 통합 단계에서 BSD sed 멀티바이트 em-dash 추출 버그 발견 → `.* (stage[0-9]+).*` 일반 패턴 + `-E` extended regex로 fix → `--auto` end-to-end 시나리오 활성화. v0.6 테스트 13/13 PASS (M1×3 + M2×2 + M3×4 + M4×4), shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 게이트 전수 통과. **Stage 8 마지막 milestone — 다음 = Stage 9 코드 리뷰 (settings.json stage9_review=codex이므로 운영자가 `/codex:review` 호출 필요).**
+**Current version:** v0.6 본 릴리스 완료 (2026-04-25)
+**Last updated:** 2026-04-25 (세션 22)
+**Current stage:** **v0.6.0 Stage 13 release commit 완료** (세션 22). Stage 9 코드 리뷰 APPROVED (AC-5-1~5-12 12/12 PASS + 설계 제약 F-D1~F-5-a 8/8 PASS + 보안/회귀 PASS, 차단 항목 0). CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, code_review.md 산출물 commit `19ef2c0`. **남은 운영자 작업: (a) `git tag v0.6` + `git push --tags`, (b) 사후 `/codex:review` 검증 (정책상 stage9_review=codex이나 본 세션 환경 제약으로 Claude Opus 독립 self-review로 대체).** 다음 = v0.6.1 진입 (D6 Hooks PostToolUse + D7 gstack ETHOS + 조직도 개편 정식 반영 + jOneFlow 명칭 변경 + JoneLab 디자인 시스템 통합).
 
 ## 현재 상태
 
-**현재 버전:** v0.6 진행 중 (시작 2026-04-24)
-**마지막 업데이트:** 2026-04-25 (세션 19)
-**현재 단계:** v0.6 Stage 8 M4 완료 (세션 19). 다음 = (a) 운영자가 `/codex:review` 호출하여 Stage 9 코드 리뷰 진행 → (b) AC-5-1~5-12 전수 검증 결과에 따라 Stage 10 수정 또는 Stage 12/13 진입 → (c) v0.6 본 릴리스(CHANGELOG [0.6.0] + 태그). 백로그(별도 commit 예정): `tests/v0.6/test_switch_team_bg.sh` 환경 의존 결함 — 외부 `claude --teammate-mode` 프로세스(예: 오케스트레이터 자기 자신) 존재 시 case 3 FAIL 가능. 옵션 1(테스트 시작 시 외부 프로세스 검사 → skip + 경고) 권장.
+**현재 버전:** v0.6.0 본 릴리스 완료 (태그/푸시 운영자 대기)
+**마지막 업데이트:** 2026-04-25 (세션 22)
+**현재 단계:** v0.6 본 릴리스 commit chain 완료 (`19ef2c0` ← `ec0f4ec` ← `d326795` ← `e7153ea` ← `16d0934` ← `630fc3e` ← `15b663a`). 다음 세션 = **v0.6.1 진입** — D6 Hooks PostToolUse + D7 gstack ETHOS(브레인스토밍/계획 → 본 릴리스), jOneFlow 명칭 변경 작업 (세션 16 결정), JoneLab 디자인 시스템 통합 (세션 20-21 완료분 jOneFlow 기본값 내장), 조직도 개편 정식 반영 (CLAUDE.md Sec.2.5 강화), brainstorm Sec.8 페르소나 4명 정식 가동 (분담 인원 확장).
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,8 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-25 | Session 22: **v0.6.0 본 릴리스 commit chain 완료** — Stage 9 코드 리뷰(`/codex:review` 환경 제약으로 Claude Opus 독립 self-review로 대체) Verdict APPROVED(AC-5-1~5-12 12/12 + 설계 제약 8/8 + 보안/회귀 PASS, 차단 항목 0), Stage 13 CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, code_review.md 산출물 commit `19ef2c0`. v0.6.1-prep commit으로 운영자 작성 분(CLAUDE.md +10 R2 역할 확인 + Sec.2.5 강화, HANDOFF.md +72 Cowork 세션 16/20/21 결정 — jOneFlow 명칭 + JoneLab 디자인 시스템 + Claude Design 연동 + PPTX 5슬라이드 완료, prompts/claude/bridge_dispatch.md 표준 템플릿 신규 48라인) 묶음 commit. 운영자 작업 대기: `git tag v0.6` + `git push --tags` + 사후 `/codex:review`. 다음 = v0.6.1 진입. |
+| 2026-04-25 | Session 21 (Cowork): JoneLab 디자인 시스템 완료 — PPTX 5슬라이드 + spec.md 생성, Claude Design 업로드 및 디자인 시스템 생성, Pretendard Variable woff2 self-hosted 적용 (`assets/fonts/`), `--font-sans` 토큰 업데이트, Missing brand fonts 경고 해소. |
 | 2026-04-25 | Session 19: v0.6 Stage 8 M4 완료 — D5 `scripts/ai_step.sh` 전면 재작성 (550 라인). 운영자 위임 의무화에 따라 분담: 팀원1(본체 ai_step_resolve_executor/check_complete/dispatch/log_transition/run_next/run_auto + v0.5 호환 모드 + main dispatcher) + 팀원2(테스트 4종 resolve_executor/check_complete 3-signal AND truth table 8가지/static_gate AC-5-5/auto integration) Agent 병렬 spawn 후 오케스트레이터가 통합. 통합 시 BSD sed 멀티바이트 em-dash + 캡처 그룹 매칭 실패 본체 버그 발견 → `.*(stage[0-9]+).*` 일반 패턴 + `-E` extended regex로 fix → `--auto` end-to-end 시나리오(stage1 마커 → stage2/3/4 started → stage5 paused) + `--resume` 게이트 통과 시나리오 추가 활성화. v0.6 테스트 13/13 PASS, shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 전수 통과. 다음 = Stage 9 코드 리뷰(`/codex:review`). |
 | 2026-04-25 | Session 18: v0.6 Stage 8 M3 완료 — D3 `scripts/switch_team.sh` (대화/직접/--force/--status 4분기, brainstorm Sec.5 L118-123 verbatim 차단 메시지, pgrep -fl 백그라운드 감지) + D4 `docs/guides/switching.md` (시나리오 4종, 각 전제/커맨드/효과 3요소). 신규 테스트 4건: block verbatim(diff 0 bytes vs brainstorm L118-123), apply 매핑(3 team_mode + invalid + 라운드트립), status 필드 전체 출력, bg 통합(exec -a로 더미 spawn → 차단 + --force 우회 + 더미 종료 후 정상). v0.6 테스트 9/9 PASS, shellcheck CLEAN. AC-5-2(-4/-9/-12 게이트 통과. 부수: init_project.sh module-level arg 파서를 _init_main 안으로 이동(source 충돌 회피). 다음 = M4 D5 ai_step.sh. |
 | 2026-04-25 | Session 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
@@ -49,6 +51,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-25 | 세션 22: **v0.6.0 본 릴리스 commit chain 완료** — Stage 9 코드 리뷰(`/codex:review` 환경 제약으로 Claude Opus 독립 self-review로 대체) APPROVED, Stage 13 CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, Stage 9 산출물 `19ef2c0`, v0.6.1-prep 운영자 작성 분(CLAUDE.md/HANDOFF.md/bridge_dispatch.md) 묶음 commit. AC 12/12 + 설계 제약 8/8 + 보안/회귀 PASS. 차단 항목 0. 운영자 대기: `git tag v0.6` + `git push --tags` + 사후 `/codex:review`. 다음 = v0.6.1 (D6/D7 Hooks/ETHOS + jOneFlow 명칭 + JoneLab 디자인 시스템 통합 + 페르소나 4명 정식 가동). |
 | 2026-04-25 | 세션 19: v0.6 Stage 8 M4 완료 — D5 `scripts/ai_step.sh` 전면 재작성(550 라인, 6 공개 + 14 내부 함수). 외부 인터페이스 5종(--stage v0.5 호환 / --status / --next / --auto / --resume). 핵심 로직: `ai_step_resolve_executor`(stage_assignments POSIX 추출, fail-closed exit 2/3) + `ai_step_check_complete` 3-signal AND(artifact 존재 × executor exit=0 × grep 키워드, return 0/1/2/3) + `ai_step_dispatch` Sec.6.9 안내 메시지(외부 spawn 없음, plugin-cc 경로만 F-n3) + `ai_step_log_transition` dev_history 기록 + `ai_step_run_next/run_auto` 게이트 진행. F-2-a 준수: team_mode 리터럴은 표시 경로(printf/--status)만 등장, 실행 분기 0건. 운영자 위임 의무화 명령에 따라 Agent 2개 병렬 spawn(팀원1 본체 + 팀원2 테스트), 오케스트레이터가 통합/검증/커밋. 통합 단계에서 본체 BSD sed 버그 1건 발견·fix(em-dash 멀티바이트 + `\(...\)` 캡처 그룹 호환 안 됨 → `.*(stage[0-9]+).*` + `-E` extended regex). 신규 테스트 4건(resolve_executor 5 case + check_complete 8 truth table + static_gate AC-5-5 + auto E2E `--auto` stage1→2→3→4→5 paused + `--resume` 게이트 통과). v0.6 테스트 13/13 PASS, shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 전수 통과. 다음 = Stage 9(`/codex:review` 운영자 호출 — settings.json stage9_review=codex). |
 | 2026-04-25 | 세션 18: v0.6 Stage 8 M3 완료 — D3 `scripts/switch_team.sh` 신규 (대화 모드는 init_project.sh의 [2/2] verbatim/매퍼/3회 재시도 루프 재사용, 직접 지정/--force/--status 4분기) + brainstorm Sec.5 L118-123 차단 메시지 verbatim + pgrep -fl 'claude.*--teammate-mode' / '(codex-plugin-cc\|/codex:(rescue\|review\|status))' 패턴 매칭 (자기자신 필터). D4 `docs/guides/switching.md` 시나리오 4종 (workflow_mode 1→2 / 2→3 / team_mode 1→2 / 2/3→1). 테스트 4건: block(byte-cmp + cmp -s), apply(3 team_mode + invalid mode + 라운드트립 유일성), status(필드 9개 + read-only + 부재 시 exit 4 + 인자 충돌 exit 2), bg(exec -a로 argv[0] 위장 더미 → 차단 verbatim + --force 우회 + 더미 종료 후 정상). 부수: init_project.sh의 `for _arg in "$@"` module-level 파서를 `_init_parse_args` 함수로 캡슐화 후 `_init_main`에서 호출 (switch_team.sh가 source 시 부모 args를 init이 소비하던 문제 해결, 기존 verbatim/cases 테스트 영향 없음). v0.6 테스트 9/9 PASS, shellcheck CLEAN, AC-5-2/-4/-9/-12 통과. 다음 = M4 D5 ai_step.sh 오케스트레이터. |
 | 2026-04-25 | 세션 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
@@ -154,6 +157,77 @@
 
 ---
 
+## 세션 16 아이디어 회의 결정 (2026-04-25, Cowork CTO 회의)
+
+### 1. jOneFlow 명칭 변경
+- **확정:** `jOneFlow` → `jOneFlow` (v0.6 완료 후 명칭 변경 작업)
+- **이유:** jOneFlow / jDocFlow / jDesignFlow 분리 시 관리 포인트 증가 우려
+- **방향:** JoneLab 브랜드화. 하위 기능(Dev/Doc/Design/검증)은 모듈/스킬 형태로 통합
+- **핸드오프 구조:** 작업 단위 = HANDOFF 파일 1개. `owner` 필드 추가 (멀티 운영자 대비 최소 확장점)
+
+### 2. JoneLab 디자인 시스템 초안 (jOneFlow 기본값 내장 예정)
+- **Color:** Primary(`#1DB7E2`) 베이스 8종 팔레트 (Gray/Primary/Red/Orange/Green/Purple/Yellow/Turquoise)
+- **Spacing:** 4/8px 배수 기준. 디바이스 3종 (Mobile 20px / Tablet 32px / Web 80px 마진)
+- **Typography:** Pretendard 단일 폰트 확정 (Display/Heading/Body/Caption/Label 5카테고리)
+- **Language:** 한국어/영어/중국어/일본어 4종
+- **미결:** DB 스키마, 실제 피그마 파일화 → v0.6.1 이후 진행
+
+### 3. 개발 스펙 확정
+| 구분 | 스택 |
+|------|------|
+| 내부툴 프론트 | Next.js + Tailwind CSS |
+| 내부툴 백엔드 | Python (FastAPI) |
+| DB | 추후 결정 |
+| 고객사 프로젝트 | 기획서 확정 시점에 맞춤 추천 (관공서 전자정부 프레임워크 등 요구사항 우선 반영) |
+
+---
+
+## 세션 20 아이디어 회의 결정 (2026-04-25, Cowork CTO 회의)
+
+### Claude Design 디자인 시스템 연동
+
+- **Claude Design 특성:** Anthropic Labs research preview. Pro/Max/Team/Enterprise 플랜 사용 가능.
+- **설정 방식:** `claude.ai/design` → 조직 설정 → Design System에서 한 번 입력하면 모든 프로젝트에 자동 상속.
+- **업로드 전략:** PPTX 파일(디자인 시스템 초안)을 업로드하면 Claude가 자동 추출. 텍스트 스펙만 올리면 경량화됨 → **PPTX로 시각화해서 업로드**가 정확함.
+- **jOneFlow + JoneLab 홈페이지:** Claude Design에서 제작 예정 (피그마 불필요).
+- **고객사 디자인:** 피그마/스케치 등 고객사 요구사항 따름.
+
+---
+
+## 🎨 JoneLab 디자인 시스템 PPTX 작업 ✅ 세션 21 완료
+
+**목표:** 디자인 시스템 초안을 PPTX로 제작 → Claude Design에 업로드용 — **완료**
+
+**슬라이드 구성 (5장):**
+
+| 슬라이드 | 내용 |
+|----------|------|
+| 1 | 표지 — JoneLab Design System v0.1 |
+| 2 | Color Palette — Primary `#1DB7E2` 베이스 8종 (Gray/Primary/Red/Orange/Green/Purple/Yellow/Turquoise) |
+| 3 | Typography — Pretendard. Display/Heading/Body/Caption/Label 5카테고리 |
+| 4 | Spacing — Mobile 20px / Tablet 32px / Web 80px 마진. 4/8px 배수 기준 |
+| 5 | Language & Tone — 한/영/중/일 4종. 신뢰+친근 |
+
+**디자인 방향:**
+- 배경: 다크(표지/마지막) + 라이트(콘텐츠) 샌드위치
+- Primary: `#1DB7E2`, Dark BG: `#0D1B2A`, Light BG: `#FFFFFF`
+- 폰트: Pretendard (없으면 Calibri 대체)
+- 톤: 깔끔하고 신뢰감 있는 테크 스타트업 스타일
+
+**저장 위치:** `Jonelab_Platform/jOneFlow_design_system_v0.1.pptx`
+
+**세션 21 결과:**
+- `Jonelab_Platform/jOneFlow_design_system_v0.1.pptx` — 5슬라이드 생성 완료
+- `Jonelab_Platform/jOneFlow_design_system_spec.md` — 9섹션 토큰 스펙 작성 완료
+- Claude Design (`claude.ai/design`) 업로드 완료 — 디자인 시스템 생성됨
+- Pretendard 폰트 self-hosted 적용 완료:
+  - `Jonelab_Platform/assets/fonts/PretendardVariable.woff2` (2.0MB)
+  - `@font-face` → `fonts/PretendardVariable.woff2` 연결, `--font-sans` 변수 업데이트
+  - font-family: `'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', Calibri, sans-serif`
+- "Missing brand fonts" 경고 해소, Published + Default 활성화
+
+---
+
 ## 세션 8–9 주요 결정 + 실행 현황 (v0.4 단순화)
 
 | 마찰점 | 확정 방향 | 세션 9 실행 상태 |
@@ -183,47 +257,48 @@
 
 ---
 
-## 📋 다음 세션 시작 프롬프트 (세션 20 — Stage 9 코드 리뷰 + 백로그 fix + v0.6 본 릴리스 준비)
+## 📋 다음 세션 시작 프롬프트 (세션 23 — v0.6.1 진입: 브레인스토밍 + 분담 인원 확장)
 
 ```
-v0.6 Stage 9 코드 리뷰 + bg 테스트 결함 fix + v0.6 본 릴리스 준비
+v0.6.1 진입 — Stage 1 브레인스토밍 (D6/D7 + jOneFlow 명칭 + JoneLab 디자인 통합 + 조직도 개편 + 페르소나 4명 정식 가동)
 
 읽기 순서:
-  CLAUDE.md (Sec.2.5 조직도 + Sec.3 승인 스킵/호출 방식 정책 숙지)
-  → HANDOFF.md (세션 19 Stage 8 M4 완료 결과)
-  → docs/03_design/v0.6_cli_automation/technical_design.md Sec.14 (AC-5-1~5-12)
-  → scripts/ai_step.sh / switch_team.sh / init_project.sh / lib/settings.sh / docs/guides/switching.md (M1~M4 산출물 전수)
+  CLAUDE.md (Sec.2.5 조직도 강화 — 세션 22 운영자 추가 R2 역할 확인 블록 + 역할 구분)
+  → HANDOFF.md (세션 22 v0.6.0 본 릴리스 완료 + Cowork 세션 16/20/21 결정 누적)
+  → docs/01_brainstorm_v0.6/brainstorm.md Sec.8 (페르소나 정의 — 4명 정식 가동 대상 확인)
+  → docs/04_implementation_v0.6_stage8/code_review.md (Stage 9 follow-up 권장 5건)
+  → CHANGELOG.md [0.6.0] (Non-goal 섹션 — v0.6.1 이월 항목 명시)
+  → prompts/claude/bridge_dispatch.md (브릿지 디스패치 표준 템플릿, 세션 22 commit)
 
-세션 20 = Stage 9 코드 리뷰 + 백로그 + v0.6 릴리스 준비.
+세션 23 = v0.6.1 Stage 1 브레인스토밍 (Cowork 세션, Sonnet 권장 — 방향 대화는 빠른 iteration).
 
-전제 (세션 19 확정):
-  - Stage 8 M1~M4 전부 완료. v0.6 테스트 13/13 PASS, shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 게이트 통과.
-  - settings.json team_mode = claude-impl-codex-review → stage9_review=codex (Stage 9 실행자=Codex).
-  - JONEFLOW_ROOT env로 테스트 격리 가능 (M2~M4 패턴 일관).
-  - 백로그 1건: tests/v0.6/test_switch_team_bg.sh 환경 의존 결함 (외부 claude --teammate-mode 프로세스 발견 시 case 3 FAIL).
-  - ★한국어 응답 필수★ ★팀원 pane spawn 우선 (운영자 정정, 세션 19) — 시각 가시성 확보.★
+전제 (세션 22 확정):
+  - v0.6.0 commit chain 완료. 마지막 commit = v0.6.1-prep 묶음. 운영자 git tag v0.6 + git push --tags 실행 후 v0.6.1 시작 권장.
+  - Stage 9 review APPROVED, AC 12/12 + 설계 제약 8/8 PASS. 차단 항목 0.
+  - 운영자 사후 `/codex:review` 검증 권장 (정책상 stage9_review=codex이나 본 세션 환경 제약으로 Claude Opus self-review 대체).
+  - jOneFlow 명칭 변경 결정(세션 16) + JoneLab 디자인 시스템 PPTX 완료(세션 21) + Claude Design 업로드 완료.
+  - ★한국어 응답 필수★ ★팀원 pane spawn 우선 (운영자 강한 선호, 세션 19 정정 + 세션 22 재확인)★
 
-진행 순서:
-  1. 운영자 직접 호출: bash scripts/switch_team.sh --status (현재 stage_assignments 확인)
-  2. Stage 9 코드 리뷰 — settings.json stage9_review=codex 준수:
-     - **운영자 직접** /codex:review 호출 — 입력: scripts/ai_step.sh + switch_team.sh + init_project.sh + lib/settings.sh + docs/guides/switching.md + tests/v0.6/test_*.sh 13건.
-     - 검증 항목: AC-5-1~5-12 전수, F-2-a / F-D2 / F-D3 / F-n1 / F-n2 / F-n3 / F-5-a 제약 준수, 보안 (입력 검증, eval 금지, 비밀값 비포함), 회귀 위험.
-     - Codex 출력은 docs/04_implementation_v0.6/code_review.md에 저장. APPROVED / NEEDS_REVISION / BLOCK 중 하나.
-  3. 리뷰 결과 처리 — Stage 10 또는 Stage 12/13:
-     - APPROVED → Stage 12 QA → Stage 13 Release 진입.
-     - NEEDS_REVISION → Stage 10 수정 (settings.json stage10_fix=claude → 오케스트레이터 또는 팀원 pane).
-     - BLOCK → 운영자 결정.
-  4. 백로그 fix (별도 commit, 16d0934 amend 금지):
-     - tests/v0.6/test_switch_team_bg.sh — 옵션 1: 테스트 시작 시 외부 claude --teammate-mode 발견 → skip + 경고. 옵션 2: switch_team.sh의 self-filter를 PPID-tree로 강화. 운영자 결정.
-     - 작업자: tmux 팀원 pane(%49 또는 %50) spawn 권장 (시각 가시성 확보).
-  5. v0.6 본 릴리스 (Stage 12/13):
-     - CHANGELOG [0.6.0] 신규 섹션 작성 — D1~D5 + 13건 테스트 + AC 12건 통과 요약.
-     - .claude/settings.json schema_version="0.4" 확인 (이미 적용).
-     - git tag v0.6 + 운영자 push.
-     - v0.6.1 결정(세션 17): "1일 관측" 폐기 → 즉시 v0.6.1 진입 가능. v0.6.1 = D6/D7 Hooks/ETHOS + 조직도 개편.
+브레인스토밍 의제 (Cowork 1:1, Sonnet):
+  1. v0.6.1 본 릴리스 범위 확정 — 어디까지 한 번에? D6/D7만? + 명칭 변경? + 디자인 통합?
+  2. **D6 Hooks PostToolUse** — py_compile / shellcheck 자동화 위치(.claude/settings.json hooks 블록), trigger 조건, 실패 시 동작.
+  3. **D7 gstack ETHOS** — Boil the Lake 등 ETHOS 항목을 CLAUDE.md에 어떻게 흡수? autoplan 패턴 / /investigate 참조도 같이?
+  4. **jOneFlow 명칭 변경 절차** — repo 이름 / 모든 스크립트/문서/주석 일괄 치환 / git history 처리 / settings.json 키명 호환성.
+  5. **JoneLab 디자인 시스템 통합** — Pretendard self-hosted 토큰을 jOneFlow 기본값으로? init_project.sh에 내장? `assets/fonts/` 표준 경로?
+  6. **조직도 개편** (CLAUDE.md Sec.2.5 강화) — Cowork(CTO) / Code(브릿지) / CLI(오케스트레이터) / 팀원(분담) / Codex(외부 리뷰어) 5층 정식. brainstorm Sec.8 페르소나 4명 명시 + 각자 역할/spawn 방법/책임 영역.
+  7. **Stage 9 follow-up 5건** (code_review.md Sec.6) — shellcheck SC1003 disable / UI signal 패턴 강화 / CI testdouble 환경 / `/codex:review` 자동화 가능성 / v0.6.1 시점에 진행.
+  8. **분담 인원 확장 모델** — 현재 4명(오케스트레이터 + Agent 2 + tmux pane 1) → 페르소나 정식 가동(예: 디자이너/QA 페르소나 추가) 시 인원/도구 매핑.
 
-Stage 8 구현 제약 (이미 통과 — Stage 9 검증 대상):
+Stage 1 산출물:
+  - docs/01_brainstorm_v0.6.1/brainstorm.md (Cowork 세션, Sonnet)
+  - 다음 = Stage 2-4 기획 (Opus + tmux 팀모드 분담)
+
+호출 모드 (운영자 자율 + 권장):
+  - **Cowork 세션 (Sonnet)** — Stage 1 브레인스토밍, has_ui/risk_level 결정, 모드 합의(Lite/Standard/Strict).
+  - **Code 세션 (Opus)** — Stage 2 진입 시 새 세션 권장.
+
+Stage 8 구현 제약 (v0.6 계승 — v0.6.1 신규 코드도 동일 적용):
   - jq 비의존 [F-D2], 구 pending 필드 부재 [F-D3], team_mode 실행 분기 부재 [F-2-a]
-  - v0.3 필드 diff 0 bytes [F-5-a], openai-codex CLI scripts 호출 0 [F-n3]
-  - brainstorm verbatim 수정 0 [F-n1/n2]
+  - v0.4 필드 diff 0 bytes [F-5-a 확장], openai-codex CLI scripts 호출 0 [F-n3]
+  - brainstorm verbatim 수정 0 [F-n1/n2 확장 — v0.6.1 신규 verbatim 도입 시도 동일]
 ```
