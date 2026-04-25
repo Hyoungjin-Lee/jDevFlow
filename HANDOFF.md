@@ -9,8 +9,17 @@
 ## Status
 
 **Current version:** v0.6.1 진행 중 (2026-04-26)
-**Last updated:** 2026-04-26 (세션 23)
-**Current stage:** **v0.6.1 Stage 1 브레인스토밍 완료 + scripts/v0.6.1/ 5종 재작성 완료** (세션 23). filter-repo expressions.txt # 문자 손상 사고 발생 → GitHub clone(0a917ea) 복구 완료 (커밋 `1543fd6`). scripts/v0.6.1/ 5종(expressions.txt/pre_check.sh/post_check.sh/verify_all.sh/rename_n1.sh) 안전 제약 5건 적용 재작성 완료. v0.6.2 Stage 1 브레인스토밍 병렬 완료 (scope 4+2개). **다음: scripts/v0.6.1/ + brainstorm_v0.6.2 커밋 → push → Code 세션에서 rename_n1.sh 실행 (v0.6.1 본 작업).**
+**Last updated:** 2026-04-26 (세션 24, 새벽 04:00 무렵)
+**Current stage:** **v0.6.1 N1 phase1 — filter-repo 본질 95% 성공, D3 보류로 마무리** (세션 24). 옵션 C(`pre_check.sh` 4번 게이트 idempotent patch + 9번 신규 생성 skip) 자체 실 실행 → patch commit `afcea6a` → filter-repo 적용 → 현 main HEAD `27d886a` (42 commits 재작성, 0.36s). worktree 원본 패턴 0 hits ✅, 사고 회고 S1/S2 0건 재발 ✅, backup 이중 보존 (`backup/pre-n1-20260426-030410=b01fac0` + `backup-pre-v0.6.1-rename=afcea6a`) ✅. **잔재 2건**: (1) v0.1 init commit `19b95859 chore: init jDevFlow…` msg AC-N1-3 진짜 1건 — `--replace-text`만 사용으로 일부 commit msg 누락, `--replace-message` 추가 필요. (2) post_check/verify_all 706 hits FAIL = **grep 패턴 자기-치환 false-positive 확정** (post_check.sh:40,47,56,62의 grep 패턴이 filter-repo로 jDevFlow→jOneFlow 자체 치환). push 0회 (운영자 명시 승인 영역, phase2 별 단계). **다음 세션 = D1/D2/D4 운영자 결정 진입 + jOneFlow 명칭 변경(v0.6.2)과의 정합성 결정.** 부수 검증: 회의창 ↔ 브릿지(`bridge` tmux) ↔ 오케(`jdevflow:1.1`) 3계층 통신 모델 풀 체인 검증 완료 (운영자 paste 0).
+
+### v0.6.1 N1 phase1 옵션 (다음 세션 진입 시 결정)
+
+- **D1**: filter-repo 재실행 + `--replace-message expressions.txt` 추가. `git reset --hard backup/pre-n1-20260426-030410` 필요(destructive, 운영자 명시 승인). v0.1 commit msg 100% 치환.
+- **D2**: 현 결과 수용 + phase2(원격 push) 진입. v0.1 init commit msg는 rebrand 역사로 보존 가치 (11개월 전 최초 commit). AC-N1-3 위반이지만 영향 미미.
+- **D4**: post_check/verify_all design 결함 patch (자기-치환 회피 — 패턴 base64 인코딩 또는 외부 read-only 파일). D1/D2와 병행 가능.
+- **D3 (보류, 세션 24 자체 채택)**: 운영자 결정까지 main `27d886a` 보존. push 0.
+
+**상세 결과:** `/tmp/jdevflow_n1_status.md` (세션 24 산출물 보존).
 
 ## 현재 상태
 
@@ -29,6 +38,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-26 | Session 24: **v0.6.1 N1 phase1 옵션 C 실행 — filter-repo 본질 95% 성공, D3 보류로 마무리.** Cowork 폐기 후 첫 Code 단일 창구 회차. 회의창 → 브릿지(`bridge` 신규 tmux 세션) → 오케(`jdevflow:1.1`) 3계층 통신 모델 풀 체인 검증 (paste 0, send-keys + sleep + Enter 분리 패턴). 진행 흐름: GATE5 도달(dry-run fail-closed, dispatch 절차 충돌) → 옵션 A 시도 → A 가정 사각지대(rename_n1.sh phase1이 --apply 무관하게 내부 pre_check 호출) → 옵션 C 채택(pre_check.sh idempotent patch) → patch commit `afcea6a` + filter-repo 실 실행 (HEAD `b01fac0` → `27d886a`, 42 commits 재작성, 0.36s). 결과: worktree 원본 패턴 0 hits ✅, 사고 회고 S1/S2 0건 재발 ✅, backup 이중 보존. 잔재: v0.1 init commit msg 1건(AC-N1-3) + post_check 706 hits FAIL은 grep 패턴 자기-치환 false-positive 확정. push 0회. 다음 = 운영자 D1/D2/D4 결정. |
 | 2026-04-26 | Session 23: **v0.6.1 Stage 1 완료 + scripts/v0.6.1/ 5종 재작성** — filter-repo expressions.txt # 손상 사고(Anthropic secret redaction) → GitHub clone 복구(`1543fd6`). scripts/v0.6.1/ 5종 안전 제약 S1~S5 적용 재작성. v0.6.2 Stage 1 브레인스토밍 병렬 완료(조직도/Apache2.0/slash command/handoffs/Cowork→Code 단일 창구/커뮤니케이션 톤). |
 | 2026-04-25 | Session 22: **v0.6.0 본 릴리스 commit chain 완료** — Stage 9 코드 리뷰(`/codex:review` 환경 제약으로 Claude Opus 독립 self-review로 대체) Verdict APPROVED(AC-5-1~5-12 12/12 + 설계 제약 8/8 + 보안/회귀 PASS, 차단 항목 0), Stage 13 CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, code_review.md 산출물 commit `19ef2c0`. v0.6.1-prep commit으로 운영자 작성 분(CLAUDE.md +10 R2 역할 확인 + Sec.2.5 강화, HANDOFF.md +72 Cowork 세션 16/20/21 결정 — jOneFlow 명칭 + JoneLab 디자인 시스템 + Claude Design 연동 + PPTX 5슬라이드 완료, prompts/claude/bridge_dispatch.md 표준 템플릿 신규 48라인) 묶음 commit. 운영자 작업 대기: `git tag v0.6` + `git push --tags` + 사후 `/codex:review`. 다음 = v0.6.1 진입. |
 | 2026-04-25 | Session 21 (Cowork): JoneLab 디자인 시스템 완료 — PPTX 5슬라이드 + spec.md 생성, Claude Design 업로드 및 디자인 시스템 생성, Pretendard Variable woff2 self-hosted 적용 (`assets/fonts/`), `--font-sans` 토큰 업데이트, Missing brand fonts 경고 해소. |
@@ -52,6 +62,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-26 | 세션 24: **v0.6.1 N1 phase1 옵션 C 실행 + D3 보류 마무리** — Cowork 폐기 후 첫 Code 단일 창구 회차. 회의창 ↔ 브릿지(`bridge` 신규 세션) ↔ 오케(`jdevflow:1.1`) 3계층 통신 풀 체인 검증 (운영자 paste 0). 흐름: GATE5(dispatch 3단계+4단계 pre_check 중복 충돌) → A 시도 → A 사각지대 발견(rename_n1.sh phase1이 --apply 무관하게 내부 pre_check 호출) → C 채택(pre_check 4번 게이트 idempotent patch + 9번 신규 생성 skip) → patch `afcea6a` + filter-repo 실 실행 (`b01fac0` → `27d886a`, 42 commits, 0.36s). worktree 원본 패턴 0 hits, S1/S2 0건 재발, backup 이중 보존. 잔재 = v0.1 init msg 1건(AC-N1-3, --replace-message 미사용) + post_check/verify_all 706 hits 자기-치환 false-positive. 운영자 부재 + "오늘 여기까지" 정책 → D3 보류 자체 채택. push 0. 다음 = D1/D2/D4 운영자 결정. 부수: tmux 세션 이름 prefix 충돌 해소(`jdevflow-bridge` → `bridge` rename), Ghostty `-e` 단발 실행 패턴 검증, 자발적 보고 패턴 메모리 박음(`feedback_proactive_watch_report.md`). |
 | 2026-04-25 | 세션 22: **v0.6.0 본 릴리스 commit chain 완료** — Stage 9 코드 리뷰(`/codex:review` 환경 제약으로 Claude Opus 독립 self-review로 대체) APPROVED, Stage 13 CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, Stage 9 산출물 `19ef2c0`, v0.6.1-prep 운영자 작성 분(CLAUDE.md/HANDOFF.md/bridge_dispatch.md) 묶음 commit. AC 12/12 + 설계 제약 8/8 + 보안/회귀 PASS. 차단 항목 0. 운영자 대기: `git tag v0.6` + `git push --tags` + 사후 `/codex:review`. 다음 = v0.6.1 (D6/D7 Hooks/ETHOS + jOneFlow 명칭 + JoneLab 디자인 시스템 통합 + 페르소나 4명 정식 가동). |
 | 2026-04-25 | 세션 19: v0.6 Stage 8 M4 완료 — D5 `scripts/ai_step.sh` 전면 재작성(550 라인, 6 공개 + 14 내부 함수). 외부 인터페이스 5종(--stage v0.5 호환 / --status / --next / --auto / --resume). 핵심 로직: `ai_step_resolve_executor`(stage_assignments POSIX 추출, fail-closed exit 2/3) + `ai_step_check_complete` 3-signal AND(artifact 존재 × executor exit=0 × grep 키워드, return 0/1/2/3) + `ai_step_dispatch` Sec.6.9 안내 메시지(외부 spawn 없음, plugin-cc 경로만 F-n3) + `ai_step_log_transition` dev_history 기록 + `ai_step_run_next/run_auto` 게이트 진행. F-2-a 준수: team_mode 리터럴은 표시 경로(printf/--status)만 등장, 실행 분기 0건. 운영자 위임 의무화 명령에 따라 Agent 2개 병렬 spawn(팀원1 본체 + 팀원2 테스트), 오케스트레이터가 통합/검증/커밋. 통합 단계에서 본체 BSD sed 버그 1건 발견·fix(em-dash 멀티바이트 + `\(...\)` 캡처 그룹 호환 안 됨 → `.*(stage[0-9]+).*` + `-E` extended regex). 신규 테스트 4건(resolve_executor 5 case + check_complete 8 truth table + static_gate AC-5-5 + auto E2E `--auto` stage1→2→3→4→5 paused + `--resume` 게이트 통과). v0.6 테스트 13/13 PASS, shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 전수 통과. 다음 = Stage 9(`/codex:review` 운영자 호출 — settings.json stage9_review=codex). |
 | 2026-04-25 | 세션 18: v0.6 Stage 8 M3 완료 — D3 `scripts/switch_team.sh` 신규 (대화 모드는 init_project.sh의 [2/2] verbatim/매퍼/3회 재시도 루프 재사용, 직접 지정/--force/--status 4분기) + brainstorm Sec.5 L118-123 차단 메시지 verbatim + pgrep -fl 'claude.*--teammate-mode' / '(codex-plugin-cc\|/codex:(rescue\|review\|status))' 패턴 매칭 (자기자신 필터). D4 `docs/guides/switching.md` 시나리오 4종 (workflow_mode 1→2 / 2→3 / team_mode 1→2 / 2/3→1). 테스트 4건: block(byte-cmp + cmp -s), apply(3 team_mode + invalid mode + 라운드트립 유일성), status(필드 9개 + read-only + 부재 시 exit 4 + 인자 충돌 exit 2), bg(exec -a로 argv[0] 위장 더미 → 차단 verbatim + --force 우회 + 더미 종료 후 정상). 부수: init_project.sh의 `for _arg in "$@"` module-level 파서를 `_init_parse_args` 함수로 캡슐화 후 `_init_main`에서 호출 (switch_team.sh가 source 시 부모 args를 init이 소비하던 문제 해결, 기존 verbatim/cases 테스트 영향 없음). v0.6 테스트 9/9 PASS, shellcheck CLEAN, AC-5-2/-4/-9/-12 통과. 다음 = M4 D5 ai_step.sh 오케스트레이터. |
@@ -302,4 +313,47 @@ Stage 8 구현 제약 (v0.6 계승 — v0.6.1 신규 코드도 동일 적용):
   - jq 비의존 [F-D2], 구 pending 필드 부재 [F-D3], team_mode 실행 분기 부재 [F-2-a]
   - v0.4 필드 diff 0 bytes [F-5-a 확장], openai-codex CLI scripts 호출 0 [F-n3]
   - brainstorm verbatim 수정 0 [F-n1/n2 확장 — v0.6.1 신규 verbatim 도입 시도 동일]
+```
+
+---
+
+## 📋 다음 세션 시작 프롬프트 (세션 25 — v0.6.1 N1 phase1 옵션 D 결정 + phase2 진입)
+
+```
+v0.6.1 N1 phase1 마무리 — 운영자 D 옵션 결정 + phase2(원격 push) 진입
+
+읽기 순서:
+  CLAUDE.md (Sec.2.5 조직도 + Sec.3 승인 정책)
+  → HANDOFF.md (Status — 세션 24 D3 보류 결과 + D1/D2/D4 옵션)
+  → /tmp/jdevflow_n1_status.md (세션 24 phase1 산출물 상세)
+  → CHANGELOG.md [Unreleased] (v0.6.1 N1 phase1 진행분)
+
+세션 25 = v0.6.1 N1 phase1 옵션 D 결정 + phase2 (Cowork 폐기 후 Code 단일 창구 2회차).
+
+전제 (세션 24 확정):
+  - 회의창 ↔ 브릿지(`bridge` tmux) ↔ 오케(`jdevflow:1.1`) 3계층 통신 모델 풀 체인 검증 완료 (paste 0)
+  - filter-repo 본질 95% 성공 — main HEAD `27d886a`, 42 commits 재작성, worktree 0 hits, S1/S2 0건 재발
+  - backup 이중 보존 (`backup/pre-n1-20260426-030410=b01fac0` + `backup-pre-v0.6.1-rename=afcea6a`)
+  - push 0회 (phase2 운영자 명시 승인 영역)
+  - tmux 세션은 세션 24 마지막에 kill됨 — 새 spawn 필요
+  - ★한국어 응답 필수★ ★자발적 보고 패턴(메모리 feedback_proactive_watch_report.md) 적용★
+
+운영자 결정 사항 (D1/D2/D4 + phase2):
+  1. **D1**: filter-repo 재실행 + `--replace-message` 추가. `git reset --hard backup/pre-n1-20260426-030410` 필요(destructive 명시 승인). v0.1 init commit msg `19b95859` 100% 치환.
+  2. **D2**: 현 결과 수용 + phase2(원격 push) 진입. v0.1 init commit msg는 rebrand 역사로 보존. AC-N1-3 위반 미미.
+  3. **D4**: post_check/verify_all design 결함 patch (자기-치환 회피 — base64 인코딩 또는 외부 read-only 파일). D1/D2 병행 가능.
+  4. **phase2 진입** (D2 또는 D1 후): `git push --force origin main` (filter-repo로 history 재작성됐으니 force 필수) + GitHub repo rename `jDevFlow` → `jOneFlow` (또는 v0.6.2와 묶기) + remote URL 갱신.
+
+운영자 추가 결정 영역:
+  - jOneFlow 명칭 변경(v0.6.2)과의 정합성 — v0.6.1에서 worktree 콘텐츠는 jOneFlow로 변경됐으나 repo 이름·README 등 외부 노출 표기는 v0.6.2 통합 변경 권장
+  - tmux 세션 spawn 시 — `bridge` + `jdevflow` 두 세션 자동 spawn(Ghostty `-e` 단발 패턴은 detach 후 닫힘 이슈 — `-e "tmux attach -t X"` 회피, `Cmd+N` + 운영자 직접 입력 또는 별 옵션)
+
+호출 모드 (운영자 자율 + 권장):
+  - **Code 세션 (Opus)** 단일 — 회의창 + 브릿지 + 오케 3계층은 세션 24 모델 그대로
+  - 첫 spawn 시 tmux 두 세션(`bridge`, `jdevflow`) 신규 — 세션 24 마지막 kill됐음
+
+세션 24 학습 (메모리 박힌 사항):
+  - feedback_send_keys_pattern.md — claude CLI에 prompt 보낼 때 sleep + Enter 분리
+  - feedback_proactive_watch_report.md — 왓처 캐치(task-notification) 시 자발적 보고
+  - project_v062_team_split.md — 팀별 오케스트레이터 분리(v0.6.2)와의 연계
 ```

@@ -7,8 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> v0.6.1 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS + 조직도 개편 정식 반영.
-> brainstorm Sec.8 페르소나 4명 정식 가동 가능.
+> v0.6.1 진행 중 — N1 jDevFlow → jOneFlow rebrand 작업 (filter-repo 적용, phase1 본질 95% 성공, D 옵션 결정 + phase2 push 운영자 승인 대기).
+> 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS + 조직도 개편 정식 반영. brainstorm Sec.8 페르소나 4명 정식 가동.
+
+### v0.6.1 N1 phase1 (2026-04-26 세션 24 — Cowork 폐기 후 Code 단일 창구 1회차)
+
+#### Changed (filter-repo 적용 — push 미실행)
+- **`scripts/v0.6.1/pre_check.sh`** (commit `afcea6a`) — 4번 게이트 idempotent 처리. 백업 브랜치 SHA == 현재 HEAD SHA 이면 PASS (이미 안전망 보존), 다른 SHA 가리키면 기존 FAIL. 9번 신규 백업 생성도 동일 SHA면 skip. 사용자 인터페이스 변경 0.
+- **git history 재작성** (filter-repo 적용본, main HEAD `b01fac0` → `27d886a`) — `--replace-text scripts/v0.6.1/expressions.txt` 적용으로 42 commits에 걸친 `jDevFlow` → `jOneFlow` 텍스트 치환. worktree 원본 패턴 0 hits.
+
+#### 검증
+- **본질 95% 성공** — worktree 원본 패턴 0 hits, 사고 회고 S1(`#` 손상)/S2(reflog gc) 0건 재발, backup 이중 보존(`backup/pre-n1-20260426-030410=b01fac0` filter-repo 직전 + `backup-pre-v0.6.1-rename=afcea6a` patch 직후).
+- **잔재 2건 (운영자 결정 영역)**:
+  1. AC-N1-3: v0.1 init commit `19b95859 chore: init jDevFlow…` msg 1건. `--replace-text`만 사용으로 일부 commit msg 누락. `--replace-message expressions.txt` 추가 필요(D1 옵션).
+  2. AC-N1-1 / post_check 706 hits FAIL = **grep 패턴 자기-치환 false-positive 확정**. `post_check.sh:40,47,56,62`의 grep 패턴 `'jDevFlow|jdevflow|JDEVFLOW'`가 filter-repo로 자체 치환되어 `'jOneFlow|joneflow|JONEFLOW'`로 변경. 정상 치환 결과를 "잔존"으로 잘못 분류. 본질 PASS, design 결함(D4 옵션).
+- **운영자 결정 D3(보류) 자체 채택** (운영자 부재 + "오늘 여기까지" 정책). 다음 세션 D1/D2/D4 결정 + phase2 진입.
+
+#### Added (인프라 / 메타)
+- **회의창 ↔ 브릿지(`bridge` 신규 tmux 세션) ↔ 오케(`jdevflow:1.1`) 3계층 통신 모델 풀 체인 검증** — Cowork 폐기 후 첫 Code 단일 창구 회차에서 paste 0 패턴 확인. send-keys + sleep + Enter 분리 패턴, 백그라운드 왓처(폴링 + osascript notification + done_marker), 자발적 보고 trigger(task-notification 도착) 모두 검증.
+- **세션 메모리** (사용자 메모리 디렉토리에 박음): `feedback_send_keys_pattern.md`, `feedback_proactive_watch_report.md`, `project_v062_team_split.md`, `feedback_tone.md`.
+
+#### Non-goal (다음 세션 이월)
+- D1 / D2 / D4 옵션 결정 — 운영자 명시 영역 (D1은 destructive `git reset --hard` 동반).
+- v0.6.1 N1 phase2: `git push --force origin main` (history 재작성으로 force 필수) + GitHub repo rename + remote URL 갱신.
+- jOneFlow 명칭 변경(v0.6.2)과의 정합성 결정 — repo 이름·README·외부 노출 표기는 v0.6.2 통합 변경 권장.
+- v0.6.1 후속 D6 / D7.
 
 ## [0.6.0] - 2026-04-25
 
