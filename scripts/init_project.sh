@@ -32,22 +32,28 @@ SETTINGS_FILE="$ROOT/.claude/settings.json"
 WITH_ENV=0
 NO_PROMPT=0
 FORCE_REINIT=0
-for _arg in "$@"; do
-  case "$_arg" in
-    --with-env)     WITH_ENV=1 ;;
-    --no-prompt)    NO_PROMPT=1 ;;
-    --force-reinit) FORCE_REINIT=1 ;;
-    -h|--help)
-      sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//'
-      exit 0
-      ;;
-    *)
-      echo "init_project.sh: 알 수 없는 인자: $_arg" >&2
-      echo "사용법: bash scripts/init_project.sh [--with-env] [--no-prompt] [--force-reinit]" >&2
-      exit 2
-      ;;
-  esac
-done
+
+# Arg parsing moved into _init_parse_args (called from _init_main).
+# Module-level parser would otherwise consume the parent script's $@ when
+# init_project.sh is sourced (e.g. by switch_team.sh) — see source guard at EOF.
+_init_parse_args() {
+  for _arg in "$@"; do
+    case "$_arg" in
+      --with-env)     WITH_ENV=1 ;;
+      --no-prompt)    NO_PROMPT=1 ;;
+      --force-reinit) FORCE_REINIT=1 ;;
+      -h|--help)
+        sed -n '2,8p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+        exit 0
+        ;;
+      *)
+        echo "init_project.sh: 알 수 없는 인자: $_arg" >&2
+        echo "사용법: bash scripts/init_project.sh [--with-env] [--no-prompt] [--force-reinit]" >&2
+        exit 2
+        ;;
+    esac
+  done
+}
 
 # ============================================================================
 # verbatim prompt blocks — brainstorm.md Sec.4 L58–77 (workflow), L81–101 (team)
@@ -354,6 +360,7 @@ _init_run_settings_setup() {
 # ============================================================================
 
 _init_main() {
+  _init_parse_args "$@"
   cd "$ROOT"
 
   echo "=============================="
