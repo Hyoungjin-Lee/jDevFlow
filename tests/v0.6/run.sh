@@ -3,6 +3,7 @@
 #
 # M1: scripts/lib/settings.sh unit tests (technical_design.md Sec 8.1).
 # M2: scripts/init_project.sh verbatim + integration tests (Sec 11.1).
+# M3: scripts/switch_team.sh verbatim + apply + status + bg tests (Sec 11.1).
 #
 # Usage (from project root):
 #   bash tests/v0.6/run.sh
@@ -38,6 +39,12 @@ run_test "$SCRIPT_DIR/test_settings_write_stage_assign_block.sh" sh
 # M2 — bash tests (init_project.sh has BASH_SOURCE guard).
 run_test "$SCRIPT_DIR/test_init_project_verbatim.sh" bash
 run_test "$SCRIPT_DIR/test_init_project_cases.sh"    bash
+
+# M3 — switch_team.sh tests (also bash; sources init_project.sh for verbatim).
+run_test "$SCRIPT_DIR/test_switch_team_block.sh"  bash
+run_test "$SCRIPT_DIR/test_switch_team_apply.sh"  bash
+run_test "$SCRIPT_DIR/test_switch_team_status.sh" bash
+run_test "$SCRIPT_DIR/test_switch_team_bg.sh"     bash
 
 printf '\n=== v0.6 results: %d pass, %d fail ===\n' "$pass" "$fail"
 

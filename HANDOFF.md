@@ -9,14 +9,14 @@
 ## Status
 
 **Current version:** v0.6 진행 중 (시작 2026-04-24)
-**Last updated:** 2026-04-25 (세션 17)
-**Current stage:** v0.6 Stage 8 M2 완료 (세션 17). D2 `scripts/init_project.sh` — brainstorm Sec.4 verbatim 2블록(★추천★ 보존, F-n1) + Case A/B/C/--force-reinit 분기 + POSIX atomic write. 신규 테스트 2건 (golden file + 통합) 추가, v0.6 테스트 5/5 PASS, shellcheck CLEAN, AC-5-1/2/9 게이트 통과. M3 (D3 `switch_team.sh` + D4 `switching.md`) 진입 대기.
+**Last updated:** 2026-04-25 (세션 18)
+**Current stage:** v0.6 Stage 8 M3 완료 (세션 18). D3 `scripts/switch_team.sh` (대화/직접/--force/--status 4분기) + D4 `docs/guides/switching.md` (시나리오 4종) + 테스트 4건 (block verbatim, apply 매핑, status 출력, bg 게이트). v0.6 테스트 9/9 PASS, shellcheck CLEAN, AC-5-2/-4/-9/-12 게이트 통과. 부수: `scripts/init_project.sh`의 module-level arg 파서를 `_init_main` 안으로 이동 (switch_team.sh가 source 시 args 충돌 회피, verbatim/cases 테스트 그대로 PASS). M4 (D5 `ai_step.sh` 오케스트레이터) 진입 대기.
 
 ## 현재 상태
 
 **현재 버전:** v0.6 진행 중 (시작 2026-04-24)
-**마지막 업데이트:** 2026-04-25 (세션 17)
-**현재 단계:** v0.6 Stage 8 M2 완료 (세션 17). 다음 = M3 (D3 `switch_team.sh` 백그라운드 체크 + D4 `switching.md` 시나리오 가이드) 구현 진입.
+**마지막 업데이트:** 2026-04-25 (세션 18)
+**현재 단계:** v0.6 Stage 8 M3 완료 (세션 18). 다음 = M4 (D5 `scripts/ai_step.sh` 오케스트레이터 — `stage_assignments` 기반 디스패치 + 3-signal stage completion + fail-closed + AC-5-5 static gate + integration 테스트) 구현 진입.
 
 | 항목 | 내용 |
 |------|------|
@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-25 | Session 18: v0.6 Stage 8 M3 완료 — D3 `scripts/switch_team.sh` (대화/직접/--force/--status 4분기, brainstorm Sec.5 L118-123 verbatim 차단 메시지, pgrep -fl 백그라운드 감지) + D4 `docs/guides/switching.md` (시나리오 4종, 각 전제/커맨드/효과 3요소). 신규 테스트 4건: block verbatim(diff 0 bytes vs brainstorm L118-123), apply 매핑(3 team_mode + invalid + 라운드트립), status 필드 전체 출력, bg 통합(exec -a로 더미 spawn → 차단 + --force 우회 + 더미 종료 후 정상). v0.6 테스트 9/9 PASS, shellcheck CLEAN. AC-5-2(-4/-9/-12 게이트 통과. 부수: init_project.sh module-level arg 파서를 _init_main 안으로 이동(source 충돌 회피). 다음 = M4 D5 ai_step.sh. |
 | 2026-04-25 | Session 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
 | 2026-04-25 | Session 16: v0.6 Stage 8 M1 완료 — A/B 실험(Round 1 Codex / Round 2 Claude) 둘 다 AC 6/6. Round 2 승자(SHA 15b663a) main FF 머지. CLAUDE.md Sec.3 "Claude 구현 금지" 정책 완화 — stage_assignments 기반으로 통일. 조직도 + 승인 스킵 + 호출 방식 + tmux 레이아웃 + 자동 왓처 지침 확정 (메모리 5건). 다음 = M2 init_project.sh. |
 | 2026-04-25 | Session 15: v0.6 Stage 5 Technical Design 완료 (Opus). docs/03_design/v0.6_cli_automation/technical_design.md 단일 trail D1→D5. AC 12건 commit. Q1(fail-closed 복구) / Q2(pgrep -fl) / Q3(unknown executor exit 2) 답변. 설계 제약 8건 전량 흡수. |
@@ -47,6 +48,7 @@
 
 | 날짜 | 설명 |
 |------|------|
+| 2026-04-25 | 세션 18: v0.6 Stage 8 M3 완료 — D3 `scripts/switch_team.sh` 신규 (대화 모드는 init_project.sh의 [2/2] verbatim/매퍼/3회 재시도 루프 재사용, 직접 지정/--force/--status 4분기) + brainstorm Sec.5 L118-123 차단 메시지 verbatim + pgrep -fl 'claude.*--teammate-mode' / '(codex-plugin-cc\|/codex:(rescue\|review\|status))' 패턴 매칭 (자기자신 필터). D4 `docs/guides/switching.md` 시나리오 4종 (workflow_mode 1→2 / 2→3 / team_mode 1→2 / 2/3→1). 테스트 4건: block(byte-cmp + cmp -s), apply(3 team_mode + invalid mode + 라운드트립 유일성), status(필드 9개 + read-only + 부재 시 exit 4 + 인자 충돌 exit 2), bg(exec -a로 argv[0] 위장 더미 → 차단 verbatim + --force 우회 + 더미 종료 후 정상). 부수: init_project.sh의 `for _arg in "$@"` module-level 파서를 `_init_parse_args` 함수로 캡슐화 후 `_init_main`에서 호출 (switch_team.sh가 source 시 부모 args를 init이 소비하던 문제 해결, 기존 verbatim/cases 테스트 영향 없음). v0.6 테스트 9/9 PASS, shellcheck CLEAN, AC-5-2/-4/-9/-12 통과. 다음 = M4 D5 ai_step.sh 오케스트레이터. |
 | 2026-04-25 | 세션 17: v0.6 Stage 8 M2 완료 — D2 `scripts/init_project.sh` 작성. brainstorm Sec.4 verbatim 2블록(★추천★ 보존), Case A(부재→heredoc skeleton) / B(v0.3→awk 신규 필드 삽입+schema bump, v0.3 필드 100% 보존) / C(v0.4 skip) / --force-reinit(in-place lib API 갱신, agents.* 보존). 신규 테스트 2건: golden file(diff 0 bytes vs brainstorm.md L58–77/L81–101) + 통합(4 케이스 + AC-5-1/2/9). v0.6 테스트 5/5 PASS, shellcheck CLEAN. 다음 = M3 D3 switch_team.sh + D4 switching.md. |
 | 2026-04-25 | 세션 16: v0.6 Stage 8 M1 완료 — A/B 실험(Round 1 Codex / Round 2 Claude) 둘 다 AC 6/6 만점. Round 2 승자(SHA 15b663a) main FF 머지. CLAUDE.md Sec.3 "Claude 구현 금지" 정책 완화 — stage_assignments 기반으로 통일. 조직도 + 승인 스킵 + 호출 방식 + tmux 레이아웃 + 자동 왓처 지침 확정 (메모리 5건). 다음 = M2 init_project.sh. |
 | 2026-04-25 | 세션 15: v0.6 Stage 5 Technical Design 완료 (Opus). docs/03_design/v0.6_cli_automation/technical_design.md 단일 trail D1→D5. AC 12건 commit. Q1(fail-closed 복구) / Q2(pgrep -fl) / Q3(unknown executor exit 2) 답변. 설계 제약 8건 전량 흡수. |
@@ -92,6 +94,13 @@
 
 ### 🟡 v0.6 과업 (Stage 5 완료 — 세션 15)
 
+**⚠️ 세션 16 확인 사항 — tmux 없이 진행됨 (M2까지 그대로 허용, M3부터 정상화 필수)**
+- M2까지: tmux 없이 Claude Code 에이전트 내부 직접 실행 (예외 허용)
+- **M3부터**: 반드시 tmux jdevflow 세션 띄우고 오케스트레이터 구조 복원
+  - `bash scripts/setup_tmux_layout.sh jdevflow` 실행 후 진입
+  - 구현(Stage 8) → Codex 또는 서브에이전트 위임 (Cowork 세션 직접 구현 금지)
+  - CLAUDE.md Sec. 2.5 조직도 준수
+
 **Stage 8 구현 (다음 세션 진입 대상) — M1 → M4 순차:**
 
 | Milestone | 대상 | Stage 8 구현자 (team_mode별) |
@@ -113,7 +122,12 @@
 | D4 | `docs/guides/switching.md` | 패턴 전환 시나리오 가이드. |
 | D5 | `ai_step.sh` 오케스트레이터 | Stage 2–13 자동화. **실행 결정 시 `team_mode` 리터럴 비참조, `stage_assignments`만 파싱** (표시 경로 예외) [F-2-a]. |
 
-**v0.6.1 패치 이월 [F-D1]:** Hooks PostToolUse, gstack ETHOS → CLAUDE.md. v0.6 본 릴리스 관측(최소 1일) 후 kickoff.
+**v0.6.1 패치 이월 [F-D1]:** Hooks PostToolUse, gstack ETHOS → CLAUDE.md. **세션 17 결정 변경: "1일 관측" buffer 폐기 → v0.6 완료 후 즉시 v0.6.1 진입.** 첫 실전 테스트 프로젝트(brainstorm Sec.9 "Jonelab AI팀 운영자 대시보드 ANSI CLI")는 **v0.6.1 완료 후** 진입.
+
+**v0.6.1 추가 과업 (세션 16 결정):**
+- **조직도 확정** — Cowork(CTO 회의실) → Code(브릿지) → CLI tmux(오케스트레이터) 3계층 구조 러프 확정 후 CLAUDE.md Sec. 2.5 정식 반영.
+- **오케스트레이터 스킬 2.0** — 브릿지 역할 체크 자동화. Code 세션이 직접 구현 감지 시 경고. (`prompts/claude/bridge_dispatch.md` 템플릿 기반)
+- 참고: 1+2번 단기 조치는 세션 16에서 완료 (CLAUDE.md R2 역할 확인 추가 + `prompts/claude/bridge_dispatch.md` 표준 템플릿 생성).
 
 **Non-goal (v0.6 본 릴리스):**
 - `@openai/codex` CLI 오케스트레이터 자동화 호출 [F-n3] — 수동 보조 전용.
@@ -167,52 +181,58 @@
 
 ---
 
-## 📋 다음 세션 시작 프롬프트 (세션 18 — Stage 8 M3 `switch_team.sh` + `switching.md`)
+## 📋 다음 세션 시작 프롬프트 (세션 19 — Stage 8 M4 `ai_step.sh` 오케스트레이터)
 
 ```
-v0.6 Stage 8 M3 구현 — D3 scripts/switch_team.sh + D4 docs/guides/switching.md
+v0.6 Stage 8 M4 구현 — D5 scripts/ai_step.sh 오케스트레이터 + static gate + integration 테스트
 읽기 순서:
   CLAUDE.md (Sec.2.5 조직도 + Sec.3 승인 스킵/호출 방식 정책 숙지)
-  → HANDOFF.md (세션 17 Stage 8 M2 완료 결과)
-  → docs/03_design/v0.6_cli_automation/technical_design.md Sec.4 (D3 설계) + Sec.5 (D4 가이드 골격)
-  → scripts/lib/settings.sh (M1 산출물 — settings_write_stage_assign_block 사용)
-  → scripts/init_project.sh (M2 산출물 — verbatim 패턴/POSIX 쓰기 참고)
-  → docs/01_brainstorm_v0.6/brainstorm.md Sec.5 L116–124 (차단 메시지 verbatim 원본)
+  → HANDOFF.md (세션 18 Stage 8 M3 완료 결과)
+  → docs/03_design/v0.6_cli_automation/technical_design.md Sec.6 (D5 설계) + Sec.0 F-2-a + Sec.14 AC
+  → scripts/lib/settings.sh (M1 산출물 — settings_read_stage_assign 사용)
+  → scripts/switch_team.sh (M3 산출물 — bg 감지/표시 경로 패턴 참고)
+  → scripts/ai_step.sh (v0.5 단일 stage 모드 — 하위 호환 유지)
 
-세션 18 = M3 (D3 switch_team.sh + D4 switching.md) 구현 + 검증.
+세션 19 = M4 (D5 ai_step.sh) 구현 + 검증. v0.6 본 릴리스 마지막 마일스톤.
 
-전제 (세션 17 확정):
-  - M2 완료: scripts/init_project.sh + tests/v0.6/test_init_project_{verbatim,cases}.sh.
-  - v0.6 테스트 5/5 PASS, shellcheck CLEAN, AC-5-1/2/9 통과.
+전제 (세션 18 확정):
+  - M3 완료: scripts/switch_team.sh + docs/guides/switching.md + 테스트 4건.
+  - v0.6 테스트 9/9 PASS, shellcheck CLEAN, AC-5-2/-4/-9/-12 통과.
   - settings.sh API: settings_path / settings_require_v04 / settings_read_key / settings_read_stage_assign / settings_write_key / settings_write_stage_assign_block.
-  - JDEVFLOW_ROOT env로 테스트 격리 가능 (M2 패턴 그대로 재사용).
-  - 승인 스킵 정책 (로컬+commit 자동), team_mode 기본 claude-only.
+  - JDEVFLOW_ROOT env로 테스트 격리 가능 (M2/M3 패턴 그대로 재사용).
+  - init_project.sh의 arg 파서는 _init_main 내부 호출 (source 안전).
   - ★한국어 응답 필수★
 
 진행 순서:
   1. tmux 세션 기동 (필요 시): scripts/setup_tmux_layout.sh jdevflow 2
-  2. team_mode 확인 (현재 settings.json: claude-impl-codex-review).
-  3. M3 Stage 8 구현 (executor = stage_assignments.stage8_impl):
-     - scripts/switch_team.sh — 신규 생성. Sec.4 데이터 플로우.
-       · 인터페이스: <mode> | <mode> --force | --status | (대화 모드, brainstorm Sec.4 [2/2] verbatim 재사용)
-       · 백그라운드 감지: pgrep -fl 'claude.*--teammate-mode', '(codex-plugin-cc|/codex:(rescue|review|status))'
-       · 차단 메시지: brainstorm Sec.5 L116–124 verbatim [F-n2] + exit 1
-       · --force 우회 시 settings_write_stage_assign_block 호출 (team_mode + 4 stage 라인 atomic 교체)
-       · --status: workflow_mode/team_mode/stage_assignments/bg 프로세스 출력 (표시 경로 team_mode 리터럴 OK)
-       · pending_team_mode 금지 [F-D3], jq 금지 [F-D2], 2분기만 (차단/즉시) [Sec.4.3]
-     - docs/guides/switching.md — Sec.5.2 골격 그대로 사용. 시나리오 4종 (각 전제/커맨드/효과 3요소).
+  2. team_mode 확인 (현재 settings.json: claude-impl-codex-review → stage8_impl=claude).
+  3. M4 Stage 8 구현 (executor = stage_assignments.stage8_impl):
+     - scripts/ai_step.sh — 전면 재작성 (v0.5 인자 1개 호출은 --stage <name> 호환 경로로 유지).
+       · 인터페이스 (Sec 6.2): <stage> | --auto | --next | --status | --resume
+       · resolve_executor (Sec 6.4): stage_assignments.* sed 추출 → claude/codex/빈값(exit 3)/오타(exit 2)
+       · check_stage_complete (Sec 6.5): 3-signal AND (artifact 존재 + executor exit 0 + grep 키워드)
+       · 승인 게이트 (Sec 6.6): Stage 4.5 무조건 일시정지, Stage 11 Strict/risk_level=high만
+       · 실패 복구 (Sec 6.7): fail-closed. 자동 재시도/롤백 없음. dev_history에 failed/interrupted 기록.
+       · 디스패치 테이블 (Sec 6.9): claude → `claude --teammate-mode tmux <prompt>`, codex → `/codex:rescue` 또는 `/codex:review` (plugin-cc 경로만)
+       · 표시 경로 team_mode 리터럴은 로그 헤더/--status에서만 (Sec 6.8 예외) — 실행 분기 금지 [F-2-a]
+       · 로깅 (Sec 6.10): dev_history.md `### TIMESTAMP — STAGE_NAME (executor=X) started/completed/failed`
   4. 신규 테스트 추가 (tests/v0.6/):
-     - test_switch_team_block.sh: 차단 메시지 verbatim diff 0 bytes vs brainstorm.md L116–124 [F-n2, AC-5-4]
-     - test_switch_team_apply.sh: 3종 team_mode 전환 → stage_assignments 매핑 검증
-     - test_switch_team_status.sh: --status 필드 전체 출력
-     - test_switch_team_bg.sh: 더미 sleep 99999 & --teammate-mode 프로세스 spawn → 차단 + --force 우회
+     - test_ai_step_resolve_executor.sh: claude/codex/빈값(exit 3)/오타(exit 2) 4 케이스
+     - test_ai_step_check_complete.sh: 3 signal AND truth table (8조합)
+     - test_ai_step_static_gate.sh [AC-5-5]: ai_step.sh + switch_team.sh + init_project.sh에서 team_mode 리터럴 if/case 실행 분기 0 hit. 표시 경로(echo/printf 내부) 예외 whitelist
+     - test_ai_step_auto.sh: Stage 2→3→4→(4.5 pause) 시퀀스 + paused 상태 검증
      - tests/v0.6/run.sh에 등록.
-  5. shellcheck + AC 게이트:
-     - AC-5-2 (pending_team_mode 0 hits)
-     - AC-5-4 (verbatim diff 0 bytes)
-     - AC-5-9 (codex CLI 0 hits)
-     - AC-5-12 (exit code 0/1/2/3/4/5 통일)
-  6. 완료 시 main에 FF 커밋 + HANDOFF 갱신 + M4 (D5 ai_step.sh) 진입 대기.
+  5. shellcheck + AC 게이트 전량 (AC-5-1~5-12):
+     - AC-5-3 (jq 비의존 PATH 차단 테스트)
+     - AC-5-5 (static gate)
+     - AC-5-6 (stage_assignments만 파싱)
+     - AC-5-7 (fail-closed exit 2)
+     - AC-5-8 (3-signal AND)
+     - AC-5-10 (v0.3 → v0.4 호환 regression)
+     - AC-5-11 (switching.md 시나리오 ≥4종 — M3에서 이미 통과)
+     - AC-5-12 (exit code 0/1/2/3/4/5/10/11/12/13/130)
+  6. 완료 시 main에 FF 커밋 + HANDOFF 갱신 + Stage 9 코드 리뷰 진입.
+  7. v0.6 본 릴리스 후 최소 1일 관측 → v0.6.1 D6/D7 (Hooks/ETHOS) kickoff.
 
 Stage 8 구현 제약 (동일):
   - jq 금지 [F-D2], pending_team_mode 금지 [F-D3], team_mode 실행분기 금지 [F-2-a]
