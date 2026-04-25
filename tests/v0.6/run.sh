@@ -4,6 +4,7 @@
 # M1: scripts/lib/settings.sh unit tests (technical_design.md Sec 8.1).
 # M2: scripts/init_project.sh verbatim + integration tests (Sec 11.1).
 # M3: scripts/switch_team.sh verbatim + apply + status + bg tests (Sec 11.1).
+# M4: scripts/ai_step.sh resolve / check / static gate / auto tests (Sec 6, Sec 14).
 #
 # Usage (from project root):
 #   bash tests/v0.6/run.sh
@@ -45,6 +46,12 @@ run_test "$SCRIPT_DIR/test_switch_team_block.sh"  bash
 run_test "$SCRIPT_DIR/test_switch_team_apply.sh"  bash
 run_test "$SCRIPT_DIR/test_switch_team_status.sh" bash
 run_test "$SCRIPT_DIR/test_switch_team_bg.sh"     bash
+
+# M4 — ai_step.sh tests (bash; ai_step.sh has BASH_SOURCE guard for sourcing).
+run_test "$SCRIPT_DIR/test_ai_step_resolve_executor.sh" bash
+run_test "$SCRIPT_DIR/test_ai_step_check_complete.sh"   bash
+run_test "$SCRIPT_DIR/test_ai_step_static_gate.sh"      bash
+run_test "$SCRIPT_DIR/test_ai_step_auto.sh"             bash
 
 printf '\n=== v0.6 results: %d pass, %d fail ===\n' "$pass" "$fail"
 
