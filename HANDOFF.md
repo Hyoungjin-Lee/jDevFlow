@@ -8,9 +8,9 @@
 
 ## Status
 
-**Current version:** v0.6 본 릴리스 완료 (2026-04-25)
-**Last updated:** 2026-04-25 (세션 22)
-**Current stage:** **v0.6.0 Stage 13 release commit 완료** (세션 22). Stage 9 코드 리뷰 APPROVED (AC-5-1~5-12 12/12 PASS + 설계 제약 F-D1~F-5-a 8/8 PASS + 보안/회귀 PASS, 차단 항목 0). CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, code_review.md 산출물 commit `19ef2c0`. **남은 운영자 작업: (a) `git tag v0.6` + `git push --tags`, (b) 사후 `/codex:review` 검증 (정책상 stage9_review=codex이나 본 세션 환경 제약으로 Claude Opus 독립 self-review로 대체).** 다음 = v0.6.1 진입 (D6 Hooks PostToolUse + D7 gstack ETHOS + 조직도 개편 정식 반영 + jOneFlow 명칭 변경 + JoneLab 디자인 시스템 통합).
+**Current version:** v0.6.1 진행 중 (2026-04-26)
+**Last updated:** 2026-04-26 (세션 23)
+**Current stage:** **v0.6.1 Stage 1 브레인스토밍 완료 + scripts/v0.6.1/ 5종 재작성 완료** (세션 23). filter-repo expressions.txt # 문자 손상 사고 발생 → GitHub clone(0a917ea) 복구 완료 (커밋 `1543fd6`). scripts/v0.6.1/ 5종(expressions.txt/pre_check.sh/post_check.sh/verify_all.sh/rename_n1.sh) 안전 제약 5건 적용 재작성 완료. v0.6.2 Stage 1 브레인스토밍 병렬 완료 (scope 4+2개). **다음: scripts/v0.6.1/ + brainstorm_v0.6.2 커밋 → push → Code 세션에서 rename_n1.sh 실행 (v0.6.1 본 작업).**
 
 ## 현재 상태
 
@@ -29,6 +29,7 @@
 
 | Date | Description |
 |------|-------------|
+| 2026-04-26 | Session 23: **v0.6.1 Stage 1 완료 + scripts/v0.6.1/ 5종 재작성** — filter-repo expressions.txt # 손상 사고(Anthropic secret redaction) → GitHub clone 복구(`1543fd6`). scripts/v0.6.1/ 5종 안전 제약 S1~S5 적용 재작성. v0.6.2 Stage 1 브레인스토밍 병렬 완료(조직도/Apache2.0/slash command/handoffs/Cowork→Code 단일 창구/커뮤니케이션 톤). |
 | 2026-04-25 | Session 22: **v0.6.0 본 릴리스 commit chain 완료** — Stage 9 코드 리뷰(`/codex:review` 환경 제약으로 Claude Opus 독립 self-review로 대체) Verdict APPROVED(AC-5-1~5-12 12/12 + 설계 제약 8/8 + 보안/회귀 PASS, 차단 항목 0), Stage 13 CHANGELOG [0.6.0] 작성 + commit `ec0f4ec`, code_review.md 산출물 commit `19ef2c0`. v0.6.1-prep commit으로 운영자 작성 분(CLAUDE.md +10 R2 역할 확인 + Sec.2.5 강화, HANDOFF.md +72 Cowork 세션 16/20/21 결정 — jOneFlow 명칭 + JoneLab 디자인 시스템 + Claude Design 연동 + PPTX 5슬라이드 완료, prompts/claude/bridge_dispatch.md 표준 템플릿 신규 48라인) 묶음 commit. 운영자 작업 대기: `git tag v0.6` + `git push --tags` + 사후 `/codex:review`. 다음 = v0.6.1 진입. |
 | 2026-04-25 | Session 21 (Cowork): JoneLab 디자인 시스템 완료 — PPTX 5슬라이드 + spec.md 생성, Claude Design 업로드 및 디자인 시스템 생성, Pretendard Variable woff2 self-hosted 적용 (`assets/fonts/`), `--font-sans` 토큰 업데이트, Missing brand fonts 경고 해소. |
 | 2026-04-25 | Session 19: v0.6 Stage 8 M4 완료 — D5 `scripts/ai_step.sh` 전면 재작성 (550 라인). 운영자 위임 의무화에 따라 분담: 팀원1(본체 ai_step_resolve_executor/check_complete/dispatch/log_transition/run_next/run_auto + v0.5 호환 모드 + main dispatcher) + 팀원2(테스트 4종 resolve_executor/check_complete 3-signal AND truth table 8가지/static_gate AC-5-5/auto integration) Agent 병렬 spawn 후 오케스트레이터가 통합. 통합 시 BSD sed 멀티바이트 em-dash + 캡처 그룹 매칭 실패 본체 버그 발견 → `.*(stage[0-9]+).*` 일반 패턴 + `-E` extended regex로 fix → `--auto` end-to-end 시나리오(stage1 마커 → stage2/3/4 started → stage5 paused) + `--resume` 게이트 통과 시나리오 추가 활성화. v0.6 테스트 13/13 PASS, shellcheck CLEAN, AC-5-1/2/3/5/6/7/8/9/12 전수 통과. 다음 = Stage 9 코드 리뷰(`/codex:review`). |
