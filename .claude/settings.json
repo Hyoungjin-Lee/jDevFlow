@@ -16,9 +16,27 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
+  "hooks": {
+    "_comment_hooks": "v0.6.3 M3 D6 Hooks(경고 모드). 모든 hook은 exit 0 강제 — 차단 X, gradual adoption (Q3). py_compile / shellcheck 호출 후 결과는 stderr 경고만.",
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "scripts/hook_post_tool_use.sh"
+          }
+        ]
+      }
+    ]
+  },
   "agents": {
     "planner": {
-      "stages": [2, 3, 4],
+      "stages": [
+        2,
+        3,
+        4
+      ],
       "_comment_stage1": "Stage 1 브레인스토밍은 Cowork 데스크탑에서 운영자 + Claude 1:1 진행 (Sonnet). CLI 에이전트 팀 범위 외.",
       "_comment_model": "Stage 2–4: Opus — 계획 오류가 구현 전체를 망가뜨림. Max 요금제 환경에서 앞에 투자.",
       "models": {
@@ -33,7 +51,11 @@
       }
     },
     "designer": {
-      "stages": [5, 6, 7],
+      "stages": [
+        5,
+        6,
+        7
+      ],
       "models": {
         "stage_5": "claude-opus-4-7",
         "stage_6": "claude-sonnet-4-6",
@@ -46,7 +68,10 @@
       }
     },
     "reviewer": {
-      "stages": [9, 11],
+      "stages": [
+        9,
+        11
+      ],
       "_comment_model": "Stage 9: Opus — 깊은 리뷰 누락 시 Stage 10 재작업 비용 큼. Stage 11: Opus XHigh — 고위험 검증 전용.",
       "models": {
         "stage_9": "claude-opus-4-7",
@@ -58,7 +83,10 @@
       }
     },
     "qa_engineer": {
-      "stages": [12, 13],
+      "stages": [
+        12,
+        13
+      ],
       "models": {
         "stage_12": "claude-sonnet-4-6",
         "stage_13": "claude-sonnet-4-6"
@@ -68,5 +96,36 @@
         "stage_13": "medium"
       }
     }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(cd /Users/geenya/projects/Jonelab_Platform/jOneFlow && sh scripts/git_checkpoint.sh*)",
+      "Bash(cd /Users/geenya/projects/Jonelab_Platform/jOneFlow && git log*)",
+      "Bash(cd /Users/geenya/projects/Jonelab_Platform/jOneFlow && git status*)",
+      "Bash(cd /Users/geenya/projects/Jonelab_Platform/jOneFlow && git diff*)",
+      "Bash(tmux*)",
+      "Bash(open -na Ghostty*)"
+    ],
+    "deny": [
+      "Bash(*git push*)",
+      "Bash(*git push --force*)",
+      "Bash(*rm -rf*)",
+      "Bash(*git reset --hard*)",
+      "Bash(*git branch -D*)"
+    ]
+  },
+  "hooks": {
+    "_comment": "D6 PostToolUse 경고 모드 (v0.6.3 M3) — 차단 금지, exit 0 강제, gradual adoption",
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'f=\"${CLAUDE_TOOL_RESULT_FILE_PATH:-}\"; [ -z \"$f\" ] && exit 0; case \"$f\" in *.py) python3 -m py_compile \"$f\" 2>&1 || true ;; *.sh) shellcheck -x \"$f\" 2>&1 || true ;; esac; exit 0'"
+          }
+        ]
+      }
+    ]
   }
 }

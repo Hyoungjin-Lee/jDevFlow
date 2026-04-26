@@ -363,13 +363,55 @@ ai_step_dispatch() {
   case "${_ad_skey}_${_ad_exec}" in
     stage8_impl_claude)    printf '   ▶ Stage 8 구현: claude --teammate-mode tmux <prompt>\n' ;;
     stage8_impl_codex)     printf '   ▶ Stage 8 구현: /codex:rescue <prompt> (plugin-cc)\n' ;;
-    stage9_review_claude)  printf '   ▶ Stage 9 리뷰: claude Opus 서브에이전트 (code_review.md)\n' ;;
-    stage9_review_codex)   printf '   ▶ Stage 9 리뷰: /codex:review <code_review prompt>\n' ;;
+    stage9_review_claude)
+      printf '   ▶ Stage 9 리뷰: claude Opus 서브에이전트 (code_review.md)\n'
+      # F-62-8 리뷰어 conditional fallback 알림
+      printf '   ⚠️  Codex 환경 미감지 (stage9_review != "codex"). self-review 모드 실행.\n'
+      ;;
+    stage9_review_codex)   printf '   ▶ Stage 9 리뷰: /codex:review <code_review prompt> (plugin-cc)\n' ;;
     stage10_fix_claude)    printf '   ▶ Stage 10 수정: claude --teammate-mode tmux <revise prompt>\n' ;;
     stage10_fix_codex)     printf '   ▶ Stage 10 수정: /codex:rescue <revise prompt>\n' ;;
     stage11_verify_claude) printf '   ▶ Stage 11 검증: claude Opus XHigh (final_review.md)\n' ;;
     *) _ai_step_die 2 "디스패치 테이블 미정 조합: ${_ad_skey}_${_ad_exec}" ;;
   esac
+}
+
+# ai_step_stage9_review_route — Stage 9 리뷰 경로 조건부 분기 (F-62-8, v0.6.3 M5)
+# settings.json stage_assignments.stage9_review 값 감지:
+#   "codex" → Codex path 안내 (plugin-cc sketch)
+#   기타    → self-review fallback + 운영자 알림
+# 실제 CLI 호출 X — 안내 메시지 출력만 (F-n3 계승).
+ai_step_stage9_review_route() {
+  _as9_settings="$ROOT/.claude/settings.json"
+  _as9_reviewer=""
+
+  # jq 우선, 미설치 시 grep fallback (B2-3)
+  if command -v jq >/dev/null 2>&1 && [ -f "$_as9_settings" ]; then
+    _as9_reviewer=$(jq -r '.stage_assignments.stage9_review // empty' "$_as9_settings" 2>/dev/null || true)
+  fi
+  if [ -z "$_as9_reviewer" ] && [ -f "$_as9_settings" ]; then
+    _as9_reviewer=$(grep '"stage9_review"' "$_as9_settings" | cut -d'"' -f4 || true)
+  fi
+
+  # Codex CLI 환경 감지 (M5-EP1 fail-safe)
+  _as9_codex_available=0
+  if command -v codex >/dev/null 2>&1; then
+    _as9_codex_available=1
+  fi
+
+  if [ "$_as9_reviewer" = "codex" ] && [ "$_as9_codex_available" = "1" ]; then
+    printf '   Stage 9: Codex review 경로 활성화 (stage9_review=codex + codex CLI 감지)\n'
+    printf '   /codex:review <code_review prompt> (plugin-cc)\n'
+    printf '   결과 회수 후 Stage 10 fix loop 진입.\n'
+  elif [ "$_as9_reviewer" = "codex" ] && [ "$_as9_codex_available" = "0" ]; then
+    printf 'Stage 9: stage9_review=codex 설정됐으나 codex CLI 미감지.\n'
+    printf '   self-review 모드로 진행합니다. 운영자 알림.\n'
+    printf '   Stage 9 리뷰: claude Opus 서브에이전트 (code_review.md)\n'
+  else
+    printf 'Stage 9: Codex 환경 미감지. self-review 모드 실행.\n'
+    printf '   stage9_review 값: "%s"\n' "${_as9_reviewer:-(미설정)}"
+    printf '   Stage 9 리뷰: claude Opus 서브에이전트 (code_review.md)\n'
+  fi
 }
 
 # ai_step_log_transition STAGE STATE [EXECUTOR]

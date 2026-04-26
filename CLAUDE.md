@@ -39,6 +39,8 @@
 - 오케스트레이터 호출 방식은 자율. 운영자 override("서브에이전트로" / "팀모드로" / "Codex로") 시 세션 단위 적용.
 - 글로벌 `~/.claude/CLAUDE.md` 영역은 v0.6.2 scope 외 (v0.6.3 이월 [F-62-4]).
 
+> **글로벌 보편 정책** = `~/.claude/CLAUDE.md` 참조 (specificity: 프로젝트 > 글로벌 [F-62-5]).
+
 ---
 
 ## 3. 절대 규칙 (보안 — 인라인 필수)
@@ -77,3 +79,6 @@ bash scripts/ai_step.sh --auto              # Stage 자동 진행 (approval gate
 | `handoffs/active/HANDOFF_v<X>.md` | HANDOFF.md symlink target |
 
 코드 검증 / Stage 1~13 상세는 `docs/operating_manual.md` 참조.
+
+> **F-62-9:** 모든 claude CLI 자동화 호출은 `--dangerously-skip-permissions` 옵션 강제.
+> 누락 확인: `grep -E '^\s*claude\b' scripts/*.sh | grep -v 'dangerously-skip'` → 0건.
