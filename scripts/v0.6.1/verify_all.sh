@@ -32,7 +32,7 @@ RESULTS_LOG="$ROOT/scripts/v0.6.1/verify_results.log"
 
 # D4 patch: filter-repo 자기-치환 회피.
 # 'j'/'J' 첫 글자를 printf hex로 분리 → 디스크에 원본 단어 단일 시퀀스 0 등장
-# → 미래 filter-repo 재실행 시 expressions.txt 매칭 회피 (자기-치환 false-positive 방지).
+# → 미래 filter-repo 재실행 시 expressions.md 매칭 회피 (자기-치환 false-positive 방지).
 _pj=$(printf '\x6a')   # 'j'
 _puj=$(printf '\x4a')  # 'J'
 _old_pattern="${_pj}DevFlow|${_pj}devflow|${_puj}DEVFLOW"
@@ -83,7 +83,7 @@ _ac_n1_1() {
         grep -rnE "$_old_pattern" . \
             --exclude-dir=.git --exclude-dir=node_modules \
             2>/dev/null | head -10 | sed 's|^|    |' >&2
-        _fail "AC-N1-1 (grep $_hits hits)" "위 위치 패치 또는 expressions.txt 보강 후 재실행"
+        _fail "AC-N1-1 (grep $_hits hits)" "위 위치 패치 또는 expressions.md 보강 후 재실행"
     fi
 }
 
@@ -159,7 +159,7 @@ _ac_n1_7() {
             _pass "AC-N1-7 ($_f -> jOneFlow 치환됨)"
         else
             _fail "AC-N1-7 ($_f 미치환)" \
-                  "filter-repo가 이 파일을 처리 안 함 - expressions.txt + filter-repo 재실행"
+                  "filter-repo가 이 파일을 처리 안 함 - expressions.md + filter-repo 재실행"
         fi
     done
 }

@@ -36,7 +36,7 @@ set -eu
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 cd "$ROOT"
 
-EXPR_FILE="$ROOT/scripts/v0.6.1/expressions.txt"
+EXPR_FILE="$ROOT/scripts/v0.6.1/expressions.md"
 BACKUP_BRANCH="backup-pre-v0.6.1-rename"
 DEFAULT_NEW_URL="https://github.com/Hyoungjin-Lee/jOneFlow.git"
 

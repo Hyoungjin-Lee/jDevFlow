@@ -17,7 +17,7 @@ i=0
 while [ $i -lt 240 ]; do
   i=$((i + 1))
 
-  exp="$DIR/expressions.txt"
+  exp="$DIR/expressions.md"
   pre="$DIR/pre_check.sh"
   post="$DIR/post_check.sh"
   verify="$DIR/verify_all.sh"
@@ -54,7 +54,7 @@ while [ $i -lt 240 ]; do
   if [ "$quiet" -ge "$QUIET_TICKS" ]; then
     {
       echo "v0.6.1 재작성 완료 감지"
-      echo "expressions.txt: $(wc -c < "$exp") bytes"
+      echo "expressions.md:  $(wc -c < "$exp") bytes"
       echo "pre_check.sh:    $(wc -c < "$pre") bytes"
       echo "post_check.sh:   $(wc -c < "$post") bytes"
       echo "verify_all.sh:   $(wc -c < "$verify") bytes"

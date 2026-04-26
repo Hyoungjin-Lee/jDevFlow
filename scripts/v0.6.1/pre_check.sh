@@ -33,11 +33,11 @@ cd "$ROOT"
 
 DRY_RUN="${DRY_RUN:-0}"
 BACKUP_BRANCH="backup-pre-v0.6.1-rename"
-EXPR_FILE="$ROOT/scripts/v0.6.1/expressions.txt"
+EXPR_FILE="$ROOT/scripts/v0.6.1/expressions.md"
 
 # D4 patch: filter-repo 자기-치환 회피.
 # 'j'/'J' 첫 글자를 printf hex로 분리 → 디스크에 원본 단어 단일 시퀀스 0 등장
-# → 미래 filter-repo 재실행 시 expressions.txt 매칭 회피 (자기-치환 false-positive 방지).
+# → 미래 filter-repo 재실행 시 expressions.md 매칭 회피 (자기-치환 false-positive 방지).
 _pj=$(printf '\x6a')   # 'j'
 _puj=$(printf '\x4a')  # 'J'
 _old_pattern="${_pj}DevFlow|${_pj}devflow|${_puj}DEVFLOW"
@@ -95,21 +95,21 @@ else
     _pass "백업 브랜치 부재 확인 (이전 시도 흔적 없음)"
 fi
 
-# 5. expressions.txt 존재 + 정확히 3 매핑 (S1) -------------------------
-[ -f "$EXPR_FILE" ] || _fail "expressions.txt 부재" "scripts/v0.6.1/expressions.txt 작성"
+# 5. expressions.md 존재 + 정확히 3 매핑 (S1) -------------------------
+[ -f "$EXPR_FILE" ] || _fail "expressions.md 부재" "scripts/v0.6.1/expressions.md 작성"
 _total_lines=$(wc -l < "$EXPR_FILE" | tr -d ' ')
 _mapping_count=$(grep -cE '^[A-Za-z]+==>[A-Za-z]+$' "$EXPR_FILE" || true)
 _comment_count=$(grep -cE '^#' "$EXPR_FILE" || true)
 [ "$_mapping_count" = "3" ] \
-    || _fail "expressions.txt 매핑 라인 수 = $_mapping_count (기대=3)" \
+    || _fail "expressions.md 매핑 라인 수 = $_mapping_count (기대=3)" \
              "S1: 정확히 3 매핑만 (jOneFlow/joneflow/JONEFLOW)"
 [ "$_comment_count" = "0" ] \
-    || _fail "expressions.txt 주석 라인 = $_comment_count (기대=0)" \
+    || _fail "expressions.md 주석 라인 = $_comment_count (기대=0)" \
              "S1: 주석 라인 일체 금지 (단독 # 라인이 모든 # 마스킹 사고 원인)"
 [ "$_total_lines" = "3" ] \
-    || _fail "expressions.txt 총 라인 수 = $_total_lines (기대=3)" \
+    || _fail "expressions.md 총 라인 수 = $_total_lines (기대=3)" \
              "S1: 매핑 외 일체 금지"
-_pass "expressions.txt: 3 매핑 / 주석 0 / 총 3 라인 (S1)"
+_pass "expressions.md: 3 매핑 / 주석 0 / 총 3 라인 (S1)"
 
 # 6. 상위 경로 baseline grep (AC-N1-8 baseline) ------------------------
 _upper_baseline=$(grep -rnE "$_old_pattern" \

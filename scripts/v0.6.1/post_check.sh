@@ -31,7 +31,7 @@ BACKUP_BRANCH="backup-pre-v0.6.1-rename"
 
 # D4 patch: filter-repo 자기-치환 회피.
 # 'j'/'J' 첫 글자를 printf hex로 분리 → 디스크에 원본 단어 단일 시퀀스 0 등장
-# → 미래 filter-repo 재실행 시 expressions.txt 매칭 회피 (자기-치환 false-positive 방지).
+# → 미래 filter-repo 재실행 시 expressions.md 매칭 회피 (자기-치환 false-positive 방지).
 _pj=$(printf '\x6a')   # 'j'
 _puj=$(printf '\x4a')  # 'J'
 _old_pattern="${_pj}DevFlow|${_pj}devflow|${_puj}DEVFLOW"
@@ -55,7 +55,7 @@ else
         --exclude-dir=.git --exclude-dir=node_modules \
         2>/dev/null | head -10 | sed 's|^|    |' >&2
     _fail "AC-N1-1 잔존 grep = $_grep_hits hits" \
-          "위치별 수동 패치 또는 expressions.txt 보강 후 백업 브랜치에서 reset+재실행"
+          "위치별 수동 패치 또는 expressions.md 보강 후 백업 브랜치에서 reset+재실행"
 fi
 
 # 2. AC-N1-3: 커밋 메시지 잔존 -----------------------------------------
