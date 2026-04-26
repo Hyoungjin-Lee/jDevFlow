@@ -7,7 +7,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS는 v0.6.4 이월. 18명 페르소나 정식 가동(Q5 운영자 결정)은 v0.6.3+. 글로벌 `~/.claude/CLAUDE.md` scope(Q1)는 v0.6.3 이월.
+> v0.6.4 진행 중 — plugin-cc Codex 자동 호출 고도화 (BR-002 후속, 운영자 결정 #15). tmux pane-base-index 환경 호환성 보강. ~/.claude/CLAUDE.md frontmatter 일반화.
+
+## [0.6.3] - 2026-04-27
+
+> v0.6.3 5개 모듈 구현 완료 (Stage 8~12). M1 Monitor 인프라 + M2 글로벌 CLAUDE 통합 + M3 D6 Hooks/ETHOS + M4 18명 페르소나 Codex 조건부 설계 + M5 Codex 분기 인터페이스. 신규 설계 제약 5건(F-62-5~9) 계승. AC 자동 21/21 / 수동 5건(4PASS+1PARTIAL) / Score 단계별 89.3%(plan) / 89.9%(design) / 89.75%(review) / 95.1%(QA). BR-001/BR-002 영구 trace.
+
+### M1 — Monitor 인프라 (AC-M1-1~5)
+- **`scripts/monitor_bridge.sh` 신규 (100줄, F-62-7):** `📡 status YYYY-MM-DD HH:MM:SS Stage N` 시그니처 + `capture-pane -S -20` 범위 + 1초 dedup + `TMUX_SESSION_BRIDGE` 환경변수 주입. Monitor 재시작 후 신호 재캐치 검증 완료 (MQ-M1-1 PASS).
+- **`scripts/spawn_team.sh` 신규 (110줄):** 18명 tmux 1+3 pane 모델 자동화. 동시 4 pane spawn + 5 round × 4 pane 부하 테스트 20/20 누락 0 (MQ-M4-1 PASS).
+- **`scripts/setup_tmux_layout.sh` 개정:** bridge 세션 + monitor hook 통합.
+- **`scripts/update_handoff.sh` --dry-run:** `windows|fallback|copy|sync` 출력 포함.
+
+### M2 — 글로벌 `~/.claude` 통합 (AC-M2-1~4)
+- **`~/.claude/CLAUDE.md` 신규 (113줄, F-62-5):** 보편 정책 4개 섹션 — (1) 보안 (2) 언어 `ko` (3) 톤 `formal_ko` (4) CLI 자동화 `--dangerously-skip-permissions` 강제 (F-62-9). specificity 원칙 명시: `프로젝트 설정이 글로벌 설정을 override`.
+- **`CLAUDE.md` Sec.2 글로벌 포인터 추가:** `~/.claude/CLAUDE.md 참조 (specificity: 프로젝트 > 글로벌 [F-62-5])`.
+- **`CLAUDE.md` Sec.4 F-62-9 강제 옵션 명시:** `grep -E '^\s*claude\b' scripts/*.sh | grep -v 'dangerously-skip'` → 0건.
+- **Cascading lookup 순서 정식화:** `.claude/settings.json` → `CLAUDE.md` → `~/.claude/CLAUDE.md`.
+
+### M3 — D6 Hooks + ETHOS 체크리스트 (AC-M3-1~5)
+- **`.claude/settings.json` hooks.PostToolUse 추가 (경고 모드, Q3):** matcher `Write|Edit` → `scripts/hook_post_tool_use.sh`. exit 0 강제 — 차단 X, gradual adoption.
+- **`scripts/hook_post_tool_use.sh` 신규 (46줄):** `py_compile` (.py) / `shellcheck` (.sh) 호출 후 stderr 경고만. 자동화 flow 비차단.
+- **`docs/guides/ethos_checklist.md` 신규:** ETHOS 3종 자체점검 — Boil the Lake (범위 경계) + autoplan (단계별 절차) + /investigate (탐색 모드). 경고 모드.
+
+### M4 — 18명 페르소나 + Codex 조건부 설계 (AC-M4-1~4)
+- **`docs/02_planning_v0.6.3/personas_18.md` (≥150줄):** 5계층 18명 페르소나 정의 + Codex 정의 ≥10줄 (R-1 정정).
+- **`.claude/settings.json` `stage_assignments.stage9_review = "codex"` 확정 (F-62-8):** Codex 조건부 경로 활성화. Codex CLI 미감지 시 self-review fallback (fail-safe).
+- **`docs/operating_manual.md` 조직도 명시:** 운영 매뉴얼 v0.6.3 갱신.
+
+### M5 — Codex 조건부 분기 인터페이스 (AC-M5-1~3)
+- **`scripts/ai_step.sh` `ai_step_stage9_review_route` 함수 추가 (F-62-8):** jq 우선 / grep fallback 파싱 (B2-3). `command -v codex` 감지 → Codex path 안내 / 미감지 → self-review fallback. exit 0 강제 (자동화 flow 유지). 3 Case 전부 검증 완료 (MQ-M4-2 PASS, MQ-M5-1 PASS).
+- **F-n3 계승:** 실제 CLI 호출 없음, 안내 메시지 출력만 (plugin-cc 자동화는 v0.6.4 이월).
+
+### 신규 design 제약 (F-62-5~9)
+- **F-62-5:** specificity — 프로젝트 설정이 글로벌 설정을 override. Cascading lookup 순서 정식화 (M2).
+- **F-62-6:** BSD/GNU sed 분기 처리 — POSIX 이식성 우선, sed 비의존 로직 권장 (M1).
+- **F-62-7:** Monitor 신호 형식 = `📡 status YYYY-MM-DD HH:MM:SS Stage N` + `capture-pane -S -20` + 1초 dedup (M1).
+- **F-62-8:** `stage9_review` 조건부 분기 — settings.json 값 + CLI 환경 감지 이중 조건 (M4/M5).
+- **F-62-9:** 모든 claude CLI 자동화 호출에 `--dangerously-skip-permissions` 강제 (M2/M5).
+
+### 검증
+- **자동 AC 21/21 (100%):** M1(5/5) + M2(4/4) + M3(5/5) + M4(4/4) + M5(3/3). 회귀 0건.
+- **수동 QA 5건:** MQ-M1-1 PASS / MQ-M2-1 PARTIAL(6/7, 정책 충돌 0건) / MQ-M4-1 PASS / MQ-M4-2 PASS / MQ-M5-1 PASS.
+- **shellcheck CLEAN:** 7개 스크립트 error 0건 (warning 6건 — gradual adoption Q3 정합).
+- **py_compile CLEAN:** 4개 Python 파일 error 0건.
+- **Score 단계별:** Stage 4(plan) 89.3% / Stage 5(design) 89.9% / Stage 9(review) 89.75% / Stage 12(QA) 95.1%.
+- **BR 추적:** BR-001 (오케스트레이터 idle polling 부재 — `a969582`) / BR-002 (Codex plugin-cc 자동 호출 fallback — Stage 9, 운영자 결정 #15).
+
+### Stage commit chain
+- plan Stage 2~4: `50a6212` (plan_final 89.3%) → `e4379e5` (drafter2 정정 + 운영자 결정 #14~16)
+- design Stage 5: `460a99e` (design_final 89.9%, F-62-5~9 결정)
+- impl Stage 8: `868de75` (M2+M3+M5) → `5ac2e16` (M1+M4) → `ea2fd16` (잔재 + Stage 9~13 dispatch)
+- qa Stage 12 사전: `d44f9e6` (MQ 시나리오 5건)
+- review Stage 9: `5b3ead3` (APPROVED 89.75%, BR-002 작성)
+- fix Stage 10: `af79589` (P1 fail-safe 연결)
+- qa Stage 12: `3f2ae76` (QA 보고서 APPROVED 95.1%)
+- release Stage 13: `b24e069` (release_v0.6.3.sh Gate 1~7)
+
+### 산출물 경로
+| 단계 | 경로 |
+|------|------|
+| plan | `docs/02_planning_v0.6.3/` (plan_draft + personas_18 + plan_review + plan_final) |
+| design | `docs/03_design/v0.6.3_{technical_design,design_review,design_final}.md` |
+| impl | `scripts/{monitor_bridge,spawn_team,ai_step,setup_tmux_layout,hook_post_tool_use}.sh` + `~/.claude/CLAUDE.md` + `.claude/settings.json` + `docs/guides/ethos_checklist.md` |
+| review | `docs/04_implementation_v0.6.3/{code_review,codex_response}.md` |
+| QA | `docs/05_qa/v0.6.3_stage12_manual_qa.md` + `docs/05_qa_v0.6.3/qa_report.md` |
+| release | `scripts/release_v0.6.3.sh` + `scripts/cleanup_v0.6.3_release.sh` |
+
+### Non-goal (v0.6.4 이월)
+- Codex plugin-cc 자동 호출 고도화 (BR-002 후속, 운영자 결정 #15).
+- `~/.claude/CLAUDE.md` frontmatter 일반화 (MQ-M2-1 PARTIAL 후속).
+- tmux `pane-base-index` 환경 호환성 보강 (MQ-M4-1 비고).
+- SC1007 shellcheck warning 정정 (`setup_tmux_layout.sh`).
+- 네이티브 Windows symlink 지원 (F-04-S5b 후속, v0.6.2 이월 계속).
 
 ## [0.6.2] - 2026-04-26
 
