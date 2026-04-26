@@ -7,7 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS + 조직도 개편 정식 반영. brainstorm Sec.8 페르소나 4명 정식 가동. v0.6.2 Stage 1 브레인스토밍 진행.
+> v0.6.2 Stage 8 구현 진행 중. 5개 모듈 순차 구현 (M-License → M-Org → M-SelfEdu → M-Handoffs → M-Slash) + release commit. 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS는 v0.6.4 이월.
+
+### Changed
+- **LICENSE 교체 (M-License, AC-Lic-1~11):** MIT (저자 "형진 (Hyungjin)") → **Apache License 2.0** (저작권자 `Hyoungjin Lee / JoneLab`, 연도 2026). 특허 그랜트 + 오픈소스 생태 호환성 + 기여자 안전 + JoneLab 브랜드 정립 목적. v0.6.1 이하는 비공개 개발 스냅샷, 외부 fork 없음 확인.
+- **README.md / README.ko.md 라이선스 섹션 동기화:** `Apache License 2.0 © Hyoungjin Lee / JoneLab — see [LICENSE](./LICENSE)` 표기로 통일.
+- **ATTRIBUTION.md License 섹션:** v0.6.2부터 Apache 2.0 전환 명시. superpowers 외부 라이브러리 MIT 진술은 사실 정보로 보존.
 
 ## [0.6.1] - 2026-04-26
 

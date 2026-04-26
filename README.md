@@ -229,4 +229,4 @@ jOneFlow was developed independently as part of Jonelab_Platform. Some workflow,
 
 ## License
 
-MIT © 형진 (Hyungjin) — see [LICENSE](./LICENSE)
+Apache License 2.0 © Hyoungjin Lee / JoneLab — see [LICENSE](./LICENSE)

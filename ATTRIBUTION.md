@@ -49,4 +49,4 @@ If you spot a specific adaptation that deserves a more explicit reference than t
 
 ## License
 
-jOneFlow is distributed under the MIT License (see `LICENSE`). The superpowers project is also MIT-licensed; this attribution is intended to satisfy conservative open-source practice regardless of whether any specific adaptation would trigger the MIT "copies or substantial portions" clause on its own.
+jOneFlow is distributed under the Apache License 2.0 (see `LICENSE`) as of v0.6.2. Earlier development snapshots (v0.6.1 and below) were not publicly released. The superpowers project is MIT-licensed; this attribution is intended to satisfy conservative open-source practice regardless of whether any specific adaptation would trigger the MIT "copies or substantial portions" clause on its own.
