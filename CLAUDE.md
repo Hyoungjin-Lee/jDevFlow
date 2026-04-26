@@ -1,11 +1,18 @@
 # 🤖 Claude 운영 지침
 
-> **새 세션 읽기 순서 (R2):** CLAUDE.md → HANDOFF.md → WORKFLOW.md → 관련 `docs/`
+> ⛔ **MANDATORY STARTUP RULE — 세션 진입 즉시 필수**
+> 1. 이 파일(CLAUDE.md)을 실제로 읽어라. 읽은 척 금지.
+> 2. `docs/bridge_protocol.md`를 실제로 읽어라.
+> 3. 두 파일 읽기 완료 전 어떤 작업도 하지 마라.
+> 4. 읽지 못하면 "읽지 못했습니다"라고 명시하고 멈춰라.
+> 5. 이 세션에서 실제로 읽지 않았으면 "지침을 따랐다"고 절대 말하지 마라.
+
+> **새 세션 읽기 순서 (R2):** CLAUDE.md → **`docs/bridge_protocol.md` (회의창 영구 지침, 필독)** → HANDOFF.md → WORKFLOW.md → 관련 `docs/`
 > Skill hook: `.skills/tool-picker/SKILL.md` — jOneFlow stage/mode/risk_level 판단용.
 > 현재 상태 + 다음 작업: `HANDOFF.md` 참고.
 
 > 🔴 **세션 역할 확인 (Code 세션 필수):** 나는 **브릿지**다.
-> Cowork(지훈)에서 도출된 명령을 CLI 오케스트레이터(tmux)로 전달하는 역할.
+> Cowork(CEO 이형진)에서 도출된 명령을 CLI 오케스트레이터(tmux)로 전달하는 역할.
 > 직접 구현 금지. tmux 세션 없으면 `bash scripts/setup_tmux_layout.sh joneflow` 먼저 실행.
 > 예외: 운영자가 간단히/급하게 확인 요청하는 경우만 직접 처리 허용.
 
@@ -39,40 +46,14 @@ Code   = 작업실
 
 ---
 
-## 2.5 제이원랩 조직도 (v0.6)
+## 2.5 JoneLab 조직도 (v0.6.2 정식)
 
-```
-┌───────────────────────────────────────────────┐
-│   CTO팀 (데스크탑 앱, 전략/판단)              │
-│   ─ 운영자 (지훈팀장)                         │
-│   ─ 지훈 (Claude 데스크탑 앱 세션)            │
-│     · 브레인스토밍 / 기획 승인 / 리뷰 판정    │
-│     · 구현 직접 X — 오케스트레이터에 위임     │
-└──────────────────────┬────────────────────────┘
-                       │ 위임 프롬프트
-                       ▼
-┌───────────────────────────────────────────────┐
-│   AI팀 오케스트레이터 (CLI, tmux 내부)        │
-│   ─ 별도 claude 세션                          │
-│     · `claude --teammate-mode tmux \`         │
-│     ·   `--dangerously-skip-permissions`      │
-│   ─ 지시 받은 일 전체 관장                    │
-│   ─ 호출 방식 자율 결정 (운영자 override 가능)│
-└──────┬───────────┬──────────────┬─────────────┘
-       ▼           ▼              ▼
-  서브에이전트   tmux 팀원      Codex plugin-cc
-  (Agent 툴)    (--teammate-    /codex:rescue
-                 mode 분기)      /codex:review
-```
+JoneLab은 **CEO → CTO 실장 → PM 브릿지 → 기획/디자인/개발 3팀(각 4명, 개발팀 7명)** 5계층 정식 조직. 18명 페르소나 + 모델/effort 배정 본체는 **`docs/operating_manual.md#1-조직도`**.
 
-- **역할 구분:**
-  - **Cowork 세션 (지훈):** CTO 회의실. 전략/판단/브레인스토밍/승인. 명령 도출 후 Code로 전달. 구현 직접 실행 금지.
-  - **Code 세션 (데스크탑 앱):** Cowork → CLI 브릿지. 도출된 명령을 CLI 오케스트레이터에게 전달.
-  - **CLI 오케스트레이터 (tmux):** 실행 총괄. 서브에이전트/Codex/tmux 팀원에게 위임.
-  - **예외:** 운영자가 간단히 또는 급하게 확인 요청하는 경우 Cowork 직접 처리 허용.
-- 오케스트레이터 호출 방식은 자율. 운영자가 "서브에이전트로" / "팀모드로" / "Codex로" 지정 시 세션 단위 override.
-- 실제 실행자 결정은 **`.claude/settings.json` `stage_assignments`** 만 참조 (team_mode 리터럴 실행 분기 금지 [F-2-a]).
-- tmux 레이아웃 생성: `bash scripts/setup_tmux_layout.sh [session] [team_size]` — 가이드 `docs/guides/tmux_layout.md` 참조.
+핵심 운영 원칙:
+- 실제 실행자 결정 = **`.claude/settings.json` `stage_assignments`** (team_mode 리터럴 실행 분기 금지 [F-2-a]).
+- 오케스트레이터 호출 방식은 자율. 운영자 override("서브에이전트로" / "팀모드로" / "Codex로") 시 세션 단위 적용.
+- tmux 레이아웃: `bash scripts/setup_tmux_layout.sh [session] [team_size]` — 가이드 `docs/guides/tmux_layout.md`.
 
 ---
 
