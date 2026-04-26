@@ -7,7 +7,7 @@ mode: Strict
 has_ui: yes
 risk_level: medium
 prev: v0.6.3 in progress (별개 세션 병렬 진행 중)
-parallel_window: Stage 1~4 (코드 충돌 0, 신규 디렉토리 한정). Stage 5+는 v0.6.3 완료 후 자동 진입.
+parallel_window: Stage 1~4 (코드 충돌 0, 신규 디렉토리 한정). Stage 5+ 진입 시그널은 운영자가 준다 (회의창 monitoring X).
 ---
 
 # v0.6.4 브레인스토밍 — Jonelab AI팀 운영자 대시보드
@@ -15,10 +15,11 @@ parallel_window: Stage 1~4 (코드 충돌 0, 신규 디렉토리 한정). Stage 
 ## 0. 컨텍스트
 
 - v0.6.4 = **첫 실전 프로젝트** = Jonelab AI팀 운영자 대시보드 (운영자 read-only 정보 가시화)
-- v0.6.3 (8개 의제 마일스톤 M1~M5)은 **별개 세션에서 병렬 진행 중**. 본 v0.6.4 세션은 **Stage 1~4까지만 병렬 안전**.
+- **v0.6.3 = 별개 세션 책임 영역**. 본 세션은 v0.6.4 전용 — v0.6.3 monitoring/대기 안 함.
+- 본 세션은 **Stage 1~4까지만 코드 충돌 없이 진행**. Stage 5+ 진입 시그널은 운영자가 줌.
 - 잠정 spec baseline = memory `project_v064_dashboard_spec.md` (세션 26 자유토론 결정)
 - 디자인팀(`Orc-064-design`) 첫 등판 버전 — Stage 6/7 UI/UX 영역 진입
-- v0.6.4 디자인팀 매핑은 v0.6.3 plan_review/personas_18.md 정밀화 결과를 참조
+- v0.6.4 디자인팀 매핑은 v0.6.3 plan_review/personas_18.md 정밀화 결과를 참조 (해당 산출물 도착 시 운영자가 본 세션에 제공)
 
 ## 1. 의제별 결정
 
@@ -82,8 +83,8 @@ parallel_window: Stage 1~4 (코드 충돌 0, 신규 디렉토리 한정). Stage 
 | `docs/03_design/v0.6.4_*` | ✅ | Stage 5 기술 설계 (v0.6.3 완료 후 진입) |
 | 그 외 (코드 / scripts / settings.json) | ❌ | v0.6.3 완료 대기 |
 
-- Stage 5+ 진입 = v0.6.3 본 릴리스(M1~M5) 완료 + 마지막 commit/tag 직후
-- 회의창 자가 점검: Stage 4 완료 시점에 v0.6.3 상태 확인 → 미완료면 일시 정지
+- Stage 5+ 진입 시그널 = **운영자가 본 세션에 알림**. 본 세션 회의창은 v0.6.3 monitoring 하지 않음.
+- Stage 4 완료 후 운영자 시그널 부재 시 = 회의 모드 유지
 
 ### 의제 8 — 마일스톤 분할 (잠정안, Stage 2~4 정밀화)
 
@@ -138,18 +139,15 @@ M4 ──┴─→ M5 (Windows + 18명 매핑)
 - `git_checkpoint.sh` 경로로 `docs/01_brainstorm_v0.6.4/brainstorm.md` 1건 commit
 - 메모리 `project_v064_dashboard_spec.md`는 baseline 그대로 유지 (본 brainstorm이 상위 정의)
 
-### 4-2. v0.6.3 진행 상황 monitoring (회의창 대기 모드)
-- v0.6.3 별개 세션의 마지막 commit / tag 발화 시 = Stage 2~4 진입 시그널
-- 본 세션은 그 시점까지 Stage 2~4 dispatch 준비만 (실제 발행 X)
+### 4-2. Stage 2~4 dispatch 발행 (운영자 시그널 시 진입)
+- 산출물: `dispatch/2026-04-27_v0.6.4_stage234_planning.md`
+- 담당: `Orc-064-plan` (PL 박지영) — M1~M5 정밀화 (M5 18명 매핑 detail은 personas_18.md 도착 후)
+- 진입 절차 = `bridge_protocol.md` Sec.5 표준 절차
+- 회의창 자율 영역: brief 본문 / 검증 절차 / 분담은 오케 자율
 
-### 4-3. Stage 2~4 dispatch 준비 (v0.6.3 완료 후 발행)
-- 산출물: `dispatch/2026-04-27_v0.6.4_stage234_planning.md` (자율 영역)
-- 담당: `Orc-064-plan` (PL 박지영) — M1~M5 정밀화 + 18명 매핑 detail
-- 회의창 자율 영역: drafter/reviewer/finalizer 3 서브에이전트 또는 tmux 팀모드
-
-### 4-4. Stage 6/7 디자인팀 첫 등판 (이월)
+### 4-3. Stage 6/7 디자인팀 첫 등판 (이월)
 - `Orc-064-design` (PL 우상호) 첫 spawn = Stage 6 진입 시점
-- v0.6.3 personas_18.md 결과 반영 후 dispatch
+- personas_18.md 결과(운영자 제공) 반영 후 dispatch
 - 첫 등판 회고는 v0.6.4 Stage 13 release notes에 기록
 
 ## 5. 운영자 결정 trace (세션 27)
