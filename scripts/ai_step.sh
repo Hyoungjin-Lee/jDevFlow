@@ -489,6 +489,13 @@ ai_step_run_next() {
 
   _arn_skey=$(_ai_step_assign_key_for "$_arn_next")
   if [ -n "$_arn_skey" ]; then
+    # Stage 9 fail-safe: Codex 환경 감지 (F-62-8, BR-002 trace)
+    if [ "$_arn_next" = "stage9" ]; then
+      _arn_s9r=$(settings_read_stage_assign stage9_review 2>/dev/null || echo "")
+      if [ "$_arn_s9r" = "codex" ] && ! command -v codex >/dev/null 2>&1; then
+        printf '   ⚠️  Stage 9: Codex 미감지. self-review fallback 모드 (BR-002 trace)\n'
+      fi
+    fi
     _arn_exec=$(ai_step_resolve_executor "$_arn_skey")
     ai_step_log_transition "$_arn_next" 'started' "$_arn_exec"
     ai_step_dispatch "$_arn_skey" "$_arn_exec"
