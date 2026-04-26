@@ -7,11 +7,11 @@ status: final
 authored_by: 안영이 (기획팀 선임연구원, 파이널리즈, Sonnet/medium)
 upstream:
   - docs/02_planning_v0.6.3/plan_draft.md (454줄, COMPLETE-DRAFTER1, Q1~Q6)
-  - docs/02_planning_v0.6.3/personas_18.md (512줄, COMPLETE-DRAFTER2, Q-PER-1~2)
-  - docs/02_planning_v0.6.3/plan_review.md (475줄, COMPLETE-REVIEWER, 12 보강 영역)
-  - docs/01_brainstorm_v0.6.3/brainstorm.md (의제 9건 + 운영자 결정 13건)
+  - docs/02_planning_v0.6.3/personas_18.md (재작성 — COMPLETE-DRAFTER2-REWRITE, 장원영 디자인팀 명의, 운영자 결정 #16 흡수)
+  - docs/02_planning_v0.6.3/plan_review.md (475줄 → PATCH-REVIEWER-1 정정 흡수, COMPLETE-REVIEWER, 12 보강 영역)
+  - docs/01_brainstorm_v0.6.3/brainstorm.md (의제 9건 + 운영자 결정 13건 + 추가 결정 3건 #14~#16)
   - dispatch/2026-04-26_v0.6.3_stage234_planning.md
-note: drafter 단일 명의(장그래)가 plan_draft.md + personas_18.md 2 산출물 병렬 작성 — Stage 4에서 통합 [정정-1 적용]
+note: drafter 다중 명의 채택 — plan_draft 장그래(기획팀 drafter) + personas_18 장원영(디자인팀 drafter, v0.6.3 Non-goal 미가동 페르소나 일시 spawn) [정정-1 적용 — 운영자 결정 #16 흡수, 18명 정의 위반 0건]
 session: 26
 ---
 
@@ -37,7 +37,7 @@ v0.6.3은 **Standard 모드** 전체 13단계 운영을 기본값으로 하며, 
 
 | 정정 # | 영역 | 적용 위치 | 처리 |
 |--------|------|---------|------|
-| F-1 | drafter 단일 명의(장그래) 2 산출물 병렬 인지 | frontmatter `note` | ✅ 적용 |
+| F-1 | drafter 다중 명의 채택 — plan_draft 장그래 + personas_18 장원영 (디자인팀 drafter 일시 spawn, 운영자 결정 #16 흡수) | frontmatter `note` + Sec.5 trace #16 | ✅ 적용 (정정 commit) |
 | F-2 | M1 변경 대상 신규/개정 단일화 | Sec.1 M1 변경 대상 표 | ✅ 적용 (scripts/ 실증) |
 | F-3 | M3 AC — PostToolUse 내 위치 명시 | Sec.1 M3 AC | ✅ 적용 |
 | F-4 | M4 AC — wc -l 비교 연산 정정 | Sec.1 M4 AC | ✅ 적용 |
@@ -45,7 +45,7 @@ v0.6.3은 **Standard 모드** 전체 13단계 운영을 기본값으로 하며, 
 | F-6 | F-62-8 영향 영역 재정의 (환경 분기 메커니즘) | Sec.3 F-62-x 후보 표 | ✅ 적용 |
 | F-7 | Score 가중치 30/15/20/20/15 조정 | Sec.4 Score 계산식 | ✅ 적용 (자율 영역) |
 | F-8 | Score 리스크 식별 정량 기준 도입 | Sec.4 항목 (3) 정의 | ✅ 적용 |
-| F-9 | Score M 통합 방식 | Sec.4 계산식 | 🟡 잠정 (γ) 단일합산 / Q-NEW-1 운영자 결정 대기 |
+| F-9 | Score M 통합 방식 | Sec.4 계산식 | ✅ 확정 (γ) 단일합산 — 운영자 결정 #14 (Q-NEW-1) 흡수, v0.6.2 패턴 계승 |
 | F-10 | 가동 시점 표 standby 보강 | Sec.2 가동 시점 표 | ✅ 적용 |
 | F-11 | settings.json stage9_review 키 실존 검증 | Sec.3 F-62-8 비고 | ✅ 해소 (실존 확인 완료) |
 | F-12 | brainstorm 진행 순서 → Stage 단위 재정렬 trace | Sec.6 세션 단위 표 | ✅ 적용 |
@@ -321,14 +321,14 @@ v0.6.3은 **Standard 모드** 전체 13단계 운영을 기본값으로 하며, 
 | (5) 운영자 결정 trace | brainstorm 결정 13건 ↔ plan 흡수 매핑 | **15%** | 유지 |
 | **합계** | | **100%** | |
 
-### 4.2 M별 Score 통합 방식 [F-9 — 잠정, Q-NEW-1 운영자 결정 대기]
+### 4.2 M별 Score 통합 방식 [F-9 — ✅ 확정, 운영자 결정 #14 흡수]
 
-**잠정 채택:** (γ) 단일 합산 — v0.6.2 패턴 계승
+**확정:** (γ) 단일 합산 — v0.6.2 패턴 계승
 
-**운영자 결정 대기 (Q-NEW-1):**
-- (α) M별 Score → 평균: M 5개 균등 가중
-- (β) M별 Score → 최소값: 최약 M이 게이트 결정
-- (γ) 단일 합산: 현 잠정 채택
+**운영자 결정 (Q-NEW-1) — (γ) 채택:**
+- (α) M별 Score → 평균: M 5개 균등 가중 — 미채택
+- (β) M별 Score → 최소값: 최약 M이 게이트 결정 — 미채택
+- (γ) 단일 합산: ✅ **채택** (v0.6.2 패턴 일관성, Score 89.3% 그대로)
 
 > **⚠️ Score < 80% 미달 시 → Stage 5 진입 중단, 운영자 판단 대기**
 
@@ -345,9 +345,14 @@ v0.6.3은 **Standard 모드** 전체 13단계 운영을 기본값으로 하며, 
 
 **Score = 89.3% → ✅ 임계값 80% 초과 → Stage 5 기술 설계 진입 GO**
 
+**Stage 5 진입 게이트 해제** — 직전 차단 사유(Q5 / Q-NEW-1 운영자 결정 + drafter2 페르소나 재작성) 모두 흡수:
+- 운영자 결정 #14 (Q-NEW-1) = (γ) 단일 합산 채택 — 본 Sec.4.2 반영
+- 운영자 결정 #15 (Q5) = (가) v0.6.3 conditional 인터페이스(분기 로직)만 + plugin-cc 고도화 후속 — Sec.1 M5 Stage 5 이월 영역에 반영
+- 운영자 결정 #16 (drafter2 재작성) = (가) 추가 commit, amend X — drafter2 = 장원영 (디자인팀 drafter 일시 spawn, 18명 정의 위반 0건), F-1 정정 적용
+
 ---
 
-## Sec. 5. 운영자 결정 trace 13건 검증
+## Sec. 5. 운영자 결정 trace 16건 검증 (직전 13 + 추가 3)
 
 | # | 운영자 결정 | 흡수 위치 | 검증 |
 |---|------------|---------|------|
@@ -364,8 +369,11 @@ v0.6.3은 **Standard 모드** 전체 13단계 운영을 기본값으로 하며, 
 | 11 | 마일스톤 5개 병렬 잠정안 | Sec.1 M 요약 표 + Sec.6 의존 그래프 | ✅ |
 | 12 | Monitor 인프라 강화 | Sec.1 M1 + Sec.3 F-62-7 | ✅ |
 | 13 | v0.6.2 release dispatch A — bridge-062 위임 | (별건, v0.6.3 범위 외) | ✅ |
+| **14** | **Q-NEW-1 = (γ) 단일 합산 — Score 89.3% 그대로, v0.6.2 패턴 계승** | Sec.0.2 F-9 + Sec.4.2 (확정) + Sec.4.3 게이트 해제 | ✅ |
+| **15** | **Q5 = (가) v0.6.3 conditional 인터페이스(분기 로직)만 + plugin-cc 고도화 후속 미룸** | Sec.1 M5 + Sec.3 F-62-8 (Stage 5 이월) | ✅ |
+| **16** | **drafter2 페르소나 재작성 = (가) 추가 commit (히스토리 trace 명확, amend X) — 장그래(기획팀) → 장원영(디자인팀 drafter 일시 spawn), 18명 정의 위반 0건** | frontmatter note + Sec.0.2 F-1 + Sec.4.3 게이트 해제 + 본 #16 trace | ✅ |
 
-**검증 결과: 13/13 매핑 PASS — 누락 0건**
+**검증 결과: 16/16 매핑 PASS — 누락 0건 (직전 13 + 추가 3건 흡수)**
 
 ---
 
@@ -407,11 +415,11 @@ M2 (글로벌 ~/.claude)
 | Q2 | M2 충돌 우선순위 상세화 (F-62-5 일부 답변) | 🟡 | Reviewer (일부 해소) | — |
 | Q3 | M3 shellcheck 엄격도 (warning only vs error 기준) | 🟡 | Orc-063-dev | — |
 | Q4 | M4 tmux 1+3 모델 안정성 검증 범위 | 🟡 | Reviewer/Orc | — |
-| Q5 | M5 plugin-cc 고도화 일정 (v0.6.3 vs 후속) | 🔴 | **운영자** | ✅ 필수 |
+| Q5 | M5 plugin-cc 고도화 일정 (v0.6.3 vs 후속) | 🔴 → **✅ 해소** | 운영자 결정 #15 = (가) v0.6.3 conditional 인터페이스만 + 고도화 후속 | ✅ 해소 |
 | Q6 | AC 자동화 CI/CD 추가 시점 | 🟡 | Orc-063-dev | — |
 | Q-PER-1 | 디자인팀 v0.6.4 자동 가동 트리거 | 🟢 | 운영 정책(후속) | — |
 | Q-PER-2 | 개발팀 부 PL 필요성 | 🟡 | Stage 5 / 운영 | — |
-| Q-NEW-1 | Score M 통합 방식 (α/β/γ 중 채택) | 🔴 | **운영자** | ✅ 필수 |
+| Q-NEW-1 | Score M 통합 방식 (α/β/γ 중 채택) | 🔴 → **✅ 해소** | 운영자 결정 #14 = (γ) 단일 합산 | ✅ 해소 |
 | Q-NEW-2 | Score 가중치 최종 확정 (30/15/20/20/15) | 🟡 | **운영자** | ✅ 권장 |
 | Q-NEW-3 | F-62-9/F-62-10 채택 범위 | 🟡 | Orc-063-dev / 운영자 | 🟡 권장 |
 | Q-NEW-4 | settings.json stage9_review 키 실존 | 🔴 → **✅ 해소** | — | 해소: 파이널리즈 직접 검증 완료 |
@@ -448,3 +456,5 @@ M2 (글로벌 ~/.claude)
 **마지막 라인:**
 
 COMPLETE-FINALIZER: 450 lines, score=89.3%, AC=19/24, Q=13, file=docs/02_planning_v0.6.3/plan_final.md
+
+PATCH-FINALIZER-1 (박지영-기획PL, 운영자 결정 #14~#16 흡수): Q-NEW-1 = (γ) 단일 합산 / Q5 = (가) v0.6.3 conditional 인터페이스만 / drafter2 재작성 = (가) 장원영 디자인팀 일시 spawn — Stage 5 진입 게이트 해제, Q 13건 중 2건(Q5 / Q-NEW-1) 해소 → 11건 잔존, 운영자 결정 trace 13 → 16 확장.

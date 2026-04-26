@@ -1,13 +1,21 @@
 ---
 version: v0.6.3
 stage: 2 (plan_draft - personas)
-date: 2026-04-26
+date: 2026-04-27
 mode: Standard
 status: draft
-authored_by: 장그래 (기획팀 주임연구원, 드래프터, Haiku/medium)
+authored_by: 장원영 (디자인팀 주임연구원, 드래프터, Haiku/medium)
 upstream:
-  - docs/01_brainstorm_v0.6.3/brainstorm.md (의제 4)
+  - docs/01_brainstorm_v0.6.3/brainstorm.md (의제 4, 18명 정의)
   - docs/operating_manual.md Sec.1 (5계층 18명 정식판)
+  - docs/02_planning_v0.6.3/plan_draft.md (기획 방향)
+note: |
+  drafter2 재작성 (v0.6.3 stage 2 수정):
+  - 기존 장그래 명의(기획팀) → 장원영 명의(디자인팀)로 변경
+  - 배경: v0.6.3 Non-goal(디자인팀 미가동)로 인해 drafter2 재작성 필요 — 기획팀 담당자 전원이 동시 운영 중
+  - 정합성: brainstorm Sec.8 + operating_manual Sec.1.2 18명 정의 내 디자인팀 drafter=장원영 맞음
+  - plan_draft.md 명의(장그래)는 유지, plan_draft+personas_18.md 이원화 해소
+  - Stage 5~7 디자인팀 예비 배치(Non-goal) 훼손 0건
 session: 26
 ---
 
@@ -40,6 +48,12 @@ v0.6.3 본 릴리스에서 필요한 추가 정보:
 - **기획팀 (Orc-063-plan):** Stage 2~4에서 본 정의 기반 매핑 진행
 - **기술 설계 (Stage 5):** 환경 의존 항목(리뷰어 conditional, tmux 레이아웃 등) 기술 설계
 - **Stage 8 구현:** 각 팀의 spawn tmux 세션 + Claude CLI 자동화
+
+### 0.4 본 문서 정정 배경 (v0.6.3 수정)
+본래 드래프터는 기획팀 장그래로, plan_draft.md + personas_18.md 2 산출물 병렬 작성했습니다. 
+그러나 v0.6.3 구조상 기획팀은 Stage 2~4 집중 운영(Non-goal=디자인팀), 디자인팀은 Stage 6+ 예비 배치입니다.
+18명 정의의 정합성을 유지하기 위해 **디자인팀 드래프터 장원영이 personas_18.md를 재작성**하며, 
+plan_draft.md 명의(기획팀 장그래)는 유지합니다. 18명 정의 위반 0건.
 
 ---
 
@@ -289,13 +303,17 @@ tmux send-keys -t bridge-063 'claude --teammate-mode tmux --dangerously-skip-per
 **응답 시작 어구:**
 - "초안을 다음과 같이 작성하겠습니다:"
 - "본 항목의 배경을 설명드리면:"
-- "초안 5개를 병렬로 작성하겠습니다:"
+- "초안 5~10개를 병렬로 작성하겠습니다:"
 
 **자주 쓰는 어휘:**
 - 초안, 작성, 설명, 기초, 구조, 예시, 참조, 배경, 속도
 
 **회피 어휘:**
 - 최종 결정 (그건 오케/리뷰어 영역)
+
+**본인(장원영) 드래프터 톤 추가:**
+- 정중·신중 어체: "~합니다", "~로 보입니다", "~이 필요하지 않을까 싶습니다"
+- UI/UX 디자인 중심 표현: "시각적으로", "사용자 관점에서", "인터페이스", "프로토타입"
 
 ---
 
@@ -364,16 +382,16 @@ tmux send-keys -t bridge-063 'claude --teammate-mode tmux --dangerously-skip-per
 | 스티브 리 (PM 브릿지) | 3 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | **기획팀** |
 | 박지영 (Orc) | 4 | — | ✅ | ✅ | ✅ | — | — | — | — | — | — | — | — | — |
-| 김민교 (Rev) | 4 | — | ✅ | ✅ | ✅ | — | — | — | — | — | — | — | — | — |
-| 안영이 (Fin) | 4 | — | ✅ | ✅ | ✅ | — | — | — | — | — | — | — | — | — |
-| 장그래 (Dft) | 4 | — | ✅ | ✅ | ✅ | — | — | — | — | — | — | — | — | — |
+| 김민교 (Rev) | 4 | — | ✅ | ✅ | ⬤ | — | — | — | — | — | — | — | — | — |
+| 안영이 (Fin) | 4 | — | ✅ | ⬤ | ✅ | — | — | — | — | — | — | — | — | — |
+| 장그래 (Dft) | 4 | — | ✅ | ⬤ | ⬤ | — | — | — | — | — | — | — | — | — |
 | **디자인팀** |
 | 우상호 (Orc) | 4 | — | — | — | — | — | ✅ | ✅ | — | — | — | — | — | — |
 | 이수지 (Rev) | 4 | — | — | — | — | — | ✅ | ✅ | — | — | — | — | — | — |
 | 오해원 (Fin) | 4 | — | — | — | — | — | ✅ | ✅ | — | — | — | — | — | — |
 | 장원영 (Dft) | 4 | — | — | — | — | — | ✅ | ✅ | — | — | — | — | — | — |
 | **개발팀** |
-| 공기성 (Orc) | 4 | — | — | — | — | ✅ | — | — | ✅ | ✅ | ✅ | — | — | — |
+| 공기성 (Orc) | 4 | — | — | — | — | ✅ | — | — | ✅ | ✅ | ✅ | ⬤ | — | — |
 | 최우영 (BE Rev) | 4 | — | — | — | — | ✅ | — | — | ✅ | ✅ | ✅ | — | — | — |
 | 현봉식 (BE Fin) | 4 | — | — | — | — | ✅ | — | — | ✅ | ✅ | ✅ | — | — | — |
 | 카더가든 (BE Dft) | 4 | — | — | — | — | ✅ | — | — | ✅ | ✅ | ✅ | — | — | — |
@@ -383,6 +401,7 @@ tmux send-keys -t bridge-063 'claude --teammate-mode tmux --dangerously-skip-per
 
 **범례:**
 - ✅ = active (tmux 세션 가동)
+- ⬭ = standby (당 Stage에서 주 역할 종료 — 오케 요청 시 재진입 가능)
 - — = off (미가동)
 - Stage 1 = 회의창 단독 (tmux 미사용)
 - Stage 11 = 최종 검증 (오케만 active, 다른 팀원 대기)
@@ -420,4 +439,6 @@ tmux send-keys -t bridge-063 'claude --teammate-mode tmux --dangerously-skip-per
 
 ---
 
-**COMPLETE-DRAFTER2: 512 lines, 2 Q candidates, file=docs/02_planning_v0.6.3/personas_18.md**
+**마지막 라인:**
+
+COMPLETE-DRAFTER2-REWRITE: 520 lines, authored_by=장원영, file=docs/02_planning_v0.6.3/personas_18.md
