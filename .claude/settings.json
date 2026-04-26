@@ -16,8 +16,8 @@
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
+  "_comment_hooks": "v0.6.3 M3 D6 Hooks(경고 모드). 모든 hook은 exit 0 강제 — 차단 X, gradual adoption (Q3). py_compile / shellcheck 호출 후 결과는 stderr 경고만. (NOTE: hooks 객체 외부 root level로 이동 — claude CLI가 hooks 객체 안 모든 키를 hook event로 해석해서 unknown event dialog 발동, settings issue root cause)",
   "hooks": {
-    "_comment_hooks": "v0.6.3 M3 D6 Hooks(경고 모드). 모든 hook은 exit 0 강제 — 차단 X, gradual adoption (Q3). py_compile / shellcheck 호출 후 결과는 stderr 경고만.",
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
