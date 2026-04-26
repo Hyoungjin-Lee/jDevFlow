@@ -148,6 +148,13 @@ M4 ──┴─→ M5 (Windows + 18명 매핑)
 ### 4-3. Stage 6/7 디자인팀 첫 등판 (이월)
 - `Orc-064-design` (PL 우상호) 첫 spawn = Stage 6 진입 시점
 - personas_18.md 결과(운영자 제공) 반영 후 dispatch
+- **터미널 헌법 강제 (운영자 세션 27 명시 — 박지영 사고 13 재발 방지)**:
+  - Orc-064-design 세션 안 split panes 4개 (오케 1 + 팀원 3)
+  - 좌 = **우상호** (디자인PL/Opus/high) 큰 pane
+  - 우 = 세로 stack 3: **이수지**-reviewer (Opus/high) / **오해원**-finalizer (Sonnet/medium) / **장원영**-drafter (Haiku/medium)
+  - `pane-border-status top` + `pane-border-format ' #T '` + `select-pane -T <페르소나명>` 필수
+  - dispatch brief에 Agent tool 분담 폐기 명시
+  - bridge_protocol.md Sec.4 표 / Sec.6 사고 13 / Sec.8 자가 점검 9번 그대로 적용
 - 첫 등판 회고는 v0.6.4 Stage 13 release notes에 기록
 
 ## 5. 운영자 결정 trace (세션 27)
