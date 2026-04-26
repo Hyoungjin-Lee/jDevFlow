@@ -63,6 +63,7 @@
 | send-keys 패턴 | `send-keys '<msg>'` → `sleep 0.3` → `send-keys Enter` (분리 필수) |
 | dispatch md 위치 | `dispatch/<YYYY-MM-DD>_<버전>_<작업명>.md` |
 | 응답 톤 | 한국어 + 부드러운 ~네요/~죠 체 |
+| 오케 안 split panes (필수) | Orc-XXX-<plan\|design\|dev> 세션 안 split panes 4개 (오케 1 + 팀원 3). **왼쪽=오케 PL** 큰 pane / **오른쪽=팀원 3명 세로 stack**. `pane-border-status top` + `pane-border-format ' #T '` + `select-pane -T <페르소나명>` (조직도 = operating_manual.md Sec.1.2 그대로, 예: 박지영-기획PL / 장그래-drafter / 김민교-reviewer / 안영이-finalizer). Agent tool 분담 옵션 폐기 (모니터링 가시성 위반). 운영자 헌법. (Sec.6 사고 13) |
 
 ## 5. 표준 진입 절차 (회의창 1메시지 자동화)
 
@@ -183,7 +184,7 @@ done
 - 운영자: "브릿지가 정리해서 너에게 보고하고 넌 그걸 캐치해서 나한테 보고하는거잖아? 이건 강력한 지침이다"
 - 정답: 회의창 진입 즉시 브릿지 Monitor 가동. 운영자는 보고 받는 위치, 모니터링 안 함.
 
-## 8. 응답 작성 직전 자가 점검 7항목
+## 8. 응답 작성 직전 자가 점검 8항목
 
 1. 회의창이 직접 일하고 있나? (Sec.3 위반?)
 2. Ghostty / tmux / send-keys / dispatch md 표준 명령 그대로 썼나? (Sec.4)
@@ -192,6 +193,7 @@ done
 5. push / 외부 API / 파괴적 운영자 명시 승인 받았나?
 6. 운영자 모니터링 표 / 자율 영역 명시 / 짧은 보고?
 7. **브릿지 Monitor 가동 중인가?** (Sec.7 — 세션 진입 직후 필수)
+8. **dispatch brief에 "Orc 안 split 4 panes (오케 1 + 팀원 3, 왼쪽=오케 / 오른쪽=stack) + 페르소나 이름 (조직도) + Agent tool 분담 X" 박혔나?** (Sec.4 표 + Sec.6 사고 13 — 헌법)
 
 위반 1건이라도 발견되면 즉시 응답 수정.
 
@@ -226,6 +228,16 @@ done
 - 증상: 박지영(Orc-063-plan)이 운영자 (A) 결정(Agent 분담 폐기 + tmux 팀모드 재기동) 메시지를 받고 "정정 수용 + 사과" 답변까지 하면서 실제로는 Agent drafter task를 그대로 계속 진행. 회의창이 스크린샷 분석으로 발견.
 - 운영자: "그냥 무시하고 진행하는데?"
 - 정답: (1) 회의창은 capture-pane만 보지 말고 task list (`◼ in progress` 항목)도 검증 — 답변 ≠ 행동. (2) 정정 메시지에 **"Agent task 즉시 폐기 + 진행 중단 명령(C-c) 본인이 자체 실행"** 명시. (3) 무시 사례 발견 시 brigde 거쳐 **강제 중단(C-c 여러 번 + 필요 시 /exit) + tmux 레이아웃 회의창이 직접 spawn** 후 재분담. (4) 동일 오케 자율 신뢰 다음부터는 검증 단계 강화 (답변과 task list 일치 확인 후 trust).
+
+### 사고 13: Orc 안 split 누락 + 페르소나 이름 누락 (모니터링 가시성 위반 — 헌법)
+- 증상: 박지영(Orc-064-plan)이 dispatch brief의 자율 영역을 활용해 Agent tool 분담(5명) 선택. 운영자 모니터링 화면 = 단일 pane, 페르소나 이름 0개 표시. v0.6.3 Orc-063-plan은 4 panes + 페르소나 이름 표시 패턴이었음.
+- 운영자: "orc 좌우 split 안됨 / 0.63 처럼 이름 안보임 / 팀원 다 보여야지 오케1, 팀원1~3 / 조직도 보고 이름 적용하고 / 이건 완전한 기본 지침이야 메모리말고 md에도 강력한 지침으로 저장해 / 우리만의 헌법을 만들어놓았는데 잘 좀 지키자"
+- 정답:
+  1. **회의창 dispatch brief 의무 명시**: Sec.4 표의 "오케 안 split panes (필수)" 행 그대로. Orc-XXX 세션 안 split 4 panes (오케 1 + 팀원 3) + **왼쪽=오케 PL** + **오른쪽=팀원 3 세로 stack** + `pane-border-format ' #T '` + `select-pane -T <페르소나명>`. 페르소나 이름 = `docs/operating_manual.md` Sec.1.2 조직도 그대로 (예: 박지영-기획PL / 장그래-drafter / 김민교-reviewer / 안영이-finalizer / 우상호-디자인PL / ... ).
+  2. **오케 자율 영역에서 Agent tool 분담 옵션 폐기** — 모니터링 가시성 위반. brief에 "tmux split panes 모델 강제 / Agent tool 분담 X" 명시.
+  3. **위반 발견 시 즉시 박지영/우상호/공기성에게 C-c + tmux split panes 재시작** (사고 12 절차 활용).
+  4. **자가 점검 8항목 (Sec.8) 추가**: "오케 안 split 4 panes + 페르소나 이름 박혔나?" 매 응답 점검.
+- 본 사고 = 헌법 영역. 위반 시 본 파일 사고 사례에 1건 추가 + 운영자 사과 (마지막 줄 정책).
 
 ## 10. 결정해야 할 것 vs 작업해야 할 것 — 분리
 
