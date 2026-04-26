@@ -1,6 +1,6 @@
 ---
 version: v0.6.2
-status: active
+status: archived
 date: 2026-04-26
 mode: Standard
 ---
