@@ -73,5 +73,24 @@ tmux list-panes -t "$SESSION" -F "#{pane_id}" | tail -n +2 | while IFS= read -r 
   i=$((i + 1))
 done
 
+# Monitor 자동 재가동 hook (M1 — F-62-7)
+# bridge 세션에서 PostToolUse/Stop 신호 감지 시 monitor_bridge.sh 자동 재시작
+if [ "$SESSION" = "bridge" ] || [ "$SESSION" = "bridge-063" ]; then
+  # 기존 monitor 프로세스 있으면 종료
+  if pgrep -f "monitor_bridge.sh" >/dev/null 2>&1; then
+    pkill -f "monitor_bridge.sh" 2>/dev/null || true
+    sleep 0.5
+  fi
+
+  # Monitor 백그라운드 가동 (환경 변수 주입 — Q1 패턴)
+  (
+    export TMUX_SESSION_BRIDGE="$SESSION"
+    cd "$ROOT"
+    bash scripts/monitor_bridge.sh >/dev/null 2>&1 &
+  ) || true
+
+  printf '▶ Monitor 프로세스 가동 (세션: %s)\n' "$SESSION"
+fi
+
 printf '✅ 레이아웃 구성 완료 — 세션: %s, 오케스트레이터 1 + 팀원 %s\n' "$SESSION" "$TEAM_SIZE"
 tmux list-panes -t "$SESSION" -F "  pane #{pane_index}: #{pane_id}  #{pane_height}x#{pane_width}  active=#{pane_active}"
