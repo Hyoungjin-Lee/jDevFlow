@@ -131,7 +131,8 @@ M4 ──┴─→ M5 (Windows + 18명 매핑)
 - 상태 보존 (직전 세션 복원) — v0.6.5+ 후속
 - 대시보드 ↔ 회의창 스플릿/탭 정책 — 운영자 자율 영역
 - write 영역 (대시보드에서 commit/push/결정 입력) — read-only 정책 영구 유지
-- v0.6.5 외부 통합 (CI / GitHub Actions / Codex 자동화 고도화)
+- v0.6.5 컨텍스트 엔지니어링 (회의창 효율 컨텍스트 관리 메커니즘 — 자가 점검 자동 강제 / 헌법 자동 주입 / 정정 사이클 학습. memory `project_v065_context_engineering.md` 참조)
+- v0.6.6 외부 통합 (CI / GitHub Actions / Codex 자동화 고도화. 기존 v0.6.5에서 세션 27 운영자 결정으로 밀림)
 
 ## 4. 다음 단계
 
