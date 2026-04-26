@@ -359,6 +359,37 @@ _init_run_settings_setup() {
 # main — v0.5 폴더 생성 로직 보존 + v0.6 settings 단계 추가
 # ============================================================================
 
+# v0.6.2: Self-Contained 교육 구조 (planning_05_selfedu, F-EDU-D3).
+# 신규 프로젝트 scaffold 시 jOneFlow source의 운영 매뉴얼 + 브릿지 프로토콜 + guides/ 만 복사.
+# brainstorm/planning/구현/QA 영역은 신규 프로젝트에 불필요하므로 제외.
+# Source 결정: JONEFLOW_SRC_ROOT 환경변수. 미지정 시 skip (본 jOneFlow 자체 init은 자동 skip).
+_init_copy_self_edu_docs() {
+  src_root="${JONEFLOW_SRC_ROOT:-}"
+  if [ -z "$src_root" ]; then
+    return 0
+  fi
+  if [ "$src_root" = "$ROOT" ]; then
+    # 자기 자신 scaffold 회피 (본 jOneFlow 본체 init).
+    return 0
+  fi
+  if [ ! -d "$src_root" ]; then
+    echo "⚠️  JONEFLOW_SRC_ROOT 디렉토리 없음: $src_root (Self-Contained 매뉴얼 복사 skip)" >&2
+    return 0
+  fi
+
+  for f in "docs/operating_manual.md" "docs/bridge_protocol.md"; do
+    if [ -f "$src_root/$f" ]; then
+      cp "$src_root/$f" "$ROOT/$f"
+      echo "✅ Copied $f"
+    fi
+  done
+  if [ -d "$src_root/docs/guides" ]; then
+    # guides/ 안의 .md 파일만 복사 (.gitkeep 등 제외 안 함, 무해).
+    cp -R "$src_root/docs/guides/." "$ROOT/docs/guides/"
+    echo "✅ Copied docs/guides/"
+  fi
+}
+
 _init_main() {
   _init_parse_args "$@"
   cd "$ROOT"
@@ -378,6 +409,7 @@ _init_main() {
     "docs/03_design"
     "docs/04_implementation"
     "docs/05_qa_release"
+    "docs/guides"
     "docs/notes"
     "prompts/claude"
     "prompts/codex"
@@ -439,6 +471,10 @@ EOF
       echo "    Rerun with --with-env if you want a local scratch .env for development shortcuts."
     fi
   fi
+
+  # v0.6.2: Self-Contained 교육 구조 (planning_05). 신규 프로젝트 scaffold 시 매뉴얼 복사.
+  # 범위 (F-EDU-D3): operating_manual.md + bridge_protocol.md + guides/. brainstorm/planning 제외.
+  _init_copy_self_edu_docs
 
   # v0.6: settings.json workflow_mode/team_mode/stage_assignments setup.
   _init_run_settings_setup
