@@ -46,6 +46,7 @@
 - ❌ git push / 외부 API / 파괴적 명령 직접 실행 (오케 위임)
 - ❌ 메모리만 저장하고 md 파일 안 박기
 - ❌ **`HANDOFF.md` 직접 편집 금지 (v0.6.2~)**: `HANDOFF.md`는 `handoffs/active/HANDOFF_v<X>.md`를 가리키는 symlink. 편집 대상은 symlink target. (F-62-2)
+- ❌ **claude CLI 수동/대화형 기동 금지**: 모든 claude CLI 호출은 자동화(send-keys/스크립트)로만, `--dangerously-skip-permissions` 옵션 필수. 권한 프롬프트 응답 / 옵션 누락 호출 = 운영자 수동 개입 발생 = 자동화 흐름 붕괴.
 
 ## 4. 환경 / 도구 표준 (추측 금지)
 
@@ -53,10 +54,11 @@
 |---|---|
 | 터미널 | **Ghostty** (Terminal.app 금지 — split 안 됨) |
 | Ghostty 창 + 명령 | `open -na Ghostty --args -e <CMD> <ARG1> <ARG2>` (토큰 분리, 큰따옴표 한 토큰 X) |
-| tmux 메인 레이아웃 | `bash scripts/setup_tmux_layout.sh jdevflow 3` |
-| tmux 세션 네이밍 | 버전별 2개 독립 세션: `bridge-0XX` (중계) + `Orc-0XX` (오케스트레이터). 예: `bridge-063` / `Orc-063` |
-| 브릿지 세션 | `tmux new-session -d -s bridge-0XX -c $ROOT` |
-| claude CLI | `claude --teammate-mode tmux --dangerously-skip-permissions` |
+| tmux 메인 레이아웃 | `bash scripts/setup_tmux_layout.sh jdevflow 3` (legacy 단일 통합 모델 — v0.6.3+에서 deprecate 예정) |
+| tmux 세션 네이밍 (v0.6.3~) | 버전당 **bridge 1개 + Orc 0~3개**. `bridge-0XX` (버전 시작 시 1회) + 단계 진입 시 `Orc-0XX-plan` / `Orc-0XX-design` / `Orc-0XX-dev` 호출. Stage 1 브레인스토밍 = 회의창 단독, 터미널 미사용. 다중 팀 협업 시 1+N (최대 1+3). |
+| 브릿지 세션 | `tmux new-session -d -s bridge-0XX -c $ROOT` (버전 시작 시 1회) |
+| 오케 세션 spawn | 단계 진입 직전 회의창이 호출: `tmux new-session -d -s Orc-0XX-<plan\|design\|dev> -c $ROOT` → claude CLI 기동 → dispatch 전달 → 단계 종료 시 kill. |
+| claude CLI | `claude --teammate-mode tmux --dangerously-skip-permissions` (★ 자동화 호출 + 옵션 필수, 수동/대화형 기동 금지) |
 | send-keys 패턴 | `send-keys '<msg>'` → `sleep 0.3` → `send-keys Enter` (분리 필수) |
 | dispatch md 위치 | `dispatch/<YYYY-MM-DD>_<버전>_<작업명>.md` |
 | 응답 톤 | 한국어 + 부드러운 ~네요/~죠 체 |

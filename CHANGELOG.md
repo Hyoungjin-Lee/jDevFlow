@@ -7,12 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> v0.6.2 Stage 8 구현 진행 중. 5개 모듈 순차 구현 (M-License → M-Org → M-SelfEdu → M-Handoffs → M-Slash) + release commit. 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS는 v0.6.4 이월.
+> 후속 — D6 Hooks PostToolUse + D7 gstack ETHOS는 v0.6.4 이월. 18명 페르소나 정식 가동(Q5 운영자 결정)은 v0.6.3+. 글로벌 `~/.claude/CLAUDE.md` scope(Q1)는 v0.6.3 이월.
 
-### Changed
-- **LICENSE 교체 (M-License, AC-Lic-1~11):** MIT (저자 "형진 (Hyungjin)") → **Apache License 2.0** (저작권자 `Hyoungjin Lee / JoneLab`, 연도 2026). 특허 그랜트 + 오픈소스 생태 호환성 + 기여자 안전 + JoneLab 브랜드 정립 목적. v0.6.1 이하는 비공개 개발 스냅샷, 외부 fork 없음 확인.
-- **README.md / README.ko.md 라이선스 섹션 동기화:** `Apache License 2.0 © Hyoungjin Lee / JoneLab — see [LICENSE](./LICENSE)` 표기로 통일.
+## [0.6.2] - 2026-04-26
+
+> v0.6.2 5개 모듈 구현 완료 (Stage 8). 구현 순서: M-License → M-Org → M-SelfEdu → M-Handoffs → M-Slash + release commit. v0.6 설계 제약 5건 계승 + 신규 4건(F-62-1~4) commit. AC 자동 30+ / 수동 7 / Stage 5 이월 0 (모두 design Sec.5에서 결정 후 자동 검증 가능 상태로 전환).
+
+### M-License (AC-Lic-1~11)
+- **LICENSE 교체:** MIT (저자 "형진 (Hyungjin)") → **Apache License 2.0** (저작권자 `Hyoungjin Lee / JoneLab`, 연도 2026). 특허 그랜트 + 오픈소스 생태 호환성 + 기여자 안전 + JoneLab 브랜드 정립.
+- **README.md / README.ko.md 라이선스 섹션 동기화:** `Apache License 2.0 © Hyoungjin Lee / JoneLab — see [LICENSE](./LICENSE)`.
 - **ATTRIBUTION.md License 섹션:** v0.6.2부터 Apache 2.0 전환 명시. superpowers 외부 라이브러리 MIT 진술은 사실 정보로 보존.
+
+### M-Org (AC-Org-2/3/4 자동, AC-Org-1/5/7 수동)
+- **`docs/operating_manual.md` 신규 (≤ 1000줄, F-62-3):** Sec.1 5계층 18명 조직도 + 모델/effort 배정 표 정식 거주처. brainstorm Sec.3 트리 + 배정 원칙 + HR팀 미결 표기.
+- **`CLAUDE.md` Sec.2.5 → 5~10줄 포인터로 축약** (F-X-1 정책: 조직도 본체는 operating_manual.md, CLAUDE.md는 포인터만).
+- **F-X-4 결정:** `personas` 필드 미추가, `.claude/settings.json` schema v0.4 보존.
+
+### M-SelfEdu (AC-Edu-1~7)
+- **`CLAUDE.md` 슬림화 (~250줄 → 79줄, AC-Edu-1):** 절대 규칙(보안) 인라인 유지, 워크플로우 / 모델 / 페르소나 / Stage 플로우는 operating_manual.md로 이동.
+- **`docs/operating_manual.md` 6개 섹션 완성:** 조직도(Sec.1) + 워크플로우 모드(Sec.2) + 모델 정책(Sec.3) + 페르소나·톤(Sec.4) + Stage 플로우(Sec.5) + MANDATORY STARTUP RULE(Sec.6).
+- **R2 진입 순서:** `CLAUDE.md → bridge_protocol.md → operating_manual.md → handoffs/active/HANDOFF_v<X>.md` (F-X-5).
+- **`docs/bridge_protocol.md` Sec.3 1줄 추가 (F-X-2):** HANDOFF.md symlink 직접 편집 금지 정책.
+- **`scripts/init_project.sh` `_init_copy_self_edu_docs` 헬퍼 추가 (F-EDU-D3):** scaffold 시 operating_manual.md + bridge_protocol.md + guides/ 만 복사 (brainstorm/planning 제외). `JONEFLOW_SRC_ROOT` 환경변수로 source 결정.
+- **`docs/guides/whitebox_verification.md` 신규 (AC-Edu-4a):** 백지 Claude 검증 시나리오 + Stage 12 QA 절차.
+- **F-62-4:** 글로벌 `~/.claude/CLAUDE.md` 영역 v0.6.2 scope 외 (v0.6.3 이월).
+
+### M-Handoffs (AC-Hand-1~8)
+- **`handoffs/{active,archive}/` 폴더 신규 (AC-Hand-1):** active = 1개 active + N개 preparing + 즉시 archive 정책 (F-04-D1).
+- **`HANDOFF.md` file → symlink 전환 (F-62-2):** `handoffs/active/HANDOFF_v0.6.2.md` 가리킴. 직접 편집 금지, 편집 대상은 symlink target. R2 진입점 호환성 유지.
+- **`handoffs/active/HANDOFF_v0.6.2.md`** 신규 + frontmatter `status: active`.
+- **`handoffs/archive/HANDOFF_v0.3.md`** 이동 (구 `HANDOFF.archive.v0.3.md` `git mv` 이력 보존) + frontmatter `status: archived`.
+- **`scripts/lib/settings.sh` `_frontmatter_set_field` 헬퍼 (F-04-3):** awk 기반 POSIX 구현. BSD/GNU sed 호환성 회피. `Usage: _frontmatter_set_field <file> <key> <value>`.
+- **`scripts/ai_step.sh` Stage 13 archive hook (`_ai_step_archive_handoff`, F-04-S5a 옵션 A):** active → archived 갱신 + `mv` + `rm -f HANDOFF.md`. dry-run 시 `DRY-RUN: would execute: ...` 출력.
+- **`scripts/init_project.sh` 새 버전 hook (`_init_handoff_active`):** `Usage: _init_handoff_active <version>` (예: `v0.6.3`). active 신규 생성 + symlink 갱신.
+- **`--dry-run` 플래그:** `ai_step.sh` / `init_project.sh` 둘 다 추가 (`DRY_RUN=1` export, AC-Hand-4/5 자동 측정 가능).
+- **`.gitattributes` 신규:** `HANDOFF.md symlink` 명시 + `LICENSE text eol=lf`.
+- **F-04-S5b:** Windows symlink 호환성 = WSL 권장. 네이티브 Windows fallback v0.6.3 이월.
+- **archive 보존 정책 (Q4 finalizer):** 영구 보존. 브랜치 1주일 정책과 별도.
+
+### M-Slash (AC-Slash-1~6)
+- **`.claude/commands/` 폴더 신규** + 3개 markdown 파일:
+  - `init-project.md` → `bash scripts/init_project.sh "$@"`
+  - `switch-team.md` → `bash scripts/switch_team.sh "$@"`
+  - `ai-step.md` → `bash scripts/ai_step.sh "$@"`
+- **frontmatter spec (F-SLA-4 결정):** `description` (한 줄), `argument-hint` (인자 힌트), `allowed-tools: Bash`. YAML 표준 + Claude Code 슬래시 라우터 호환.
+- **F-62-1 정책:** frontmatter는 `.claude/settings.json` 필드를 직접 참조하지 않는다. bash 호출만 허용.
+- **README.md "Slash Commands (v0.6.2~)" 섹션 추가** (AC-Slash-5 ≥ 3 hits).
+- **`tests/v0.6.2/test_slash_handoffs_e2e.sh` 회귀 테스트 (F-X-3, 5/5 PASS):** T1 파일 존재 + T2 셸 호출 명시 + T3 F-62-1 비결합 + T4 readlink + T5 archive hook dry-run.
+
+### 신규 design 제약 (F-62-1~4)
+- **F-62-1:** `.claude/commands/<cmd>.md` frontmatter ↔ `.claude/settings.json` 비결합 (M-Slash).
+- **F-62-2:** HANDOFF.md = symlink, 직접 편집 금지 (M-Handoffs).
+- **F-62-3:** `docs/operating_manual.md` ≤ 1000줄 hard limit (M-SelfEdu, 현재 301줄).
+- **F-62-4:** 글로벌 `~/.claude/CLAUDE.md` v0.6.2 scope 외 (v0.6.3 이월).
+
+### 검증
+- **자동 AC 30+ 통과:** AC-Lic-1~7,11 / AC-Org-2/3/4 / AC-Edu-1~7 / AC-Hand-1~8 / AC-Slash-1a/2a/3a/4/5.
+- **shellcheck CLEAN:** 5개 변경 스크립트(`init_project.sh` / `ai_step.sh` / `lib/settings.sh` / `tests/v0.6.2/test_slash_handoffs_e2e.sh` / `git_checkpoint.sh`) 오류 0건.
+- **F-D2 jq 비의존 검증:** 실제 jq 호출 0 hits (주석 언급 3건 — F-D2 정책 commit 텍스트만).
+- **F-2-a 위반 0:** team_mode 리터럴은 표시 경로(printf / --status / 로그)에만 등장.
+- **F-X-3 회귀 5/5 PASS:** `tests/v0.6.2/test_slash_handoffs_e2e.sh` (slash command + handoffs hook 결합).
+
+### Stage 8 commit chain
+- M-License (`8ef675e`) → M-Org (`ca05328`) → M-SelfEdu (`a16e6ef`) → M-Handoffs (`6e4d2f2`) → M-Slash (`92cc05c`) → release.
+
+### Non-goal (v0.6.3 이월)
+- 글로벌 `~/.claude/CLAUDE.md` 통합 (Q1).
+- 18명 페르소나 정식 가동 시점 (Q5).
+- 네이티브 Windows symlink 지원 (F-04-S5b 후속).
+- D6 Hooks PostToolUse + D7 gstack ETHOS (v0.6.4 이월).
 
 ## [0.6.1] - 2026-04-26
 

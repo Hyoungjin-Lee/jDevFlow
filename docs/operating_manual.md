@@ -43,7 +43,7 @@ CEO 이형진
 |------|---------|------|------|--------|
 | 1 | 이형진 | CEO | (Cowork 운영자) | — |
 | 2 | 백현진 | CTO 실장 (Code) | Sonnet | medium |
-| 3 | 스티브 리 | PM 브릿지 (Code) | Opus | medium |
+| 3 | 스티브 리 | PM 브릿지 (Code) | **Opus 4.7, 1M** | **xhigh** |
 | 4 기획팀 | 박지영 | 오케스트레이터 (PL) | Opus | high |
 | 4 기획팀 | 김민교 | 리뷰어 (책임연구원) | Opus | high |
 | 4 기획팀 | 안영이 | 파이널리즈 (선임연구원) | Sonnet | medium |
@@ -67,7 +67,7 @@ CEO 이형진
 각 역할의 모델/effort는 **속도 vs 깊이**의 균형을 다르게 잡는다.
 
 - **CEO / CTO 실장 (Sonnet, medium)** — 전략 판단 + Cowork 세션 운영. 빠른 iteration이 중요. Cowork는 임원 회의실이므로 운영자와의 대화 속도 우선.
-- **PM 브릿지 (Opus, medium)** — 허브 역할. 회의창 ↔ 오케 통신 라우팅. 빠른 분배 + 정확한 dispatch 작성. Opus는 dispatch 본문 깊이 위해, medium effort는 회의창 응답 속도 위해.
+- **PM 브릿지 (Opus 4.7 1M, xhigh)** — 허브 역할. 회의창 ↔ 오케 통신 라우팅. 빠른 분배 + 정확한 dispatch 작성. Opus 4.7 1M xhigh로 세션 간 컨텍스트 최대화. 과사고 시 high/medium으로 낮춤 (운영자 판단).
 - **오케스트레이터 (Opus, high)** — 팀 지휘 + 최종 판단. 팀원 분담 + 통합 + verdict. 깊이 있는 결정이 핵심이라 high effort.
 - **리뷰어 (Opus, high)** — 깊은 피드백. 놓치면 Stage 10 재작업 비용 큼. 가장 깊이 있는 역할.
 - **파이널리즈 (Sonnet, medium)** — 최종 정리/검증. 리뷰 피드백 흡수 + 일관성 마감. 정확하지만 빠른 마감 필요 → Sonnet medium.
