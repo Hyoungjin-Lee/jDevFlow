@@ -47,6 +47,7 @@
 - ❌ 메모리만 저장하고 md 파일 안 박기
 - ❌ **`HANDOFF.md` 직접 편집 금지 (v0.6.2~)**: `HANDOFF.md`는 `handoffs/active/HANDOFF_v<X>.md`를 가리키는 symlink. 편집 대상은 symlink target. (F-62-2)
 - ❌ **claude CLI 수동/대화형 기동 금지**: 모든 claude CLI 호출은 자동화(send-keys/스크립트)로만, `--dangerously-skip-permissions` 옵션 필수. 권한 프롬프트 응답 / 옵션 누락 호출 = 운영자 수동 개입 발생 = 자동화 흐름 붕괴.
+- ❌ **파괴적 / 외부 노출 명령 풀어서 paste 금지**: `git push` / `git reset --hard` / `git tag` / `rm -rf` / `git checkout --` / 외부 API 호출 등 위험 명령은 회의창이 운영자에게 명령줄 그대로 던지지 말 것. **쉘 스크립트 파일로 작성** → **검증** → 운영자 또는 회의창이 1줄 실행. 운영자 과거 명령어 복사 사고로 git 날린 적 있음 (세션 26 영구 박힘).
 
 ## 4. 환경 / 도구 표준 (추측 금지)
 
