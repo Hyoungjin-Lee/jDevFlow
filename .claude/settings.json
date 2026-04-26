@@ -113,19 +113,5 @@
       "Bash(*git reset --hard*)",
       "Bash(*git branch -D*)"
     ]
-  },
-  "hooks": {
-    "_comment": "D6 PostToolUse 경고 모드 (v0.6.3 M3) — 차단 금지, exit 0 강제, gradual adoption",
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'f=\"${CLAUDE_TOOL_RESULT_FILE_PATH:-}\"; [ -z \"$f\" ] && exit 0; case \"$f\" in *.py) python3 -m py_compile \"$f\" 2>&1 || true ;; *.sh) shellcheck -x \"$f\" 2>&1 || true ;; esac; exit 0'"
-          }
-        ]
-      }
-    ]
   }
 }
