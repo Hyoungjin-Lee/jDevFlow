@@ -30,6 +30,17 @@ cd "$ROOT"
 PHASE="${1:-}"
 RESULTS_LOG="$ROOT/scripts/v0.6.1/verify_results.log"
 
+# D4 patch: filter-repo 자기-치환 회피.
+# 'j'/'J' 첫 글자를 printf hex로 분리 → 디스크에 원본 단어 단일 시퀀스 0 등장
+# → 미래 filter-repo 재실행 시 expressions.txt 매칭 회피 (자기-치환 false-positive 방지).
+_pj=$(printf '\x6a')   # 'j'
+_puj=$(printf '\x4a')  # 'J'
+_old_pattern="${_pj}DevFlow|${_pj}devflow|${_puj}DEVFLOW"
+
+# Q1 whitelist: v0.1 init commit (rebrand 이전 최초 commit, 역사 보존 목적).
+# AC-N1-3 검사에서 이 commit msg는 패스 처리.
+_ac_n1_3_whitelist='^19b95859'
+
 _pass() { printf '  PASS  %s\n' "$1" | tee -a "$RESULTS_LOG"; }
 _fail() {
     printf '  FAIL  %s\n    -> %s\n' "$1" "$2" | tee -a "$RESULTS_LOG" >&2
@@ -62,14 +73,14 @@ printf '=== v0.6.1 N1 AC verify (phase=%s) ===\n' "$PHASE" | tee "$RESULTS_LOG"
 # AC 함수 정의 ========================================================
 
 _ac_n1_1() {
-    _hits=$(grep -rnE 'jOneFlow|joneflow|JONEFLOW' . \
+    _hits=$(grep -rnE "$_old_pattern" . \
               --exclude-dir=.git --exclude-dir=node_modules \
               2>/dev/null | wc -l | tr -d ' ')
     if [ "$_hits" = "0" ]; then
         _pass "AC-N1-1 (worktree grep = 0 hits)"
     else
         printf '  잔존 위치 (앞 10건):\n' >&2
-        grep -rnE 'jOneFlow|joneflow|JONEFLOW' . \
+        grep -rnE "$_old_pattern" . \
             --exclude-dir=.git --exclude-dir=node_modules \
             2>/dev/null | head -10 | sed 's|^|    |' >&2
         _fail "AC-N1-1 (grep $_hits hits)" "위 위치 패치 또는 expressions.txt 보강 후 재실행"
@@ -90,15 +101,18 @@ _ac_n1_2() {
 }
 
 _ac_n1_3() {
+    # Q1 whitelist: v0.1 init commit 19b95859 (rebrand 역사 보존). 카운트 / 출력 모두 제외.
     _msg_hits=$(git log --all --pretty=format:'%H %s' 2>/dev/null \
-                  | grep -cE 'jOneFlow|joneflow|JONEFLOW' || true)
+                  | grep -E "$_old_pattern" \
+                  | grep -cvE "$_ac_n1_3_whitelist" || true)
     if [ "$_msg_hits" = "0" ]; then
-        _pass "AC-N1-3 (commit msg 0 hits)"
+        _pass "AC-N1-3 (commit msg 0 hits, whitelist 19b95859 제외)"
     else
-        printf '  잔존 메시지 (앞 5건):\n' >&2
+        printf '  잔존 메시지 (앞 5건, whitelist 제외):\n' >&2
         git log --all --pretty=format:'%H %s' \
-            | grep -E 'jOneFlow|joneflow|JONEFLOW' | head -5 \
-            | sed 's|^|    |' >&2
+            | grep -E "$_old_pattern" \
+            | grep -vE "$_ac_n1_3_whitelist" \
+            | head -5 | sed 's|^|    |' >&2
         _fail "AC-N1-3 (commit msg $_msg_hits hits)" \
               "filter-repo 옵션 점검 후 백업 브랜치에서 reset+재실행"
     fi
@@ -151,7 +165,7 @@ _ac_n1_7() {
 }
 
 _ac_n1_8() {
-    _upper_hits=$(grep -rnE 'jOneFlow|joneflow|JONEFLOW' \
+    _upper_hits=$(grep -rnE "$_old_pattern" \
                    /Users/geenya/projects/Jonelab_Platform/ \
                    --exclude-dir=jOneFlow --exclude-dir=jOneFlow --exclude-dir=.git \
                    --include='*.md' --include='*.sh' --include='*.json' \
@@ -160,14 +174,14 @@ _ac_n1_8() {
         _pass "AC-N1-8 (상위 경로 0 hits)"
     else
         printf '  상위 경로 잔존 (앞 5건):\n'
-        grep -rnE 'jOneFlow|joneflow|JONEFLOW' \
+        grep -rnE "$_old_pattern" \
             /Users/geenya/projects/Jonelab_Platform/ \
             --exclude-dir=jOneFlow --exclude-dir=jOneFlow --exclude-dir=.git \
             --include='*.md' --include='*.sh' --include='*.json' \
             2>/dev/null | head -5 | sed 's|^|    |'
         # Q5-2 default(A): settings.local.json:19 1건 자동 무효화 허용.
         _expected_only="/Users/geenya/projects/Jonelab_Platform/.claude/settings.local.json"
-        _other=$(grep -rnE 'jOneFlow|joneflow|JONEFLOW' \
+        _other=$(grep -rnE "$_old_pattern" \
                     /Users/geenya/projects/Jonelab_Platform/ \
                     --exclude-dir=jOneFlow --exclude-dir=jOneFlow --exclude-dir=.git \
                     --include='*.md' --include='*.sh' --include='*.json' 2>/dev/null \

@@ -29,6 +29,13 @@ cd "$ROOT"
 
 BACKUP_BRANCH="backup-pre-v0.6.1-rename"
 
+# D4 patch: filter-repo 자기-치환 회피.
+# 'j'/'J' 첫 글자를 printf hex로 분리 → 디스크에 원본 단어 단일 시퀀스 0 등장
+# → 미래 filter-repo 재실행 시 expressions.txt 매칭 회피 (자기-치환 false-positive 방지).
+_pj=$(printf '\x6a')   # 'j'
+_puj=$(printf '\x4a')  # 'J'
+_old_pattern="${_pj}DevFlow|${_pj}devflow|${_puj}DEVFLOW"
+
 _pass() { printf '  PASS  %s\n' "$1"; }
 _fail() { printf '  FAIL  %s\n    -> %s\n' "$1" "$2" >&2; exit 1; }
 _warn() { printf '  WARN  %s\n' "$1" >&2; }
@@ -37,14 +44,14 @@ printf '=== v0.6.1 N1 사후 검증 시작 (S2: reflog gc 비실행) ===\n\n'
 
 # 1. AC-N1-1: 잔존 grep (worktree 파일) ---------------------------------
 #    예외: .git/, node_modules/, 백업 브랜치(체크아웃 안 되면 worktree에 없음).
-_grep_hits=$(grep -rnE 'jOneFlow|joneflow|JONEFLOW' . \
+_grep_hits=$(grep -rnE "$_old_pattern" . \
                --exclude-dir=.git --exclude-dir=node_modules \
                2>/dev/null | wc -l | tr -d ' ')
 if [ "$_grep_hits" = "0" ]; then
     _pass "AC-N1-1 잔존 grep = 0 hits"
 else
     printf '  잔존 hits 위치 (앞 10건):\n' >&2
-    grep -rnE 'jOneFlow|joneflow|JONEFLOW' . \
+    grep -rnE "$_old_pattern" . \
         --exclude-dir=.git --exclude-dir=node_modules \
         2>/dev/null | head -10 | sed 's|^|    |' >&2
     _fail "AC-N1-1 잔존 grep = $_grep_hits hits" \
@@ -53,13 +60,13 @@ fi
 
 # 2. AC-N1-3: 커밋 메시지 잔존 -----------------------------------------
 _msg_hits=$(git log --all --pretty=format:'%H %s' 2>/dev/null \
-              | grep -cE 'jOneFlow|joneflow|JONEFLOW' || true)
+              | grep -cE "$_old_pattern" || true)
 if [ "$_msg_hits" = "0" ]; then
     _pass "AC-N1-3 커밋 메시지 잔존 = 0 hits"
 else
     printf '  잔존 메시지 (앞 5건):\n' >&2
     git log --all --pretty=format:'%H %s' \
-        | grep -E 'jOneFlow|joneflow|JONEFLOW' | head -5 \
+        | grep -E "$_old_pattern" | head -5 \
         | sed 's|^|    |' >&2
     _fail "AC-N1-3 커밋 메시지 잔존 = $_msg_hits hits" \
           "filter-repo 옵션 점검 후 백업 브랜치에서 reset+재실행"
