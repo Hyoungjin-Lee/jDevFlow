@@ -1,4 +1,11 @@
-# 📋 HANDOFF — Session State
+---
+version: v0.3
+status: archived
+date: 2026-04-22
+archived_at: 2026-04-26
+---
+
+# 📋 HANDOFF — Session State (v0.3, archived)
 
 > **Read this second**, after CLAUDE.md.
 > Update this file at the end of every session.

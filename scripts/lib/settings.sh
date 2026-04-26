@@ -251,3 +251,52 @@ s|^    "stage11_verify": *"[^"]*"$|    "stage11_verify": "'"$_swsa_s11"'"|
         _settings_die 5 "원자적 mv 실패. 원본 보존."
     fi
 }
+
+# v0.6.2 (planning_04 F-04-3, technical_design Sec.5.10): frontmatter 필드 갱신.
+# Usage: _frontmatter_set_field <file> <key> <value>
+# Effect: <file>의 YAML frontmatter (--- ... ---) 안의 <key>: <value> 갱신.
+#         키 부재 시 frontmatter 끝부분에 추가.
+#         BSD sed와 GNU sed 모두 호환 (awk 기반, sed -i 분기 회피).
+# Returns: 0 (성공), 1 (frontmatter 부재), 2 (인자 부족 또는 파일 부재).
+_frontmatter_set_field() {
+    _fmsf_file="$1"
+    _fmsf_key="$2"
+    _fmsf_value="$3"
+    if [ "$#" -ne 3 ]; then
+        return 2
+    fi
+    if [ ! -f "$_fmsf_file" ]; then
+        return 2
+    fi
+    if ! head -1 "$_fmsf_file" 2>/dev/null | grep -q '^---$'; then
+        return 1
+    fi
+
+    _fmsf_tmp="${_fmsf_file}.tmp.$$"
+    awk -v key="$_fmsf_key" -v val="$_fmsf_value" '
+        BEGIN { in_fm=0; done=0; closed=0 }
+        NR==1 && /^---$/ { in_fm=1; print; next }
+        in_fm == 1 && closed == 0 && /^---$/ {
+            if (done == 0) {
+                print key ": " val
+                done=1
+            }
+            closed=1
+            print
+            next
+        }
+        in_fm == 1 && closed == 0 && /^[A-Za-z_][A-Za-z0-9_-]*:/ {
+            split($0, parts, ":")
+            if (parts[1] == key) {
+                if (done == 0) {
+                    print key ": " val
+                    done=1
+                }
+                next
+            }
+            print
+            next
+        }
+        { print }
+    ' "$_fmsf_file" > "$_fmsf_tmp" && mv "$_fmsf_tmp" "$_fmsf_file"
+}

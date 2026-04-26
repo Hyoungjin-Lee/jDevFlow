@@ -42,13 +42,14 @@ _init_parse_args() {
       --with-env)     WITH_ENV=1 ;;
       --no-prompt)    NO_PROMPT=1 ;;
       --force-reinit) FORCE_REINIT=1 ;;
+      --dry-run)      export DRY_RUN=1 ;;
       -h|--help)
         sed -n '2,8p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
         exit 0
         ;;
       *)
         echo "init_project.sh: 알 수 없는 인자: $_arg" >&2
-        echo "사용법: bash scripts/init_project.sh [--with-env] [--no-prompt] [--force-reinit]" >&2
+        echo "사용법: bash scripts/init_project.sh [--with-env] [--no-prompt] [--force-reinit] [--dry-run]" >&2
         exit 2
         ;;
     esac
@@ -363,6 +364,49 @@ _init_run_settings_setup() {
 # 신규 프로젝트 scaffold 시 jOneFlow source의 운영 매뉴얼 + 브릿지 프로토콜 + guides/ 만 복사.
 # brainstorm/planning/구현/QA 영역은 신규 프로젝트에 불필요하므로 제외.
 # Source 결정: JONEFLOW_SRC_ROOT 환경변수. 미지정 시 skip (본 jOneFlow 자체 init은 자동 skip).
+# v0.6.2 (planning_04 hook, technical_design Sec.5.6): 새 버전 시작 시 active HANDOFF 생성.
+# Usage: _init_handoff_active <version>  (예: v0.6.3)
+# Effect: handoffs/active/HANDOFF_<version>.md skeleton 생성 + HANDOFF.md symlink 갱신.
+# DRY_RUN=1 시 echo만.
+_init_handoff_active() {
+  _ihaa_version="$1"
+  if [ -z "$_ihaa_version" ]; then
+    echo "_init_handoff_active: 버전 인자 필요" >&2
+    return 2
+  fi
+  _ihaa_dir="$ROOT/handoffs/active"
+  _ihaa_file="$_ihaa_dir/HANDOFF_${_ihaa_version}.md"
+  if [ "${DRY_RUN:-0}" = "1" ]; then
+    printf 'DRY-RUN: would execute: mkdir -p %s\n' "$_ihaa_dir"
+    printf 'DRY-RUN: would execute: write %s\n' "$_ihaa_file"
+    printf 'DRY-RUN: would execute: ln -sf %s %s/HANDOFF.md\n' "handoffs/active/HANDOFF_${_ihaa_version}.md" "$ROOT"
+    return 0
+  fi
+  mkdir -p "$_ihaa_dir"
+  if [ ! -f "$_ihaa_file" ]; then
+    cat > "$_ihaa_file" <<EOF
+---
+version: ${_ihaa_version}
+status: active
+date: $(date +%Y-%m-%d)
+mode: ${WORKFLOW_MODE:-Standard}
+---
+
+# HANDOFF — ${_ihaa_version}
+
+## Status
+
+**Current version:** ${_ihaa_version} (초기화)
+**Current stage:** Stage 1 (brainstorm)
+
+EOF
+    echo "✅ Created $_ihaa_file"
+  fi
+  rm -f "$ROOT/HANDOFF.md"
+  ln -s "handoffs/active/HANDOFF_${_ihaa_version}.md" "$ROOT/HANDOFF.md"
+  echo "✅ HANDOFF.md → handoffs/active/HANDOFF_${_ihaa_version}.md"
+}
+
 _init_copy_self_edu_docs() {
   src_root="${JONEFLOW_SRC_ROOT:-}"
   if [ -z "$src_root" ]; then

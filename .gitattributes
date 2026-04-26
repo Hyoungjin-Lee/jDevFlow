@@ -1,0 +1,6 @@
+# jOneFlow git 정책 (v0.6.2~)
+# F-62-2 / F-04-S5b: HANDOFF.md는 symlink. git에서 symlink로 추적 (Linux/macOS).
+HANDOFF.md symlink
+
+# LICENSE 텍스트 정규화 (Apache 2.0, EP-6 인코딩 안전)
+LICENSE text eol=lf

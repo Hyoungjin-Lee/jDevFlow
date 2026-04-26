@@ -388,6 +388,40 @@ ai_step_log_transition() {
   fi
 }
 
+# v0.6.2 (planning_04 hook, technical_design Sec.5.6 옵션 A): Stage 13 archive 자동화.
+# active HANDOFF_v<X>.md 파일을 archive로 이동 + status 갱신 + HANDOFF.md symlink 부재.
+# DRY_RUN=1 시 echo만 (mutation 0).
+_ai_step_archive_handoff() {
+  _aiah_active_dir="$ROOT/handoffs/active"
+  _aiah_archive_dir="$ROOT/handoffs/archive"
+  if [ ! -d "$_aiah_active_dir" ]; then
+    printf '   [skip] handoffs/active/ 부재 (legacy 단일 HANDOFF.md 모드)\n'
+    return 0
+  fi
+  _aiah_target=""
+  for _aiah_f in "$_aiah_active_dir"/HANDOFF_v*.md; do
+    if [ -f "$_aiah_f" ] && grep -q "^status: active$" "$_aiah_f"; then
+      _aiah_target="$_aiah_f"
+      break
+    fi
+  done
+  if [ -z "$_aiah_target" ]; then
+    printf '   [skip] active 상태 HANDOFF 파일 없음. archive 호출 건너뜀.\n'
+    return 0
+  fi
+  _aiah_base=$(basename "$_aiah_target")
+  if [ "${DRY_RUN:-0}" = "1" ]; then
+    printf 'DRY-RUN: would execute: _frontmatter_set_field %s status archived\n' "$_aiah_target"
+    printf 'DRY-RUN: would execute: mv %s %s/\n' "$_aiah_target" "$_aiah_archive_dir"
+    printf 'DRY-RUN: would execute: rm -f %s/HANDOFF.md\n' "$ROOT"
+    return 0
+  fi
+  _frontmatter_set_field "$_aiah_target" status archived
+  mv "$_aiah_target" "$_aiah_archive_dir/$_aiah_base"
+  rm -f "$ROOT/HANDOFF.md"
+  printf '   ✅ archived %s\n' "$_aiah_base"
+}
+
 # ai_step_run_next  — 다음 stage 1개 진행 (게이트 체크 포함)
 ai_step_run_next() {
   _arn_cur=$(_ai_step_current_stage_marker)
@@ -490,6 +524,7 @@ _ai_step_main() {
 
   while [ "$#" -gt 0 ]; do
     case "$1" in
+      --dry-run)       export DRY_RUN=1; shift ;;
       --status)        _aim_action="status"; shift ;;
       --next)          _aim_action="next"; shift ;;
       --auto)          _aim_action="auto"; shift ;;
