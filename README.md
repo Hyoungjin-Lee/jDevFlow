@@ -221,6 +221,20 @@ Contributions welcome. Please open an issue first to discuss what you'd like to 
 
 ---
 
+## Slash Commands (v0.6.2~)
+
+jOneFlow ships with 3 Claude Code slash commands wrapping the core shell scripts. Type these in any Claude Code session:
+
+| Command | Wraps | Purpose |
+|---------|-------|---------|
+| `/init-project` | `bash scripts/init_project.sh` | New project init — `workflow_mode` + `team_mode` + scaffold |
+| `/switch-team` | `bash scripts/switch_team.sh` | Runtime `team_mode` switch with background-process safety check |
+| `/ai-step` | `bash scripts/ai_step.sh` | Stage 1~13 auto-orchestration (`--auto` / `--resume` / `--status` / `--dry-run`) |
+
+Definitions live in `.claude/commands/` (one markdown per command). The shell scripts under `scripts/` remain the source of truth — slash commands are pure wrappers (F-62-1: no settings.json reference in frontmatter).
+
+---
+
 ## Acknowledgments
 
 jOneFlow was developed independently as part of Jonelab_Platform. Some workflow, skill-system, and agent-operating design directions were informed by ideas explored in [obra/superpowers](https://github.com/obra/superpowers) by Jesse Vincent and contributors. Where jOneFlow adapts concepts inspired by that work, we acknowledge superpowers as an important reference. See [ATTRIBUTION.md](./ATTRIBUTION.md) for details.
