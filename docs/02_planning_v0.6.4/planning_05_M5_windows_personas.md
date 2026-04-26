@@ -27,7 +27,7 @@ revisions_absorbed:
   - F-M5-S5-1 (Stage 5 이월 유지, F-M5-Detail-1 blocking 시점 = Stage 8 박음)
 cross_cutting_absorbed:
   - F-D2 (정책 commit 본문 박음 — `scripts/dashboard/...` 위치 일관성 sync)
-  - F-D3 (정책 commit stub 박음 — reviewer 권장 verbatim 표시, 운영자 답변 후 본문 verbatim 박힘 영역)
+  - F-D3 (정책 commit final 본문 박음 — 운영자 결정 인수 세션 27 Stage 4.5 게이트: 18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 19명 표시 / CTO·CEO 미표시)
   - F-X-2 (read-only 정책 5개 doc 표준 — AC-M5-7 박힘)
   - F-X-3 (Stage 5 이월 통합 표 → planning_index.md 단일 source of truth, 본 doc Sec.10은 스냅샷 유지)
   - F-X-5 (F-D3로 흡수 — PM/CTO/CEO 표시 정책)
@@ -38,8 +38,8 @@ cross_cutting_absorbed:
 
 > **상위:** `docs/01_brainstorm_v0.6.4/brainstorm.md` 의제 8 (마일스톤 M5)
 > **본 문서:** Stage 4 plan_final v3 (finalizer 안영이, 운영자 승인 대기 — Stage 4.5 게이트)
-> **상태:** 🟡 plan_final v3 — F-D3 운영자 답변 대기 (Stage 4.5 게이트). 본문은 reviewer 권장 stub 박음.
-> **다음:** Stage 4.5 운영자 승인 게이트 (Q1 F-D3 PM/CTO/CEO 표시 정책 + Q2 Windows 우선순위) → 박지영 PL planning_index.md 통합 → Stage 5 기술 설계
+> **상태:** 🟢 plan_final v4 (final-revised) — F-D3 운영자 결정 인수 (세션 27 Stage 4.5 게이트 PASS). 본문 final 박음.
+> **다음:** Stage 5 기술 설계 (회의창이 Orc-064-dev 별도 spawn 진행). 박지영 PL plan 영역 책임 종료.
 > **의존:** M3(박스 렌더링), M4(Pending Push·Q 박스 + 알림). v0.6.3 `personas_18.md` 도착 후 detail 적용 (Stage 8 진입 = blocking 시점, F-X-6 boundary).
 > **범위:** Windows 호환 검증 기준 + 18명 페르소나 매핑 슬롯. 페르소나별 데이터 수집 detail = 스킵 가능 영역(personas_18.md 의존).
 
@@ -61,14 +61,14 @@ cross_cutting_absorbed:
 | F-M5-4 | 명시 추가 (v2 흡수 유지) | Sec.B2 + R6 신규 | 박스 높이 45줄 우려 → R6 P0 등급 상승. v3 변경 없음. |
 | F-M5-5 | 명시 추가 (v2 흡수 유지) | Sec.2.1 | "Q1~Q3" → "Sec.9 Q1" 정정. v3 변경 없음. |
 | **F-D2** | **정책 commit (v3 finalizer 본문 박음)** | **Sec.2 변경 대상 파일 머리말** | M5 영역 코드(환경 폴백 / Windows 알림 / WSL bridge)는 M1/M3/M4와 통일된 `scripts/dashboard/...` 패키지에 위치. 본 doc은 검증 기준 영역이 주이므로 신규 코드 위치는 Stage 5 기술 설계가 본 결정에 따라 박음. |
-| **F-D3 (stub, 운영자 답변 대기)** | **정책 commit stub (v3 finalizer reviewer 권장 박음)** | **Sec.2.1 제외 영역 + Sec.9 Q1** | **본 v0.6.4 대시보드 표시 페르소나 범위는 운영자 결정 영역(Stage 4.5 게이트)이며, finalizer 단계에서는 reviewer 권장만 stub으로 박습니다.** (1) v0.6.4 = 18명만 표시 (operating_manual.md Sec.1.2 그대로). (2) PM 스티브 리는 박스 외 별도 영역(예: 상단 status bar) 또는 v0.6.5+ 이월. (3) CTO 백현진 / CEO 이형진은 표시 안 함. **본 stub은 운영자 Stage 4.5 답변 후 verbatim으로 본문 박힘** — finalizer 임의 결정 영역 아님. operating_manual.md Sec.1.2 18명 정의 위반 0건 sync. |
+| **F-D3 (final, 운영자 결정 인수 — 세션 27 Stage 4.5 게이트 PASS)** | **정책 commit final 본문 박음** (CTO 실장 회의창 자율 결정 + CEO 운영자 위임) | **Sec.2.1 제외 영역 + Sec.9 Q1 + Sec.B 매핑 슬롯** | **v0.6.4 대시보드 표시 페르소나 범위 = 18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 총 19명 표시. CTO 백현진 / CEO 이형진 미표시.** 운영자 결정 근거: (1) 운영자=CEO / 회의창=CTO 자기 자신 비표시. (2) PM=브릿지 라우팅 모니터링 가치 → status bar 1행으로 PM 작업 상태 가시화. (3) operating_manual.md Sec.1.2 18명 정의 위반 0건 sync — PM은 박스 외 별도 영역. **M3 layout 영향:** 박스 3개 (기획/디자인/개발) + 상단 status bar 1행 (PM 스티브 리) — Stage 5/6/7 디자인팀이 status bar 시안 반영. |
 | F-X-2 | 횡단 흡수 (v2) | Sec.2 + AC-M5-7 | read-only 정책 명시 + AC-M5-7 자동 검증. v3 변경 없음. |
 | F-X-3 | 횡단 흡수 (v3 finalizer) | Sec.10 머리말 | Stage 5 이월 통합 표 단일 source of truth = planning_index.md (박지영 PL 영역). 본 doc Sec.10은 M5 스냅샷 유지. |
 | F-X-5 | F-D3로 흡수 (v3) | Sec.2.1 + Sec.9 Q1 | PM/CTO/CEO 표시 정책 — F-D3 stub에서 닫힘 (운영자 답변 대기). |
 | F-X-6 | 횡단 흡수 (v2 boundary 명시) | Sec.5.2 + Sec.10 | personas_18.md 의존 boundary — Stage 4/5 진행 가능, Stage 8 진입 = blocking. v3 변경 없음. |
 | F-M5-S5-1 | Stage 5 이월 (v2 흡수 유지) | Sec.10 | F-M5-Detail-1 blocking 시점 = Stage 8 진입 박음. v3 변경 없음. |
 
-> **finalizer 흡수 결과:** 본 v3는 drafter 권한 밖 정책 commit 1.5건(F-D2 본문 박음 + F-D3 stub)을 본문 결정 문장으로 닫고, 횡단 영역 1건(F-X-3)을 planning_index 포인터로 정리했습니다. 본 stage 잔존 운영자 결정 = **Q1 = F-D3 PM/CTO/CEO 표시 (Stage 4.5 게이트, reviewer 권장 stub 박음)** + **Q2 Windows 우선순위 (Stage 4.5, reviewer 권장: P1 유지)**. Stage 5 영역 = Q3 (WSL 알림 fallback). 회의창 monitoring 영역 = Q4 (personas_18.md 도착 일정, Stage 4/5 진행 비-blocking).
+> **finalizer 흡수 결과 + Stage 4.5 게이트 답변 인수 (v4 final-revised, 세션 27 박지영 PL 박음):** 본 v4는 v3 위에 운영자 결정 인수를 흡수한 final 산출물입니다. 정책 commit 본문 박음 = **F-D2 본문 + F-D3 final 본문 (운영자 결정 — 18명 + PM status bar 1행 = 19명 표시 / CTO·CEO 미표시) + F-D4 본문**. 횡단 1건(F-X-3)은 planning_index 포인터. **잔존 운영자 결정 0건** (Q1=F-D3 인수 / Q2=정확 hook 인수 / Q3=osascript 기본·Pushover 회피 인수 / Q4=P1 유지 인수 / Q5=idle 통합 confirm). Stage 5 영역 = WSL 알림 fallback / Windows 알림 채널 (plyer or win10toast). 회의창 monitoring 영역 = personas_18.md 도착(F-X-6 blocking 시점 = Stage 8 진입).
 
 ### Sec. 0.2 v1 목적
 
@@ -168,18 +168,18 @@ Windows 운영자가 WSL Ubuntu 환경에서 jOneFlow를 운영하는 경우, ma
 14. 김원훈 (선임연구원) — 프론트 파이널리즈
 15. 지예은 (주임연구원) — 프론트 드래프터
 
-**제외 (표시 정책 운영자 결정 — Sec.9 Q1, F-D3) — v3 finalizer (reviewer 권장 stub 박음, 운영자 답변 대기):**
+**별도 영역 / 미표시 (F-D3 final — 운영자 결정 인수, 세션 27 Stage 4.5 게이트 PASS):**
 
-> **v3 finalizer (F-D3 정책 commit stub):** 본 v0.6.4 대시보드 표시 페르소나 범위는 운영자 결정 영역(Stage 4.5 게이트)이며, finalizer 단계에서는 reviewer 권장만 stub으로 박습니다. **finalizer 임의 결정 영역 아님 — 운영자 답변 후 본 stub은 verbatim으로 본문 박힙니다.**
+> **v4 final 운영자 결정 (F-D3 본문 박음, CTO 실장 회의창 자율 결정 + CEO 운영자 위임, 세션 27 Stage 4.5 게이트 PASS):** v0.6.4 대시보드 표시 페르소나 범위 = **18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 총 19명 표시**. CTO 백현진 / CEO 이형진 미표시.
 >
-> **reviewer 권장 (planning_review.md F-D3, F-X-5 흡수, Q1 답변):**
-> - **v0.6.4 = 18명만 표시** (operating_manual.md Sec.1.2 그대로). scope 단순성 우선.
-> - **스티브 리 (PM 브릿지):** 박스 외 별도 영역(예: 상단 status bar) **또는 v0.6.5+ 이월** — 운영자 선택.
-> - **백현진 (CTO 실장):** 표시 안 함 (Cowork 영역, scope 외).
-> - **이형진 (CEO):** 표시 안 함 (운영자 본인).
+> **운영자 결정 본문 (Q1 답변 인수):**
+> - **스티브 리 (PM 브릿지):** **박스 외 상단 status bar 1행에 표시** (기획팀 박스 위, 가로 폭 전체). 근거: PM=브릿지 라우팅 모니터링 가치 → 작업 상태 / 토큰량 / 활성 Orc 라우팅 1행 가시화.
+> - **백현진 (CTO 실장):** 표시 안 함. 근거: 회의창=CTO 자기 자신 비표시.
+> - **이형진 (CEO):** 표시 안 함. 근거: 운영자=CEO 자기 자신 비표시 (대시보드는 운영자가 본인 작업이 아닌 팀 작업을 보는 도구).
 >
-> 본 결정은 operating_manual.md Sec.1.2의 18명 페르소나 정의(기획팀 4 + 디자인팀 4 + 개발팀 7)와 정확히 sync — 페르소나 정의 위반 0건 운영 원칙(drafter2 v0.6.3 운영자 결정 sync) 유지.
-> 최종 결정은 운영자 결정 게이트(Stage 4.5, Sec.9 Q1).
+> 본 결정은 operating_manual.md Sec.1.2의 18명 페르소나 정의(기획팀 4 + 디자인팀 4 + 개발팀 7) 위반 0건 sync — PM은 박스 외 별도 영역으로 분리 (Sec.1.2 박스 정의 = 4-tier Sub-team 페르소나만).
+>
+> **M3 layout 영향:** 박스 3개 (기획/디자인/개발) 위에 상단 status bar 1행 추가. Stage 5 기술 설계 + Stage 6/7 디자인팀 시안에서 layout 정밀화.
 
 #### 2.2 매핑 슬롯 (박스 구조)
 
@@ -483,17 +483,17 @@ Pending Decisions(Q) 박스는 **페르소나별 Q 큐를 추적**할 수 있도
 
 ## Sec. 9. 열린 질문 (Stage 3 plan_review + 운영자 결정) — v2 reviewer 분류
 
-> **v2 reviewer 분류:**
-> - 운영자 결정 게이트(Stage 4.5): Q1(F-D3 후보), Q2
+> **v4 final 분류 (세션 27 Stage 4.5 게이트 PASS):**
+> - 운영자 결정 게이트(Stage 4.5): Q1(F-D3) ✅ 답변 인수 / Q2 Windows ✅ 답변 인수
 > - Stage 5 기술 설계: Q3
 > - 회의창 monitoring(본 doc 영역 외): Q4
 
-| Q | 질문 | 책임 | 시점 |
-|---|------|------|------|
-| **Q1** (F-D3 후보) | PM 브릿지(스티브 리) / CTO 실장(백현진) / CEO(이형진) 대시보드 표시 정책 최종 확정. **v2 reviewer 권장: 18명만 표시, PM은 별도 영역(상단 status bar) 또는 v0.6.5+ 이월, CTO/CEO 표시 안 함.** scope 단순성 우선. | **운영자 결정 게이트 (Stage 4.5)** | Stage 4 final 전 |
-| **Q2** | Windows Terminal 정식 지원을 v0.6.4에서 수행할지, 미래(v0.6.5+)로 미룰지. **v2 reviewer 권장: P1 유지 (v0.6.4 = macOS 단독 + Windows skeleton). Windows 정식은 v0.6.5+.** | **운영자 결정 게이트 (Stage 4.5)** | Stage 4 final 전 |
-| **Q3** | WSL 환경에서 알림 채널(plyer / skip / WSL bridge) 정책 | Stage 5 기술 설계 | Stage 5 |
-| **Q4** | personas_18.md 도착 일정 (v0.6.3 병렬 진행) — **v2 (F-X-6):** 도착 일정과 무관하게 Stage 4/5 진행 가능. blocking은 Stage 8 진입에서만. | 회의창 monitoring (본 doc 영역 외) | 비-blocking |
+| Q | 질문 | 답변 / 책임 | 시점 |
+|---|------|------------|------|
+| **Q1** (F-D3 final) | PM 브릿지(스티브 리) / CTO 실장(백현진) / CEO(이형진) 대시보드 표시 정책. | ✅ **답변 인수 (세션 27 Stage 4.5 게이트 PASS):** 18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = **19명 표시** / CTO·CEO 미표시. | **PASS (게이트 통과)** |
+| **Q2** | Windows Terminal 정식 지원을 v0.6.4에서 수행할지, 미래(v0.6.5+)로 미룰지. | ✅ **답변 인수 (세션 27 Stage 4.5 게이트 PASS):** **P1 유지** — v0.6.4 = macOS 단독 + Windows skeleton. Windows 정식은 v0.6.5+. brainstorm 비-goal sync. | **PASS (게이트 통과)** |
+| **Q3** | WSL 환경에서 알림 채널(plyer / skip / WSL bridge) 정책 | Stage 5 기술 설계 — Windows = plyer or win10toast 검토 (운영자 답변: Q3=Pushover 회피·osascript 기본 sync). | Stage 5 |
+| **Q4** | personas_18.md 도착 일정 (v0.6.3 병렬 진행) — **F-X-6:** 도착 일정과 무관하게 Stage 4/5 진행 가능. blocking은 Stage 8 진입에서만. | 회의창 monitoring (본 doc 영역 외) | 비-blocking |
 
 ---
 
@@ -518,6 +518,7 @@ Pending Decisions(Q) 박스는 **페르소나별 Q 큐를 추적**할 수 있도
 | 2026-04-27 | v1 draft (장그래, 기획팀 주임) | M5 기본 구조 + Windows 호환 검증 기준 + 18명 매핑 skeleton. personas_18.md 의존 영역 명시. Q1~Q3 운영자 결정 게이트. |
 | 2026-04-27 | v2 revised (장그래 drafter, 세션 27 후속) | Stage 3 plan_review 흡수 9건 (F-M5-1~5 + F-X-2/F-X-6 + F-D3 후보 + F-M5-S5-1 boundary 정정). AC 6 → 8건(AC-M5-3 단계 분리 + AC-M5-7 read-only 신규). R6 신규(박스 높이 45줄, P0 등급 상승). F-M5-Detail-1 blocking 시점 = Stage 8 박음. F-D3(PM/CTO/CEO 표시) 운영자 결정 게이트 명시. |
 | 2026-04-27 | **v3 final** (안영이 finalizer, 기획팀 선임연구원 Sonnet/medium) | v2 위에 정책 commit 본문 결정 박음 — **F-D2** Sec.2 머리말(M5 신규 코드 위치도 `scripts/dashboard/...` 패키지로 sync), **F-D3 stub** Sec.2.1 제외 영역(reviewer 권장 verbatim 박음 — 18명만 표시 / PM 별도 영역 또는 v0.6.5+ / CTO·CEO 표시 안 함, **operating_manual.md Sec.1.2 18명 정의 위반 0건 sync**, 운영자 답변 후 본문 verbatim 박힘 영역 명시). 횡단 흡수: F-X-3 Sec.10 머리말(planning_index 통합 포인터), F-X-5 → F-D3 stub으로 닫힘, F-X-6 boundary 명시. 잔존 운영자 결정 = Q1 F-D3(Stage 4.5) + Q2 Windows 우선순위(Stage 4.5). status: pending_operator_approval. plan_draft 5종은 Stage 2 스냅샷 보존. |
+| 2026-04-27 | **v4 final-revised** (박지영 PL, 기획팀 PL Opus/high) | Stage 4.5 운영자 결정 게이트 답변 인수 (CTO 실장 회의창 자율 결정 + CEO 운영자 위임, 세션 27): **F-D3 stub → final 본문 박음** = 18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 19명 표시 / CTO·CEO 미표시. M3 layout 영향 명시(박스 3개 + status bar 1행, Stage 5/6/7 디자인팀 시안 반영). Q2 Windows P1 유지 답변 인수. 잔존 운영자 결정 0건. status: ✅ Stage 4.5 게이트 PASS → Stage 5 GO. |
 
 ---
 

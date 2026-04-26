@@ -112,7 +112,7 @@ upstream:
 |----|------|------|---------|
 | **F-D1** | 데이터 모델 단일 spec | `PersonaState` (M2) 단일 dataclass + `PersonaDataCollector` (M2) + `PendingDataCollector` (M4) **분리(SRP)**. `TeamRenderer.render()` 입력 = `Dict[str, List[PersonaState]]`. 어댑터 3중 구조 제거. | M2 본문 / M3·M4 인터페이스 sync |
 | **F-D2** | dashboard 산출물 위치 단일화 | 진입점 = `scripts/dashboard.py` 단일. 모듈 패키지 = `scripts/dashboard/<module>.py`. 슬래시 정의 = `.claude/commands/dashboard.md`. M3 `src/dashboard/...` / M4 `dashboard/...` 충돌 닫음. | M1 본문 / M3·M4 sync |
-| **F-D3** | 박스 외 페르소나(PM/CTO/CEO) 표시 정책 | **stub** — reviewer 권장: v0.6.4 = 18명만 표시 / PM 별도 영역 또는 v0.6.5+ 이월 / CTO/CEO 표시 안 함. **운영자 답변 후 verbatim 박힘** (Stage 4.5 게이트 = Q1). | M5 stub |
+| **F-D3** | 박스 외 페르소나(PM/CTO/CEO) 표시 정책 | ✅ **final (운영자 결정 인수, 세션 27 Stage 4.5 게이트 PASS):** v0.6.4 = **18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 19명 표시** / CTO·CEO 미표시. 근거: 운영자=CEO / 회의창=CTO 자기 자신 비표시 + PM=브릿지 라우팅 모니터링 가치. | M5 final 본문 박음 |
 | **F-D4** | M2↔M3↔M4 인터페이스 일관성 | dataclass 일관성 명시 + sync 시작 / async 채택은 Stage 5. M1 `on_mount()` 동기 훅과 정합성. | M1 / M2 / M3 / M4 인터페이스 |
 
 **횡단 명시 추가 (F-X-N) 분배:**
@@ -155,16 +155,16 @@ upstream:
 
 drafter Q 약 23건 → finalizer 흡수 후 **운영자 결정 필수 5건 + Stage 5 영역 1건**으로 압축 (5/23 = **22%** — 선례 v0.6.2 동급).
 
-| Q | 결정 항목 | 거주 doc | 본 stage 권장 | 결정 시점 |
-|---|---------|---------|------------|----------|
-| **Q1 = F-D3** | 박스 외 페르소나(PM/CTO/CEO) 표시 정책 | M5 / 횡단 | **v0.6.4 = 18명만. PM 별도 영역(상단 status bar) 또는 v0.6.5+ 이월. CTO/CEO 표시 안 함.** scope 단순성 우선. | **Stage 4.5 운영자 결정** |
-| **Q2 = Q-M2-1** | 토큰량 정책 (정확 hook +8h vs 추정 regex +2h) | M2 | **정확 hook 권장 (Stage 5 +8h).** 첫 실전 + Strict 신뢰성 우선. | **Stage 4.5 운영자 결정** |
-| **Q3 = Q-M4-2** | Pushover 비용 ($5/mo or $30 일회) | M4 | **회피 (osascript 기본 + Stage 5에서 plyer cross-platform 검토).** read-only + 로컬 단독 → 외부 API 비용 회피. | **Stage 4.5 운영자 결정** |
-| **Q4 = Q-M5-2** | Windows 정식 지원 우선순위 (P0 vs P1) | M5 | **P1 유지 (v0.6.4 = macOS 단독 + Windows skeleton).** brainstorm 비-goal과 sync. | **Stage 4.5 운영자 결정** |
-| **Q5 = Q-M2-5** | offline 페르소나 표시 (idle 통합 vs offline 분리) | M2 | **idle 통합 (brainstorm 의제 3 2단계 정책 유지).** finalizer 안영이 흡수, 운영자 confirm. | **Stage 4.5 운영자 confirm** |
-| (참고) Q6 = Q-M4-3 | CCNotify 존재 미확인 | M4 | osascript fallback (CCNotify 미존재 시 자동 fallback). | **Stage 5 영역** (게이트 외) |
+| Q | 결정 항목 | 거주 doc | ✅ 운영자 답변 (세션 27 Stage 4.5 게이트 PASS, CTO 실장 자율 결정 + CEO 운영자 위임) | 상태 |
+|---|---------|---------|------------|------|
+| **Q1 = F-D3** | 박스 외 페르소나(PM/CTO/CEO) 표시 정책 | M5 / 횡단 | **18명 박스 + PM 스티브 리 별도 상단 status bar 1행 = 19명 표시 / CTO·CEO 미표시.** 근거: 운영자=CEO / 회의창=CTO 자기 자신 비표시, PM=브릿지 라우팅 모니터링 가치. | ✅ PASS |
+| **Q2 = Q-M2-1** | 토큰량 정책 (정확 hook +8h vs 추정 regex +2h) | M2 | **정확 hook 채택 (Stage 5 +8h).** 근거: Strict + 첫 실전 신뢰성 우선, MAX 20x 토큰 여유. | ✅ PASS |
+| **Q3 = Q-M4-2** | Pushover 비용 ($5/mo or $30 일회) | M4 | **Pushover 회피 / osascript 기본 / Windows = plyer or win10toast Stage 5 검토.** 근거: 외부 API 비용 = DEFCON 회피. | ✅ PASS |
+| **Q4 = Q-M5-2** | Windows 정식 지원 우선순위 (P0 vs P1) | M5 | **P1 유지 — v0.6.4 = macOS 단독 + Windows skeleton.** brainstorm 비-goal sync. | ✅ PASS |
+| **Q5 = Q-M2-5** | offline 페르소나 표시 (idle 통합 vs offline 분리) | M2 | **idle 통합 confirm.** 의제 3 2단계 정책 유지, tmux 미존재 = idle. | ✅ PASS (confirm) |
+| (참고) Q6 = Q-M4-3 | CCNotify 존재 미확인 | M4 | Stage 5 영역 — osascript fallback (CCNotify 미존재 시 자동 fallback). | Stage 5 영역 |
 
-**Stage 4.5 게이트 진입 조건:** Q1~Q5 5건 답변 + 5개 plan_final 승인. 미답변 시 Stage 5 진입 금지.
+**Stage 4.5 게이트:** ✅ **PASS (5/5 답변 인수, 세션 27)** — Stage 5 진입 조건 충족.
 
 ---
 
@@ -307,13 +307,13 @@ TeamRenderer (M3)           PendingPushBox / PendingQBox (M4)
 | brainstorm 의제 1~8 매핑 완전성 | 20 | 20/20 (100%) | 8/8 매핑 (Sec.2) |
 | brainstorm 결정 위반 | 15 | 15/15 (0건) | reviewer 발견 37건 중 위반 0 |
 | AC 측정 가능성 (자동 비율) | 15 | 14/15 (73%) | F-MN-2 정정 흡수, 자동 35/48 |
-| 정책 commit 본문 박음 | 15 | 14/15 (3.5/4) | F-D1/F-D2/F-D4 본문 박음 / F-D3 stub (운영자 답변 후) |
+| 정책 commit 본문 박음 | 15 | 15/15 (4/4) | F-D1/F-D2/F-D3/F-D4 본문 박음 (F-D3 v4 final 운영자 결정 인수 — 세션 27 Stage 4.5 게이트 PASS) |
 | 횡단 흡수 (F-X-1~10) | 10 | 10/10 | 10/10 |
 | 운영자 결정 게이트 통합 (F-X-9) | 10 | 10/10 | Q1~Q5 5건 박음 |
 | Stage 5 이월 통합 (F-X-3) | 5 | 5/5 | 25 → 14 단일 source |
 | 데이터 흐름 다이어그램 (F-X-4) | 5 | 5/5 | Sec.8 박음 |
 | 디자인팀 첫 등판 절차 (F-X-10) | 5 | 5/5 | Sec.9 stub |
-| **Stage Transition Score** | 100 | **98/100 = 98.0%** | 임계 80% 초과 → **Stage 5 GO** (단 Stage 4.5 게이트 Q1~Q5 답변 + 5건 승인 후) |
+| **Stage Transition Score** | 100 | **99/100 = 99.0%** | 임계 80% 초과 + Stage 4.5 게이트 PASS (Q1~Q5 5/5 답변 인수, 세션 27) → ✅ **Stage 5 GO** (회의창이 Orc-064-dev 별도 spawn 진행) |
 
 ---
 
@@ -322,6 +322,7 @@ TeamRenderer (M3)           PendingPushBox / PendingQBox (M4)
 | 날짜 | 개정 | 비고 |
 |------|------|------|
 | 2026-04-27 | v1 (세션 27) | 박지영 PL 작성. v3 final 5건(2,151줄) + planning_review 발견 37건 통합. brainstorm 의제 1~8 매핑 8/8. 정책 commit 4건(F-D1/F-D2/F-D4 본문 + F-D3 stub) + 운영자 결정 Q1~Q5 5건 박음. 통합 Stage 5 이월 14건. Stage Transition Score 98%. |
+| 2026-04-27 | **v2 (세션 27, Stage 4.5 게이트 PASS 후속)** | 박지영 PL 박음. **운영자 결정 Q1~Q5 5/5 답변 인수** (CTO 실장 회의창 자율 결정 + CEO 운영자 위임): Q1=F-D3 final 본문(18명 박스 + PM status bar 1행 = 19명 / CTO·CEO 미표시) + Q2 정확 hook + Q3 Pushover 회피·osascript 기본 + Q4 Windows P1 유지 + Q5 idle 통합 confirm. F-D3 stub→final 정정(planning_05 Sec.0/2.1/9/이력 + 본 doc Sec.4/6 + 정책 commit 4/4 + Score 99%). status: ✅ Stage 4.5 PASS → Stage 5 GO. 박지영 PL plan 영역 책임 종료. |
 
 ---
 
