@@ -1,6 +1,6 @@
 ---
 version: v0.6.3
-status: active
+status: archived
 stage: 5 (tech_design — 진입 준비)
 date: 2026-04-27
 session: 26
