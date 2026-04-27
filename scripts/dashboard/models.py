@@ -50,3 +50,49 @@ class PersonaState:
         d = asdict(self)
         d["last_update"] = self.last_update.isoformat()
         return d
+
+
+# ---------------------------------------------------------------------------
+# F-D1 Sec.3.2 — M4 Pending dataclasses (M4 drafter v1 신규 박음)
+# ---------------------------------------------------------------------------
+
+PendingItemType = Literal["push", "commit"]
+PendingSeverity = Literal["high", "medium", "low"]
+PendingCategory = Literal["scope", "decision", "risk", "approval"]
+PendingPriority = Literal["critical", "high", "medium", "low"]
+
+
+@dataclass(eq=True, frozen=False)
+class PendingPush:
+    """M4 — 운영자 승인 대기 push/commit (read-only 표시 only, F-X-2)."""
+
+    item_id: str
+    item_type: PendingItemType
+    description: str
+    timestamp: datetime
+    initiator: str
+    severity: PendingSeverity
+
+
+@dataclass(eq=True, frozen=False)
+class PendingQuestion:
+    """M4 — 운영자 결정 영역 큐 (read-only 표시, 응답은 회의창 흐름).
+
+    ``dedupe_key()`` 5분 단위 truncate (R-4 정정) — Notifier ``_is_recently_sent``
+    측 5분 TTL 비교 (R-11)와 정합 = 이중 5분 보장.
+    """
+
+    q_id: str
+    category: PendingCategory
+    description: str
+    source: str
+    timestamp: datetime
+    priority: PendingPriority
+
+    def dedupe_key(self) -> str:
+        """알림 dedupe 키 — timestamp 5분 단위 truncate (R-4 정정 정합)."""
+        minute = self.timestamp.minute - (self.timestamp.minute % 5)
+        truncated = self.timestamp.replace(
+            minute=minute, second=0, microsecond=0
+        )
+        return f"{self.q_id}:{truncated.isoformat()}"

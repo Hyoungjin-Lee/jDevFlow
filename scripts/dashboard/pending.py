@@ -1,11 +1,38 @@
-"""M4 — Pending Push/Commit + Pending Q layer placeholder (F-D1 영역).
+"""M4 — Top-level Pending area (PendingPushBox + PendingQBox 가로 배치).
 
-본 파일 본문은 v0.6.4 Stage 8 M4에서 작성:
-
-- ``PendingPush`` / ``PendingQuestion`` dataclass (단일 spec — design_final Sec.3.2).
-- ``PendingDataCollector`` (git status + dispatch md regex sync polling).
-- ``PendingPushBox`` / ``PendingQBox`` textual 위젯.
-- read-only 정책 영구 (F-X-2) — 본 layer는 표시 only, write 명령 0건.
-
-상위 spec: design_final Sec.9 (M4 Pending + 알림 layer).
+design_final Sec.9.2 layout 정합. F-D1 — ``PendingDataCollector`` 출력 직접 소비.
+``PendingArea`` Container = M3 ``DashboardRenderer`` 패턴 정합 (단일 진입).
 """
+from __future__ import annotations
+
+from typing import List, Optional
+
+from textual.app import ComposeResult
+from textual.containers import Container
+
+from .models import PendingPush, PendingQuestion
+from .pending_widgets import PendingPushBox, PendingQBox
+
+
+class PendingArea(Container):
+    """M4 단일 진입 — Pending Push 박스 + Pending Q 박스 가로 배치 (read-only)."""
+
+    DEFAULT_CSS = """
+    PendingArea {
+        layout: horizontal;
+        height: auto;
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield PendingPushBox(id="pending_push")
+        yield PendingQBox(id="pending_q")
+
+    def update_data(
+        self,
+        pushes: Optional[List[PendingPush]] = None,
+        questions: Optional[List[PendingQuestion]] = None,
+    ) -> None:
+        """F-D1 단일 진입 — PendingDataCollector 출력 직접 소비."""
+        self.query_one("#pending_push", PendingPushBox).update_data(pushes or [])
+        self.query_one("#pending_q", PendingQBox).update_data(questions or [])
