@@ -191,3 +191,45 @@ cp -r .skills/_templates/behavioral-skill-template .skills/my-skill
 | `.skills/examples/safe-script-run/SKILL.md` | 예시: `--dry-run`과 키체인 시크릿으로 프로젝트 스크립트 안전 실행. |
 
 > 이들은 scaffolding입니다. 유지해도 되고 삭제해도 됩니다. 실제 프로젝트 스킬은 `.skills/` 아래 형제 폴더로 둡니다.
+
+---
+
+## 현재 등록된 스킬 (운영자 시각용 인덱스)
+
+> 표준 = `.skills/<skill-name>/SKILL.md` (1단 평면). 운영자가 한눈에 그룹 파악할 수 있도록 본 인덱스에 그룹별 정리. skill 추가 시 본 표 갱신.
+
+### 🔄 Workflow (워크플로우 의사결정)
+
+| 스킬 | 경로 | 한 줄 |
+|------|------|------|
+| tool-picker | `.skills/tool-picker/SKILL.md` | jOneFlow stage / mode / risk_level 영역 다음 단계 추천 |
+
+### 🤖 Automation (자동화 / 시그널 영역)
+
+| 스킬 | 경로 | 한 줄 |
+|------|------|------|
+| push-signal-watcher | `.skills/push-signal-watcher/SKILL.md` | bridge / Orc → 회의창 push 시그널 (watcher task + task-notification 패턴, v0.6.4 세션 28 검증) |
+
+### 💻 Terminal (터미널 운영)
+
+| 스킬 | 경로 | 한 줄 |
+|------|------|------|
+| ghostty-tmux-ops | `.skills/ghostty-tmux-ops/SKILL.md` | Ghostty + tmux 4 panes 영역 + @persona 페르소나 박음 + claude CLI 기동 표준 |
+
+### 📦 Templates / Examples (스킬 작성 영역 보조)
+
+| 경로 | 설명 |
+|------|------|
+| `.skills/_templates/behavioral-skill-template/SKILL.md` | 새 skill 시작 시 복사용 빈 템플릿 |
+| `.skills/examples/safe-script-run/SKILL.md` | 안전한 스크립트 실행 영역 예시 |
+
+---
+
+## 그룹 추가 방법
+
+운영자가 새 그룹 영역 박으려면:
+1. 본 README.md `## 현재 등록된 스킬` 섹션에 그룹 헤더 (`### 🆕 새 그룹`) 추가
+2. 그 그룹에 속하는 skill 1줄 박음
+3. 실제 디렉토리 영역 = `.skills/<skill-name>/SKILL.md` (1단 평면 그대로 — Claude 자동 발견 영역 보장)
+
+= **물리 영역은 평면, 운영자 시각 영역은 그룹별 인덱스**. 표준 + 직관 동시 박음.
