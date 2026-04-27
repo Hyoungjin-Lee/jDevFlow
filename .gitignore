@@ -1,3 +1,6 @@
+# ── Dashboard state (token data — local only, not committed) ────────────────
+.claude/dashboard_state/*.json
+
 # ── Secrets & credentials ──────────────────────────────────────────────────
 .env
 *.key
