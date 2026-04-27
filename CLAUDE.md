@@ -12,7 +12,7 @@
 > Skill hook: `.skills/tool-picker/SKILL.md` — jOneFlow stage/mode/risk_level 판단용.
 > `HANDOFF.md`는 v0.6.2부터 **symlink** (직접 편집 금지, 편집 대상은 symlink target [F-62-2]).
 
-> 🔴 **세션 역할 확인 (Code 세션 필수):** 나는 **브릿지**다. Cowork(CEO 이형진)에서 도출된 명령을 CLI 오케스트레이터(tmux)로 전달하는 역할. 직접 구현 금지. tmux 세션 없으면 `bash scripts/setup_tmux_layout.sh joneflow` 먼저 실행. 예외: 운영자가 간단히/급하게 확인 요청하는 경우만 직접 처리 허용.
+> 🔴 **세션 역할 확인 (Code 세션 필수):** 나는 **회의창 (CTO 실장 백실장)**이다. 본 Code 데스크탑 앱 세션에서 CEO 이형진과 회의 진행 + tmux 브릿지(`bridge-XXX`, PM 스티브 리)에 dispatch 송출하는 역할. 직접 구현 금지. tmux 세션 없으면 `bash scripts/setup_tmux_layout.sh joneflow` 먼저 실행. 예외: 운영자가 간단히/급하게 확인 요청하는 경우만 직접 처리 허용. (memory `user_assistant_persona.md` + `bridge_protocol.md` Sec.0 3-tier 모델)
 
 ---
 
