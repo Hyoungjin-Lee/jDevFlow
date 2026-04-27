@@ -23,30 +23,33 @@ STALE_MARK: str = "⚠"
 class PendingPushBox(Static):
     """push / commit 대기 박스 — read-only 표시 only."""
 
+    # Stage 10c — ``width: 1fr`` 추가 (PendingArea horizontal layout 안 box model resolve
+    # 정합. 미정의 시 ``resolve_box_models`` LayoutError 발생 영역).
     DEFAULT_CSS = """
     PendingPushBox {
         border: round $secondary;
         padding: 0 1;
         margin: 0 1;
         height: auto;
+        width: 1fr;
     }
     """
 
     EMPTY_LABEL = "✓ 대기 항목 없음"
 
     def __init__(self, **kwargs) -> None:
-        super().__init__(self._render_empty(), **kwargs)
+        super().__init__(self._format_empty(), **kwargs)
 
     def update_data(self, pushes: List[PendingPush]) -> None:
-        self.update(self._render(pushes))
+        self.update(self._format_content(pushes))
 
     @classmethod
-    def _render_empty(cls) -> str:
+    def _format_empty(cls) -> str:
         return f"┌── Pending Push/Commit ──┐\n│ {cls.EMPTY_LABEL}\n└─────────────┘"
 
-    def _render(self, pushes: List[PendingPush]) -> str:
+    def _format_content(self, pushes: List[PendingPush]) -> str:
         if not pushes:
-            return self._render_empty()
+            return self._format_empty()
         lines = ["┌── Pending Push/Commit ──┐"]
         for p in pushes[:MAX_VISIBLE_PUSHES]:
             mark = self._stale_mark(p.timestamp)
@@ -66,12 +69,14 @@ class PendingPushBox(Static):
 class PendingQBox(Static):
     """운영자 결정 대기 Q 박스 — priority 정렬, read-only."""
 
+    # Stage 10c — ``width: 1fr`` 추가 (PendingArea horizontal layout box model 정합).
     DEFAULT_CSS = """
     PendingQBox {
         border: round $warning;
         padding: 0 1;
         margin: 0 1;
         height: auto;
+        width: 1fr;
     }
     """
 
@@ -79,18 +84,18 @@ class PendingQBox(Static):
     _PRIORITY_ORDER = {"critical": 0, "high": 1, "medium": 2, "low": 3}
 
     def __init__(self, **kwargs) -> None:
-        super().__init__(self._render_empty(), **kwargs)
+        super().__init__(self._format_empty(), **kwargs)
 
     def update_data(self, questions: List[PendingQuestion]) -> None:
-        self.update(self._render(questions))
+        self.update(self._format_content(questions))
 
     @classmethod
-    def _render_empty(cls) -> str:
+    def _format_empty(cls) -> str:
         return f"┌── Pending Q ──┐\n│ {cls.EMPTY_LABEL}\n└─────────────┘"
 
-    def _render(self, questions: List[PendingQuestion]) -> str:
+    def _format_content(self, questions: List[PendingQuestion]) -> str:
         if not questions:
-            return self._render_empty()
+            return self._format_empty()
         sorted_qs = sorted(
             questions, key=lambda q: self._PRIORITY_ORDER.get(q.priority, 99)
         )

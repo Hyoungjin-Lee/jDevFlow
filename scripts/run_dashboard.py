@@ -3,17 +3,29 @@
 
 textual 0.50+ 기반 read-only TUI. 18명 페르소나 + PM 1명 = 19명 실시간 가시화 (F-X-2 영구).
 
-Stage 10b — M2~M5 wiring 통합 본문 (Stage 10 16def78 → Stage 10b followup).
-``scripts/dashboard/`` 모듈 (M2 collector / M3 renderer / M4 pending+notifier / M5 personas)
-import + 인스턴스 생성 + 1초 polling worker → 위젯 갱신 + 알림 발송 wiring.
+Stage 10b — M2~M5 wiring 통합 본문 (Stage 10 16def78 → Stage 10b a891d97 followup).
+Stage 10c — ``scripts/dashboard.py`` ↔ ``scripts/dashboard/`` (패키지) 이름 충돌 해소.
+본 파일은 ``scripts/run_dashboard.py``로 이전 + ``scripts/__init__.py`` 신규 박음.
+직접 실행 진입 시 ``sys.path``에 PROJECT_ROOT 자동 등록 → ``from scripts.dashboard.X``
+절대 import 안전 동작.
 
-진입: ``venv/bin/python3 scripts/dashboard.py`` 또는 슬래시 ``/dashboard``.
+진입: ``venv/bin/python3 scripts/run_dashboard.py`` 또는 슬래시 ``/dashboard``.
 종료: ``q``.
 """
 from __future__ import annotations
 
+import os
+import sys
 import threading
 from typing import Dict, List
+
+# Stage 10c — 직접 실행 진입 시 PROJECT_ROOT를 ``sys.path``에 추가하여 ``scripts.*``
+# 절대 import 안전 동작. ``python -m scripts.run_dashboard`` 또는 외부 import 진입 시
+# 이미 root 박혀 있어 idempotent (조건부 insert).
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_PROJECT_ROOT = os.path.dirname(_HERE)
+if _PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, _PROJECT_ROOT)
 
 from textual.app import App, ComposeResult
 from textual.binding import Binding
