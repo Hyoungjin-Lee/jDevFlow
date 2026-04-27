@@ -27,12 +27,28 @@ cd "$ROOT"
 # shellcheck disable=SC1091
 . "$ROOT/scripts/lib/personas.sh"
 
-# pane title에서 페르소나명 추출.
-# spawn_team.sh가 "이종선 [PL·high]" 포맷으로 박는다. 첫 '['앞까지가 페르소나명.
-# 호환: 단순 페르소나명만 박힌 pane도 OK.
+# pane title 또는 @persona user option에서 페르소나명 추출.
+# spawn_team.sh가 "이종선 [PL·high]" 포맷으로 적용. 첫 '['앞까지가 페르소나명.
+# 호환: 단순 페르소나명만 적용된 pane도 OK.
 _extract_persona() {
     # sed로 '[ 이후 모두 제거 + 양쪽 공백 trim.
     printf '%s' "$1" | sed -E 's/[[:space:]]*\[.*//; s/^[[:space:]]+//; s/[[:space:]]+$//'
+}
+
+# R-3 reviewer 정정 — bridge_protocol Sec.4 헌법 표 정합.
+# claude CLI auto-rename 후에는 pane_title이 변경됨. 영구 식별자 = @persona user option.
+# lookup 우선순위: @persona → pane_title (fallback).
+_resolve_persona() {
+    _rp_target="$1"
+    # 1. @persona user option 우선 (spawn_team.sh가 set-option -p로 영구 적용).
+    _rp_v=$(tmux show-option -pqv -t "$_rp_target" @persona 2>/dev/null || echo "")
+    if [ -n "$_rp_v" ]; then
+        printf '%s' "$_rp_v"
+        return 0
+    fi
+    # 2. pane_title fallback (@persona 미설정 환경 호환).
+    _rp_t=$(tmux display-message -t "$_rp_target" -p "#{pane_title}" 2>/dev/null || echo "")
+    _extract_persona "$_rp_t"
 }
 
 _start_pane() {
@@ -57,10 +73,10 @@ _start_pane() {
         fi
     fi
 
-    # 페르소나 / 모델 / effort lookup (title 기반).
+    # 페르소나 / 모델 / effort lookup — R-3 reviewer 정정 (@persona 우선 + pane_title fallback).
     local pane_title persona model effort role
     pane_title=$(tmux display-message -t "$pane_target" -p "#{pane_title}" 2>/dev/null || echo "")
-    persona=$(_extract_persona "$pane_title")
+    persona=$(_resolve_persona "$pane_target")
     model=$(persona_model "$persona")
     effort=$(persona_effort "$persona")
     role=$(persona_role "$persona")

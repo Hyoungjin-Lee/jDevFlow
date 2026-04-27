@@ -248,15 +248,25 @@ _run "tmux select-layout -t '$WIN_TARGET' main-vertical"
 # 7. 왼쪽 pane 너비 비율 설정.
 _run "tmux resize-pane -t '$WIN_TARGET.$P0' -x \$((\$(tmux display-message -t '$WIN_TARGET' -p '#{window_width}') * $MAIN_PANE_WIDTH_PCT / 100))"
 
-# 8. 페르소나 라벨 박기 (select-pane -T).
+# 8. 페르소나 라벨 적용 — R-1/R-2 reviewer 정정 (bridge_protocol Sec.4 헌법 표 정합).
+#    set-option -p @persona '<페르소나명>'  ← claude CLI auto-rename 면역 (영구 보존)
+#    select-pane -T '<title>'              ← 호환용 (@persona 미감지 환경 fallback)
+#    pane-border-format은 #{@persona} 사용 (아래 9번 단계).
+_run "tmux set-option -p -t '$WIN_TARGET.$P0' @persona '$PL_NAME'"
+_run "tmux set-option -p -t '$WIN_TARGET.$P1' @persona '$M1_NAME'"
+_run "tmux set-option -p -t '$WIN_TARGET.$P2' @persona '$M2_NAME'"
+_run "tmux set-option -p -t '$WIN_TARGET.$P3' @persona '$M3_NAME'"
 _run "tmux select-pane -t '$WIN_TARGET.$P0' -T '$PL_TITLE'"
 _run "tmux select-pane -t '$WIN_TARGET.$P1' -T '$M1_TITLE'"
 _run "tmux select-pane -t '$WIN_TARGET.$P2' -T '$M2_TITLE'"
 _run "tmux select-pane -t '$WIN_TARGET.$P3' -T '$M3_TITLE'"
 
 # 9. pane-border-status + format 설정 (세션 옵션 = -g 없이 세션 한정).
+#    R-2 reviewer 정정: pane-border-format은 #{@persona} 우선
+#    + #{pane_title} fallback (@persona 미설정 호환). claude CLI auto-rename 후에도
+#    @persona는 영구 보존되므로 페르소나 라벨이 그대로 표시됨.
 _run "tmux set-option -t '$SESSION_NAME' pane-border-status top"
-_run "tmux set-option -t '$SESSION_NAME' pane-border-format ' #{pane_title} '"
+_run "tmux set-option -t '$SESSION_NAME' pane-border-format ' #{?@persona,#{@persona},#{pane_title}} '"
 
 # 10. PL pane 활성화.
 _run "tmux select-pane -t '$WIN_TARGET.$P0'"
