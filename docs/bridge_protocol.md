@@ -63,7 +63,8 @@
 | send-keys 패턴 | `send-keys '<msg>'` → `sleep 0.3` → `send-keys Enter` (분리 필수) |
 | dispatch md 위치 | `dispatch/<YYYY-MM-DD>_<버전>_<작업명>.md` |
 | 응답 톤 | 한국어 + 부드러운 ~네요/~죠 체 |
-| 오케 안 split panes (필수) | Orc-XXX-<plan\|design\|dev> 세션 안 split panes 4개 (오케 1 + 팀원 3). **왼쪽=오케 PL** 큰 pane / **오른쪽=팀원 3명 세로 stack**. `pane-border-status top` + `pane-border-format ' #T '` + `select-pane -T <페르소나명>` (조직도 = operating_manual.md Sec.1.2 그대로, 예: 박지영-기획PL / 장그래-drafter / 김민교-reviewer / 안영이-finalizer). Agent tool 분담 옵션 폐기 (모니터링 가시성 위반). 운영자 헌법. (Sec.6 사고 13) |
+| 오케 안 split panes (필수) | Orc-XXX-<plan\|design\|dev> 세션 안 split panes 4개 (오케 1 + 팀원 3). **왼쪽=오케 PL** 큰 pane / **오른쪽=팀원 3명 세로 stack**. `pane-border-status top` + `pane-border-format ' #{@persona} '` + `set-option -p @persona '<페르소나명>'` (claude CLI auto-rename 면역). 페르소나 = operating_manual.md Sec.1.2 그대로 (예: 박지영-기획PL / 장그래-drafter / 김민교-reviewer / 안영이-finalizer). Agent tool 분담 옵션 폐기 (모니터링 가시성 위반). 운영자 헌법. (Sec.6 사고 13) |
+| **dispatch 작성 정책 (필수, 헌법, 모든 프로세스 동일 적용)** | **A 패턴 = drafter → reviewer → finalizer 3단계** (모든 stage / 모든 팀 동일): (1) **drafter** 초안 작성 (≤ 800줄). (2) **reviewer** 검토 + **본인이 직접 수정** (drafter 본문 정정 권한 + R-N 마커 trail, ≤ 600줄). reviewer 수정한 본문을 finalizer에 넘김. (3) **finalizer** 마감 doc (verdict + Score + AC + 검증 trail + 결정, ≤ 500줄, **본문 작성 X**) — reviewer 수정본 받아서 마감만. (4) **verbatim 흡수 강제 X** — drafter 본문 그대로 복사 + inline 정정 패턴 금지 (다음 사람이 위쪽 본문 읽으면 정정 못 보고 잘못 적용 = 본 v0.6.4 Stage 5 사고). detail은 drafter+review에 두고 final은 reference만. **적용 범위:** 기획(Stage 2~4) / 디자인(Stage 6~7) / 개발(Stage 8 구현 / Stage 9 코드 리뷰 / Stage 10 디버그 / Stage 11 검증) / QA(Stage 12) / release(Stage 13) 모두 동일. v0.6.5 이후 신규 프로세스도 동일. (Sec.6 사고 14, 세션 28 운영자 결정 — 단순함이 정공법) |
 
 ## 5. 표준 진입 절차 (회의창 1메시지 자동화)
 
@@ -249,6 +250,17 @@ done
   3. **위반 발견 시 즉시 박지영/우상호/공기성에게 C-c + tmux split panes 재시작** (사고 12 절차 활용).
   4. **자가 점검 8항목 (Sec.8) 추가**: "오케 안 split 4 panes + 페르소나 이름 박혔나?" 매 응답 점검.
 - 본 사고 = 헌법 영역. 위반 시 본 파일 사고 사례에 1건 추가 + 운영자 사과 (마지막 줄 정책).
+
+### 사고 14: drafter v2 단계 누락 + verbatim 흡수 + inline 정정 패턴 (롤 본분 역전 — 헌법)
+- 증상: 본 v0.6.4 Stage 5 dispatch가 "drafter v1 verbatim 흡수 + R-N inline 정정 + Score + AC + Q + F-D + Stage 5 이월 + boundary + verdict" 강제. finalizer 현봉식이 1,682줄 본문 작성 (drafter v1 1,355줄보다 큼) = 17분 걸림. drafter v2 단계 누락 = 다음 사람이 위쪽 본문 읽으면 정정 못 보고 잘못 적용 가능 (운영자 직관 박힘).
+- 운영자: "verbatim 흡수한거에 정정만 inline으로 추가 하면 다음 사람이 보면 또 뭐가 맞는건지도 모르자나 / 위에만 쭈욱 읽다가 추가된거 안보고 진행하면 다 망치는거잖아 / finalizing 업무 자체가 실제 현업에서도 이렇게 오래 걸릴 일이냐고 / 메모리에만 박으면 새로운 세션 가면 또 안되잖아"
+- 정답 (헌법, A 패턴 — 모든 프로세스 동일 적용 / 세션 28 운영자 결정):
+  1. **A 패턴 강제**: drafter 초안 작성 → **reviewer 검토 + 본인이 직접 수정 (drafter 본문 정정 권한 + R-N 마커 trail)** → reviewer 수정본을 **finalizer가 받아서 마감 doc 작성** (verdict + Score + AC + 결정, 본문 작성 X). 단순함 정공법 — drafter v2 단계 없음 (review v2/v3 무한 루프 위험 회피). 모든 stage / 모든 팀 (기획 / 디자인 / 개발 / QA / release) 동일.
+  2. **finalizer = 결정 doc 마감자**: verdict / Score / AC / Q해소 / F-D / boundary / 통합 trail. ≤ 500줄. **본문 작성 X**. detail은 drafter v2 + review에 두고 final은 reference만 (예: `상세 = docs/03_design/<버전>_technical_design.md 참조`).
+  3. **verbatim 흡수 강제 X**: dispatch에 "drafter v1 verbatim 흡수" 박지 X. 본문 그대로 복사 + 정정 inline 추가 패턴 금지.
+  4. **dispatch 작성 시 회의창 의무 명시 (Sec.4 표 "dispatch 작성 정책")**: drafter v2 단계 + finalizer 결정 doc + verbatim X + 길이 임계 (drafter ≤ 800 / review ≤ 600 / final ≤ 500).
+  5. **자가 점검 9항목 추가 후보**: "dispatch brief에 drafter v2 단계 박혔나? finalizer 본문 작성 강제 X 박혔나?" 매 응답 점검 (v0.6.5 정밀화).
+- 본 사고 = 헌법 영역. 위반 시 본 파일 사고 사례에 1건 추가 + 운영자 사과 (마지막 줄 정책). v0.6.5 컨텍스트 엔지니어링 영역에서 본격 spec v2로 정밀화 (롤 본분 정의 + 자동 강제 메커니즘).
 
 ## 10. 결정해야 할 것 vs 작업해야 할 것 — 분리
 
