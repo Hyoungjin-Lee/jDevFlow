@@ -1,0 +1,92 @@
+/* M3 — boundary 6/6 본문 (design_final Sec.13).
+ *
+ * Boundary slot #1: 색상 11종 textual CSS App{}.
+ * Boundary slot #2: margin / padding / border round.
+ *
+ * 11 색상 변수 (textual default theme 정합):
+ *   $primary, $secondary, $accent, $success, $warning, $error,
+ *   $surface, $panel, $background, $boost, $foreground.
+ */
+
+App {
+    background: $background;
+    color: $foreground;
+}
+
+DashboardRenderer {
+    layout: vertical;
+    height: 1fr;
+    background: $surface;
+}
+
+DashboardRenderer > #team_grid {
+    layout: horizontal;
+    height: 1fr;
+    margin: 0 0 1 0;
+    padding: 1;
+}
+
+TeamRenderer {
+    border: round $primary;
+    padding: 0 1;
+    margin: 0 1;
+    width: 1fr;
+    height: 1fr;
+    background: $panel;
+}
+
+.team-title {
+    color: $accent;
+    text-style: bold;
+    margin: 0;
+    padding: 0 1;
+}
+
+.team-content {
+    color: $foreground;
+    padding: 0 1;
+}
+
+PMStatusBar {
+    background: $primary 20%;
+    color: $foreground;
+    height: 1;
+    padding: 0 1;
+    border-bottom: heavy $primary;
+}
+
+PendingPushBox {
+    border: round $secondary;
+    padding: 0 1;
+    margin: 0 1;
+    background: $boost;
+}
+
+PendingQBox {
+    border: round $warning;
+    padding: 0 1;
+    margin: 0 1;
+    background: $boost;
+}
+
+.status-working {
+    color: $success;
+    text-style: bold;
+}
+
+.status-idle {
+    color: $warning;
+}
+
+.status-stale {
+    color: $error;
+    text-style: italic;
+}
+
+.progress-bar {
+    color: $primary;
+}
+
+.sparkline {
+    color: $accent;
+}
