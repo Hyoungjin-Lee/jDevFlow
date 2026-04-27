@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 > v0.6.4 진행 중 — plugin-cc Codex 자동 호출 고도화 (BR-002 후속, 운영자 결정 #15). tmux pane-base-index 환경 호환성 보강. ~/.claude/CLAUDE.md frontmatter 일반화.
+> v0.6.6 인수 영역 — R3 active/archive 디렉터리 실제 변경 (paper plan 단계만 v0.6.5 종결, 실제 mv는 별도 라운드). pptx skill 구현 (`.skills/pptx-storyboard/SKILL.md`). settings.json schema v0.5 정밀화 (16-stage stage_assignments 매핑).
+
+## [0.6.5] - 2026-04-27
+
+> v0.6.5 Lite MVP — 6건 의제 종결 (R1 docs / R2 scripts / R3 paper plan). Stage 1→8(R1·R2·R3)→12→13 압축. A 패턴(drafter→reviewer→finalizer) 적용 + 인사 변경 반영(박지영 CTO실장 승진 / 이종선 기획PL 신규 / 이희윤 PM 신규 / 백현진·스티브 리 퇴사) + 16-stage 매트릭스 채택 + Codex 독립 감사 영역(Strict 한정) 정의.
+
+### R1 — docs 영역 (의제 1·4·8)
+- **의제 1 (16-stage 정합):** `docs/operating_manual.md` Sec.5 + `docs/bridge_protocol.md` Sec.0.1 + `CLAUDE.md` Sec.2 — 16-stage 매트릭스 + 13-stage legacy 보존 + 페르소나 매핑.
+- **의제 4 (페르소나 MBTI + pptx skill):** `docs/operating_manual.md` Sec.1.2.1 신규 — 18명 페르소나 MBTI + 추가 역량 표 (안영이 PPT 스토리보드 / 장그래 카피라이팅 / 장원영 트렌드 디자인).
+- **의제 8 (컨텍스트 엔지니어링):** `docs/context_loading.md` 신규 (181줄) — Stage별 선별 로드 + MD 분량 임계 + 가이드.
+- **commit trail:** drafter `373f935` / finalizer `23862ba` (R-1~R-8 정정 trail 인수).
+
+### R2 — scripts 영역 (의제 3·7)
+- **의제 3 (Stop hook 완료 시그널 구조):** `scripts/completion_signal.sh` 신규 + `scripts/hook_stop.sh` 확장. 완료 시그널 정형 포맷 정의. JSONL 기반 상태 감지 통합 (v0.6.4 capture-pane 제거 정책 유지).
+- **의제 7 (하위 폴더 일괄 정합):** `docs/file_sync_trail_v0.6.5.md` 신규 (220줄) — scripts/dispatch/.claude/.skills 정합 권고 trail.
+- **commit trail:** finalize `3a4f80e` (단일 commit 변형 — A 패턴 분리 차후 라운드 강제) / R2 마감 보강 `120c666` (HANDOFF R2 섹션 추가).
+- **누락 보강:** `4c806d9` `.claude/settings.json` `PermissionRequest` hook 등록 (Stage 12 QA에서 발견).
+
+### R3 — paper plan (의제 2)
+- **의제 2 (active/archive 패턴 전체 확장):** `docs/r3_active_archive_plan.md` 신규 (306줄) — handoffs/dispatch active·archive 정책 + 브릿지 버전 연동 + 관련 스크립트 갱신 권고. **paper plan 단계만 종결, 디렉터리 실제 변경 = v0.6.6 영역.**
+- **commit trail:** drafter `b52ed05`. reviewer/finalizer 보류 (운영자 사전 승인 영역).
+
+### 인사 변경 (`1954f50`)
+- 박지영: 기획팀 PL → CTO 실장 (승진).
+- 이종선: 기획팀 PL 신규 / 이희윤: PM 브릿지 신규.
+- 백현진(전 CTO 실장) / 스티브 리(전 PM 브릿지) 퇴사.
+
+### Stage 12 QA (가볍게)
+- 6건 산출 파일 존재 + 분량 임계 PASS.
+- HANDOFF R1·R2 마감 기록 박힘 + R3 paper plan 종결 기록 추가.
+- 3중 검증(capture+디스크+git log) PASS / 자가 점검 11항목 PASS.
 
 ## [0.6.3] - 2026-04-27
 
