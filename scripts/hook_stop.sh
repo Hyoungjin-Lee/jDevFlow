@@ -16,6 +16,16 @@ echo "[$(date +%H:%M:%S)] hook_stop called TMUX_PANE=${TMUX_PANE:-NONE}" >> /tmp
 STDIN_DATA="$(cat)"
 echo "[$(date +%H:%M:%S)] stdin: ${STDIN_DATA:0:200}" >> /tmp/joneflow_hook_debug.log
 
+# v0.6.6 의제 #2 — Stop hook chain → completion_signal.sh
+# CLAUDE_COMPLETION_STAGE 환경변수가 설정된 경우 stage 완료 시그널 파일 기록.
+# token 누적/세션명 추출 등 이후 단계 조기 exit 영향을 받지 않도록 hook 진입 직후 발화.
+# completion_signal.sh 내부에 STAGE/PHASE 가드 존재 — env 미설정 세션은 no-op.
+COMPLETION_SIGNAL="${PROJECT_ROOT}/scripts/completion_signal.sh"
+if [ -n "${CLAUDE_COMPLETION_STAGE:-}" ] && [ -x "${COMPLETION_SIGNAL}" ]; then
+    echo "[$(date +%H:%M:%S)] hook_stop chain: completion_signal stage=${CLAUDE_COMPLETION_STAGE} phase=${CLAUDE_COMPLETION_PHASE:-} actor=${CLAUDE_COMPLETION_ACTOR:-}" >> /tmp/joneflow_hook_debug.log
+    "${COMPLETION_SIGNAL}" >/dev/null 2>&1 || true
+fi
+
 # tmux 세션명 추출 — hook은 claude CLI 실행 pane 컨텍스트에서 돌아감.
 if [ -n "${TMUX_PANE:-}" ]; then
     SESSION_NAME="$(tmux display-message -t "${TMUX_PANE}" -p '#{session_name}' 2>/dev/null || true)"
