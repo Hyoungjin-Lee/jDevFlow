@@ -3,17 +3,17 @@
 - F-D1 SRP — Pending Push/Q 수집만. ``PersonaDataCollector``는 M2 영역 침범 0건.
 - F-D4 sync ``def`` 전면, ``async def`` 0건.
 - F-X-2 read-only 영구 — write 명령 0건 (AC-M4-N9). git/dispatch md/tmux 모두 read-only.
+- Stage 10 M-1 fix — ``import subprocess`` 제거 → ``GitAdapter`` 위임 (AC-T-4 = 2).
 """
 from __future__ import annotations
 
 import re
-import subprocess
 from datetime import datetime
 from pathlib import Path
 from typing import List, Optional, Tuple
 
 from .models import PendingPush, PendingQuestion
-from .tmux_adapter import TmuxAdapter
+from .tmux_adapter import GitAdapter, TmuxAdapter
 
 
 # 운영자 결정 Q 패턴 — dispatch md 안 ``**Q1**`` / ``**Q-NEW-1**`` / ``**Q-M2-3**`` 등.
@@ -30,8 +30,6 @@ Q_CATEGORY_PATTERN = re.compile(
 # git ahead — ``git status -sb`` 헤더의 ``[ahead N]``.
 GIT_AHEAD_PATTERN = re.compile(r"\[ahead\s+(\d+)\]")
 
-GIT_TIMEOUT_SEC = 3.0
-
 
 class PendingDataCollector:
     """M4 sync polling collector — F-D1 SRP M4 영역."""
@@ -43,9 +41,11 @@ class PendingDataCollector:
         tmux: Optional[TmuxAdapter] = None,
         dispatch_dir: Optional[Path] = None,
         project_root: Optional[Path] = None,
+        git: Optional[GitAdapter] = None,
     ) -> None:
         self.tmux = tmux or TmuxAdapter()
         self.project_root = (project_root or Path.cwd()).resolve()
+        self.git = git or GitAdapter(project_root=self.project_root)
         candidate = dispatch_dir or self.DEFAULT_DISPATCH_DIR
         self.dispatch_dir = (
             candidate if candidate.is_absolute()
@@ -76,7 +76,7 @@ class PendingDataCollector:
         return out
 
     def _git_ahead_count(self) -> int:
-        result = self._git_run(["git", "status", "-sb"])
+        result = self.git.run(["git", "status", "-sb"])
         if result is None:
             return 0
         first = result.splitlines()[0] if result else ""
@@ -84,7 +84,7 @@ class PendingDataCollector:
         return int(match.group(1)) if match else 0
 
     def _read_recent_commits(self, count: int) -> List[Tuple[str, str, str]]:
-        result = self._git_run(
+        result = self.git.run(
             ["git", "log", f"-{count}", "--format=%h\t%s\t%an"]
         )
         if result is None:
@@ -95,19 +95,6 @@ class PendingDataCollector:
             if len(parts) == 3:
                 commits.append((parts[0], parts[1], parts[2]))
         return commits
-
-    def _git_run(self, argv: List[str]) -> Optional[str]:
-        try:
-            res = subprocess.run(
-                argv, capture_output=True, text=True,
-                timeout=GIT_TIMEOUT_SEC, check=False,
-                cwd=str(self.project_root),
-            )
-        except (FileNotFoundError, subprocess.TimeoutExpired, OSError):
-            return None
-        if res.returncode != 0:
-            return None
-        return res.stdout
 
     # ------------------------------------------------------------------
     # Pending Question (dispatch md regex)

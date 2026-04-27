@@ -41,13 +41,23 @@ class TokenHook:
             str(self._project_root).encode("utf-8")
         ).hexdigest()[:8]
 
-    def get_tokens_k(self, pane_name: str) -> float:
-        """1순위 hook JSON / 2순위 capture-pane regex / 3순위 0.0."""
+    def get_tokens_k(
+        self,
+        pane_name: str,
+        prefetched_lines: Optional[list] = None,
+    ) -> float:
+        """1순위 hook JSON / 2순위 capture-pane regex / 3순위 0.0.
+
+        Stage 10 M-2 fix — ``prefetched_lines`` 인입 시 capture-pane 호출 0건
+        (PersonaDataCollector batch 결과 재사용). None일 때만 기존 폴백 호출.
+        """
         session = pane_name.split(":")[0] if ":" in pane_name else pane_name
         hook_value = self._read_hook(session)
         if hook_value is not None:
             return hook_value
-        regex_value = self._regex_capture(pane_name)
+        regex_value = self._regex_from_lines(prefetched_lines) if prefetched_lines else None
+        if regex_value is None and prefetched_lines is None:
+            regex_value = self._regex_capture(pane_name)
         if regex_value is not None:
             return regex_value
         return 0.0
@@ -79,6 +89,10 @@ class TokenHook:
             lines = self.tmux.capture_pane(pane_name, lines=100)
         except Exception:
             return None
+        return self._regex_from_lines(lines)
+
+    def _regex_from_lines(self, lines: Optional[list]) -> Optional[float]:
+        """이미 capture된 lines 재사용 — Stage 10 M-2 fix (subprocess 호출 0건)."""
         if not lines:
             return None
         match = self.REGEX.search("\n".join(lines))

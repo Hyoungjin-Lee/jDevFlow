@@ -79,11 +79,33 @@ class PersonaDataCollector:
         self._last_known_states: Dict[str, PersonaState] = {}
 
     def fetch_all_personas(self) -> List[PersonaState]:
-        """18명 모든 페르소나 상태 — tmux 미존재도 idle yield (Q5 통합)."""
+        """18명 모든 페르소나 상태 — tmux 미존재도 idle yield (Q5 통합).
+
+        Stage 10 M-2 fix — 1 polling 사이클당 subprocess.run 호출:
+          - ``list_sessions``: 1
+          - ``capture_panes_batch`` (활성 세션 pane 일괄): 1
+          - 합계 ≤ 2 spawn/sec (기존 18~33 spawn/sec).
+        """
         active_sessions: Set[str] = set(self.tmux.list_sessions())
+
+        # M-2 batch capture — 활성 pane만 1회 subprocess로 일괄 capture.
+        active_panes: List[str] = []
+        for name, team in PERSONAS_18:
+            pane_name = self._persona_to_pane(name, team)
+            if pane_name is None:
+                continue
+            session = pane_name.split(":")[0]
+            if session in active_sessions:
+                active_panes.append(pane_name)
+        # 100 lines = token regex(100) + task prompt(50)의 superset.
+        pane_lines: Dict[str, List[str]] = (
+            self.tmux.capture_panes_batch(active_panes, lines=100)
+            if active_panes else {}
+        )
+
         out: List[PersonaState] = []
         for name, team in PERSONAS_18:
-            state = self._infer_state(name, team, active_sessions)
+            state = self._infer_state(name, team, active_sessions, pane_lines)
             self._last_known_states[name] = state
             out.append(state)
         return out
@@ -102,7 +124,11 @@ class PersonaDataCollector:
     # ------------------------------------------------------------------
 
     def _infer_state(
-        self, name: str, team: str, active_sessions: Set[str]
+        self,
+        name: str,
+        team: str,
+        active_sessions: Set[str],
+        pane_lines: Dict[str, List[str]],
     ) -> PersonaState:
         """Q5 idle 통합 + R-1 last_update 보존 — design_final Sec.7.2 verbatim."""
         pane_name = self._persona_to_pane(name, team)
@@ -119,7 +145,9 @@ class PersonaDataCollector:
 
         last_change = self.tmux.last_pane_change(pane_name)
         elapsed = (datetime.now() - last_change).total_seconds()
-        tokens_k = self.token_hook.get_tokens_k(pane_name)
+        # M-2 fix — pre-fetched lines를 token_hook에 전달하여 capture-pane 추가 호출 0건.
+        cached_lines = pane_lines.get(pane_name)
+        tokens_k = self.token_hook.get_tokens_k(pane_name, prefetched_lines=cached_lines)
 
         if elapsed > IDLE_THRESHOLD_SEC:
             # T 임계 초과 = idle. R-1 — tmux 마지막 변화 시각 보존.
@@ -130,7 +158,7 @@ class PersonaDataCollector:
 
         return PersonaState(
             name=name, team=team, status="working",
-            task=self._infer_task(name, pane_name),
+            task=self._infer_task(name, cached_lines),
             tokens_k=tokens_k, last_update=last_change,
         )
 
@@ -141,19 +169,28 @@ class PersonaDataCollector:
             return None
         return f"{session}:{pane_idx}"
 
-    def _infer_task(self, name: str, pane_name: str) -> Optional[str]:
-        """A-1 prompt > A-3 로그 > A-2 last_known_task (F-X-7-#5 + R-2 정정)."""
-        last_lines = self.tmux.capture_pane(pane_name, lines=50)
+    def _infer_task(
+        self, name: str, last_lines: Optional[List[str]]
+    ) -> Optional[str]:
+        """A-1 prompt > A-3 로그 > A-2 last_known_task (F-X-7-#5 + R-2 정정).
+
+        Stage 10 M-2 fix — pre-fetched lines 인입 (subprocess 0건). batch에서 가져온
+        100줄 영역에서 마지막 50줄 effective window 활용.
+        """
+        if last_lines is None:
+            last_lines = []
+        # 마지막 50줄 effective window (기존 capture_pane(lines=50) 정합).
+        scan_lines = last_lines[-50:] if len(last_lines) > 50 else last_lines
 
         # A-1: prompt 행 ">" 이후 텍스트 (5~80자).
-        for line in reversed(last_lines):
+        for line in reversed(scan_lines):
             m = re.search(r"^\s*>\s*(.{5,80})", line)
             if m:
                 return self._normalize_task(m.group(1))
 
         # A-3: 로그 라인 — version / Stage / S\d.
         log_pat = re.compile(r"(v\d+\.\d+\.\d+\S*|Stage \d+|S\d+ \S+)")
-        for line in reversed(last_lines):
+        for line in reversed(scan_lines):
             m = log_pat.search(line)
             if m:
                 return m.group(1).strip()
