@@ -2,7 +2,9 @@
 version: v0.6.6
 date: 2026-04-27
 authored_by: 카더가든 (개발팀 백엔드 drafter, v0.6.6 의제 #6)
-status: draft (drafter Round A)
+reviewed_by: 최우영 (개발팀 reviewer, v0.6.6 Round A)
+status: reviewed (reviewer Round A — R-1 ~ R-6 직접 정정 적용)
+origin: docs/bridge_protocol.md Sec.4.1 표 "dispatch 작성 정책" + Sec.6 사고 14 (drafter v2 단계 누락 + verbatim 흡수 + inline 정정)
 ---
 
 # A 패턴 체크리스트 — drafter / reviewer / finalizer 분리 commit 헌법
@@ -10,6 +12,8 @@ status: draft (drafter Round A)
 > **목적:** A 패턴(drafter → reviewer 직접 수정 → finalizer 마감)에서 **3 commit 분리**를 강제하기 위한 운영 헌법 + 자체 점검 목록.
 > **배경:** v0.6.5 R2에서 reviewer가 drafter 권고를 단일 commit에 묶어 처리하는 변형이 발생 → 이력 추적 곤란 + reviewer 수정 영역과 drafter 초안 영역의 경계 소실. 본 문서로 재발 방지 헌법화.
 > **적용 범위:** Standard / Strict 모드 + Lite 모드 중 multi-actor 산출이 필요한 의제.
+>
+> **R-1 (reviewer 정정 — 출처 명시):** 본 헌법의 1차 출처 = `docs/bridge_protocol.md` Sec.4.1 표 "dispatch 작성 정책 (필수, 헌법, 모든 프로세스 동일 적용)" 행. 사고 사례 출처 = `docs/bridge_protocol.md` Sec.6 사고 14 "drafter v2 단계 누락 + verbatim 흡수 + inline 정정 패턴 (롤 본분 역전 — 헌법)". 본 체크리스트는 그 헌법의 운영 체크리스트화이며, **bridge_protocol과 충돌 시 bridge_protocol 우선** (specificity: 헌법 본문 > 운영 가이드).
 
 ---
 
@@ -42,6 +46,27 @@ status: draft (drafter Round A)
 - 단일 commit 발견 → reviewer/finalizer가 git revert + 분리 재작업.
 - 회의창 보고 시 위반 사례 기록 (R2 변형 등).
 - 반복 위반 → 다음 라운드 dispatch에 strict mode 강제 + 자체 점검 의무화.
+
+### 2.3 R2 사고 영역 정합 (R-2 reviewer 보강)
+
+> **R-2 (reviewer 정정 — R2 사고 컨텍스트 명시):** drafter §2.2가 "R2 변형"을 추상적으로만 언급 → 재발 방지 효과 약화. 실제 사고 컨텍스트 명시.
+
+**사고 발생 컨텍스트 (v0.6.5 R2):**
+- **시점:** 2026-04-27, v0.6.5 Lite MVP R2 라운드 finalizer 단계 (commit 120c666 직전).
+- **변형 패턴:** reviewer가 drafter 권고 plan(`docs/r3_active_archive_plan.md` 등) 검토 후, 별도 reviewer commit 없이 finalizer가 R2 산출 + 갱신을 단일 commit에 묶음.
+- **결과:** drafter SHA → reviewer 수정 영역 → finalizer 마감 영역 경계 소실. 다음 라운드(v0.6.6) 진입 시 "어디까지가 drafter 권고이고 어디부터 reviewer 정정인지" 추적 불능.
+- **detection trail:** `git log --oneline c48b580..HEAD | grep -E "^[a-f0-9]+ (drafter|reviewer|finalizer)"` 결과로 commit message 포맷 일관성 점검.
+
+**3 commit 분리 강제 = 이력 추적성 보존 = R2 변형 재발 방지 헌법.**
+
+### 2.4 verbatim 흡수 강제 X (R-3 reviewer 신규 — 사고 14 헌법화)
+
+> **R-3 (reviewer 정정 — 누락 헌법 보강):** drafter 본문에 "verbatim 흡수 강제 X" 헌법(bridge_protocol Sec.6 사고 14의 핵심)이 누락. v0.6.4 Stage 5 사고(finalizer 1,682줄 본문 작성, drafter v1 1,355줄 초과) 재발 방지 차원에서 §2.4 신규.
+
+1. **verbatim 흡수 금지 (헌법):** finalizer는 drafter 본문을 그대로 복사 + inline 정정 추가하는 패턴 금지. 다음 사람이 위쪽 본문만 읽으면 정정을 못 보고 잘못 적용 위험.
+2. **detail 위치 헌법:** 본문 detail = drafter + reviewer 산출에 둔다. finalizer 마감 doc은 **reference만** (verdict + Score + AC + 검증 trail + 결정).
+3. **분량 임계 신호:** finalizer doc이 reviewer 수정본 분량을 초과하면 verbatim 흡수 변형 의심 → 분량 임계 위반 (`bridge_protocol.md` Sec.4.1: drafter ≤ 800줄 / reviewer ≤ 600줄 / finalizer ≤ 500줄).
+4. **reviewer 직접 정정 패턴 (정공법):** drafter MD 파일을 reviewer가 **직접 수정** + R-N 마커로 정정 위치 표시. drafter 산출을 finalizer가 다시 베끼지 않는다.
 
 ---
 
@@ -100,16 +125,22 @@ finalizer(v0.6.6 #1): R3 마감 — handoff 갱신 + CHANGELOG entry
 
 ### 4.2 reviewer
 
-- **영역:** drafter 산출 직접 수정 + 부족분 보강. 별도 분석 doc 추가 가능.
-- **금지:** drafter commit 강제 변경(rebase로 squash 등). finalizer 마감 commit 묶음.
-- **commit body 권고:** drafter SHA 명시 + 수정 사유 + 재검증 결과.
+- **영역:** drafter 산출 **MD 파일 직접 수정** (verbatim 복사 X) + 부족분 보강. 별도 분석 doc 추가 가능.
+- **금지:** drafter commit 강제 변경(rebase로 squash 등). finalizer 마감 commit 묶음. drafter 본문을 reviewer 본인 commit에 verbatim 복사 후 정정만 inline 추가하는 패턴 (사고 14 변형).
+- **commit body 권고 (R-4 보강):**
+  - drafter SHA 명시 (예: "drafter <hash> 검증 결과 — ...")
+  - **R-N 마커 trail 필수** — 본문 정정 위치별로 `R-1`, `R-2`, ... 번호로 정정 사유 + 정정 후 상태 commit body에 트레일.
+  - 재검증 결과 (스모크 테스트 / 정합 검증 등 — 가능하면 PASS/FAIL 라인).
+  - 분량 ≤ 600줄 임계 명시.
 - **자체 점검 위치:** 본 문서 §6.2.
+
+> **R-4 (reviewer 정정 — R-N 마커 trail 헌법화):** drafter §4.2가 "drafter SHA 명시"만 권고하고 R-N 마커 trail을 누락 → bridge_protocol Sec.4.1 "(2) reviewer 검토 + 본인이 직접 수정 (drafter 본문 정정 권한 + R-N 마커 trail, ≤ 600줄)" 헌법과 정합 미달. R-N 마커 = reviewer 정정 위치를 drafter 본문 안에 inline + commit body에 번호별 사유 동시 기재 = 다음 사람이 어디가 정정 영역인지 즉시 식별. **본 문서 자체가 R-N 마커 trail의 운영 사례** (R-1 ~ R-6).
 
 ### 4.3 finalizer
 
-- **영역:** 마감 doc(handoff/CHANGELOG/release note) + status COMPLETE 시그널.
-- **금지:** drafter/reviewer 산출 재수정(이미 분리 commit으로 마감). 새로운 의제 도입.
-- **commit body 권고:** 의존 commit 2개 SHA + 마감 시그널 형식 + 다음 의제 trigger 조건.
+- **영역:** 마감 doc(handoff/CHANGELOG/release note) + status COMPLETE 시그널. **reference only** (verdict + Score + AC + 검증 trail + 결정 — §2.4 헌법 정합).
+- **금지:** drafter/reviewer 산출 재수정(이미 분리 commit으로 마감). 새로운 의제 도입. **drafter 본문 verbatim 복사 + inline 정정** (사고 14 패턴, §2.4 헌법 위반).
+- **commit body 권고:** 의존 commit 2개 SHA(drafter + reviewer) + 마감 시그널 형식 + 다음 의제 trigger 조건. 분량 ≤ 500줄.
 - **자체 점검 위치:** 본 문서 §6.3.
 
 ---
@@ -157,21 +188,27 @@ dispatch/active/v<X>/round<N>_<topic>_brief_finalizer.md
 - [ ] 산출 파일 목록을 dispatch "변경 대상"에 한정했는가?
 - [ ] 분량 임계(≤ 800줄 등 dispatch 명시)를 초과하지 않는가?
 
-### 6.2 reviewer — drafter commit 받은 직후
+### 6.2 reviewer — drafter commit 받은 직후 (R-5 보강)
 
 - [ ] drafter SHA 확인 + commit message에 SHA 인용 준비됐는가?
 - [ ] drafter 산출의 어느 파일을 어떻게 수정할지 정리했는가?
+- [ ] **drafter MD 파일을 직접 수정하는가? (verbatim 복사 후 inline 정정 패턴 X — §2.4 헌법)**
+- [ ] **R-N 마커 trail 준비됐는가? (본문 inline + commit body 번호별 사유 — §4.2 헌법)**
 - [ ] drafter commit을 squash/amend하지 않고 새 commit으로 추가하는가?
 - [ ] 신규 파일은 reviewer 책임 영역 한정인가? (마감 doc 침범 X)
 - [ ] reviewer commit body에 재검증 결과(스모크 테스트 등) 포함했는가?
+- [ ] 분량 ≤ 600줄 임계 충족하는가?
 
-### 6.3 finalizer — reviewer commit 받은 직후
+### 6.3 finalizer — reviewer commit 받은 직후 (R-5 보강)
 
 - [ ] drafter SHA + reviewer SHA 양쪽 확인했는가?
 - [ ] handoff/CHANGELOG/release note 갱신 범위 정의했는가?
+- [ ] **마감 doc = reference only인가? (verdict + Score + AC + 검증 trail + 결정 — §2.4 헌법)**
+- [ ] **drafter 본문 verbatim 복사 + inline 정정 패턴을 피했는가? (사고 14 재발 방지)**
 - [ ] 마감 시그널(📡 status COMPLETE) 송출 준비했는가?
 - [ ] commit body에 의존 SHA 2건 명시했는가?
 - [ ] 다음 의제 trigger 조건(병렬/순차) 명확한가?
+- [ ] 분량 ≤ 500줄 임계 충족하는가? (초과 시 verbatim 흡수 변형 의심)
 
 ### 6.4 PL — Round 종료 시
 
@@ -182,15 +219,32 @@ dispatch/active/v<X>/round<N>_<topic>_brief_finalizer.md
 
 ---
 
-## 7. 참조
+## 7. 참조 (R-6 출처 보강)
 
-| 문서 | 관련 |
-|------|------|
-| `docs/guides/ethos_checklist.md` | Stage 시작/종료 자체 점검 (보편 윤리) |
-| `docs/operating_manual.md` Sec.5 | 16-stage 플로우 + 모드별 압축 |
-| `docs/bridge_protocol.md` Sec.0.1 | 16-stage 페르소나 매핑 |
-| `dispatch/2026-04-27_v0.6.6_infra_standard.md` | 본 헌법 도입 dispatch (의제 #6) |
+| 문서 | 관련 | 권한 |
+|------|------|------|
+| **`docs/bridge_protocol.md` Sec.4.1** | **A 패턴 헌법 1차 출처 — "dispatch 작성 정책" 표 행** | 헌법 본문 (specificity 최우선) |
+| **`docs/bridge_protocol.md` Sec.6 사고 14** | **drafter v2 단계 누락 + verbatim 흡수 + inline 정정 사고 (v0.6.4 Stage 5)** | 헌법 본문 (사고 사례) |
+| `docs/guides/ethos_checklist.md` | Stage 시작/종료 자체 점검 (보편 윤리) | 운영 가이드 |
+| `docs/operating_manual.md` Sec.5 | 16-stage 플로우 + 모드별 압축 | 운영 매뉴얼 |
+| `docs/bridge_protocol.md` Sec.0.1 | 16-stage 페르소나 매핑 | 운영 매뉴얼 |
+| `dispatch/2026-04-27_v0.6.6_infra_standard.md` | 본 헌법 도입 dispatch (의제 #6) | 작업 dispatch |
+
+> **R-6 (reviewer 정정 — 출처 우선순위 명시):** 본 체크리스트와 `bridge_protocol.md` 충돌 시 **bridge_protocol 우선**. 본 문서는 헌법 본문을 운영 가능한 자체 점검 형태로 풀어낸 가이드 (specificity: 헌법 본문 > 운영 가이드, F-62-5 원칙).
 
 ---
 
-**드래프트 완료. reviewer는 본 문서 직접 수정으로 보강 + dispatch 템플릿 sample 추가 권고.**
+## 8. reviewer Round A 요약 (R-1 ~ R-6 trail)
+
+| 마커 | 위치 | 정정 사유 | 정정 후 상태 |
+|------|------|---------|-------------|
+| R-1 | 머리말 | 출처 명시 누락 (bridge_protocol Sec.4.1 / Sec.6 사고 14) | 출처 + 충돌 우선순위 추가 |
+| R-2 | §2.3 신규 | R2 사고 영역 정합 — 추상적 언급 → 구체 컨텍스트 | v0.6.5 R2 commit/패턴/detection trail 명시 |
+| R-3 | §2.4 신규 | verbatim 흡수 X 헌법 누락 (사고 14 핵심) | 4조 헌법 + 분량 임계 신호 추가 |
+| R-4 | §4.2 reviewer | R-N 마커 trail 헌법 누락 | commit body 권고에 R-N 마커 + 분량 ≤ 600줄 추가 |
+| R-5 | §6.2 / §6.3 | 자체 점검 항목 누락 (직접 수정 / R-N 마커 / verbatim X / 분량) | reviewer 8 항목 / finalizer 8 항목 보강 |
+| R-6 | §7 | 출처 우선순위(헌법 vs 가이드) 미명시 | bridge_protocol 행 강조 + 권한 컬럼 + 충돌 시 우선순위 명시 |
+
+---
+
+**reviewer Round A 정정 완료. finalizer 마감 doc은 reference only — 본 §8 R-N 트레일 + 의존 SHA만 인용.**
