@@ -85,10 +85,17 @@ _settings_valid_value() {
 
 # ---- public API ----
 
-# settings_require_v04
+# settings_require_v04  (v0.6.6 R-1 reviewer — 사용 가이드 명확화)
 #   v0.6.6 grace period — accepts schema "0.4" OR "0.5".
 #   exits 3 if schema_version is not in {0.4, 0.5} or file missing.
-#   다음 메이저 버전(v0.7+)에서 "0.4" 허용 폐기 예정.
+#
+#   사용 가이드 (R-1 정정):
+#   - 13-stage flow + 16-stage flow 양쪽 호환이 필요한 진입점에서 호출.
+#     (예: switch_team.sh, --status 류 read-only 명령)
+#   - 16-stage 의무 동작(neo 키만 사용)이 필요하면 settings_require_v05 호출.
+#   - 함수명 `_v04`은 historical (v0.4 시절 명명). v0.7에서 settings_require_supported로
+#     rename 예정 (현재는 호환성 위해 명칭 유지).
+#   다음 메이저 버전(v0.7+)에서 "0.4" 허용 폐기 + 함수명 정리 예정.
 settings_require_v04() {
     _sr_file=$(settings_path)
     if [ ! -f "$_sr_file" ]; then
