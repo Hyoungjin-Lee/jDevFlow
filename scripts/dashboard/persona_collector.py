@@ -21,7 +21,8 @@ from .tmux_adapter import TmuxAdapter
 from .token_hook import TokenHook
 
 
-# F-X-6 18명 매핑 — 4팀 15명 (PM/CTO/CEO는 M5 status bar / placeholder 영역).
+# F-D3 산식 (Stage 10d 정정) — dashboard 가시화 박스 18 = 4팀 15 + PM 1 + CTO 1 + CEO 1.
+# HR만 미표시. CTO/CEO는 정적 idle 박스 (tokens / 진행률 / 시그널 추적 0건).
 # operating_manual.md Sec.1.2 정규명 그대로.
 PERSONAS_18: List[Tuple[str, str]] = [
     # 기획팀 4
@@ -31,19 +32,25 @@ PERSONAS_18: List[Tuple[str, str]] = [
     # 개발팀 7
     ("공기성", "개발"), ("최우영", "개발"), ("현봉식", "개발"), ("카더가든", "개발"),
     ("백강혁", "개발"), ("김원훈", "개발"), ("지예은", "개발"),
+    # 관리자 3 (Stage 10d 추가) — PM bridge-064 트래킹 / CTO·CEO 정적 idle (tracking X)
+    ("스티브 리", "관리자"), ("백현진", "관리자"), ("이형진", "관리자"),
 ]
 
 
-# 팀 → Orc 세션명. drafter 자율 영역 (M5에서 personas_18.md 도착 후 갱신).
+# 팀 → tmux 세션명. Stage 10d — "관리자" team에 PM(스티브 리) bridge-064 매핑.
+# CTO/CEO는 본 매핑에 없음 → _persona_to_pane이 None 반환 → idle yield (Q5 통합).
 _TEAM_TO_ORC_SESSION: Dict[str, str] = {
     "기획": "Orc-064-plan",
     "디자인": "Orc-064-design",
     "개발": "Orc-064-dev",
+    "관리자": "bridge-064",
 }
 
 
 # 페르소나 → pane index. design_final Sec.4 헌법 (왼쪽=PL / 오른쪽 stack=드래프터/리뷰어/파이널)
 # 정합. 개발팀 BE 트리오 (1.x) + FE 트리오 (2.x, M5 진입 시 별도 pane 영역) 잠정 분리.
+# Stage 10d — PM(스티브 리) → bridge-064:1.1 매핑 추가. CTO 백현진 / CEO 이형진은
+# _persona_to_pane None 반환 영역 (정적 idle).
 _PERSONA_TO_PANE_INDEX: Dict[str, str] = {
     # 기획팀
     "박지영": "1.1", "장그래": "1.2", "김민교": "1.3", "안영이": "1.4",
@@ -53,6 +60,9 @@ _PERSONA_TO_PANE_INDEX: Dict[str, str] = {
     "공기성": "1.1", "카더가든": "1.2", "최우영": "1.3", "현봉식": "1.4",
     # 개발팀 FE 트리오 — M5 진입 시 별도 Orc 세션 / pane 매핑 갱신 영역.
     "백강혁": "2.3", "지예은": "2.2", "김원훈": "2.4",
+    # 관리자 PM (Stage 10d) — bridge-064:1.1
+    "스티브 리": "1.1",
+    # CTO/CEO 미매핑 — _persona_to_pane None → idle yield 정합
 }
 
 

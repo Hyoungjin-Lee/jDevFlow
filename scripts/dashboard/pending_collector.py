@@ -30,11 +30,16 @@ Q_CATEGORY_PATTERN = re.compile(
 # git ahead — ``git status -sb`` 헤더의 ``[ahead N]``.
 GIT_AHEAD_PATTERN = re.compile(r"\[ahead\s+(\d+)\]")
 
+# Stage 10d Fix 7 — HANDOFF symlink target에서 active version 추출.
+# 예: ``handoffs/active/HANDOFF_v0.6.4.md`` → ``v0.6.4``.
+HANDOFF_VERSION_PATTERN = re.compile(r"HANDOFF_(v[\d.]+)\.md$")
+
 
 class PendingDataCollector:
     """M4 sync polling collector — F-D1 SRP M4 영역."""
 
     DEFAULT_DISPATCH_DIR = Path("dispatch")
+    HANDOFF_FILENAME = "HANDOFF.md"
 
     def __init__(
         self,
@@ -51,6 +56,20 @@ class PendingDataCollector:
             candidate if candidate.is_absolute()
             else self.project_root / candidate
         )
+
+    def _active_version(self) -> Optional[str]:
+        """HANDOFF.md symlink target에서 active version 추출 (Stage 10d Fix 7).
+
+        예: ``handoffs/active/HANDOFF_v0.6.4.md`` → ``"v0.6.4"``.
+        symlink 미존재 또는 패턴 매치 실패 시 None (전체 dispatch scan 폴백).
+        """
+        handoff = self.project_root / self.HANDOFF_FILENAME
+        try:
+            target = handoff.resolve(strict=False)
+            m = HANDOFF_VERSION_PATTERN.search(str(target))
+            return m.group(1) if m else None
+        except (OSError, RuntimeError):
+            return None
 
     # ------------------------------------------------------------------
     # Pending Push (git ahead)
@@ -101,11 +120,19 @@ class PendingDataCollector:
     # ------------------------------------------------------------------
 
     def get_pending_questions(self) -> List[PendingQuestion]:
-        """dispatch md 안 ``**Qxxx**`` 패턴 → ``PendingQuestion`` list (read-only)."""
+        """dispatch md 안 ``**Qxxx**`` 패턴 → ``PendingQuestion`` list (read-only).
+
+        Stage 10d Fix 7 — HANDOFF active version 영역만 scan (옛 버전 잔재 0건).
+        active version 추출 실패 시 전체 *.md 폴백 (안전 영역).
+        """
         if not self.dispatch_dir.is_dir():
             return []
+        active = self._active_version()
+        # 활성 버전 정합 시 파일명에 버전 박힌 dispatch만 (예: ``*v0.6.4*.md``).
+        # 활성 버전 미추출 시 전체 *.md 폴백.
+        pattern = f"*{active}*.md" if active else "*.md"
         out: List[PendingQuestion] = []
-        for md_path in sorted(self.dispatch_dir.glob("*.md")):
+        for md_path in sorted(self.dispatch_dir.glob(pattern)):
             try:
                 content = md_path.read_text(encoding="utf-8", errors="ignore")
             except OSError:

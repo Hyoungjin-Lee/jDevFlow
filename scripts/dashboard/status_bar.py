@@ -50,13 +50,16 @@ def compose_pm_state(tmux: TmuxAdapter) -> Tuple[PersonaState, List[str]]:
 class PMStatusBar(Static):
     """F-D3 19번째 페르소나 (status bar 별도 행). brainstorm 의제 7 Parallel Window 정합."""
 
+    # Stage 10d — 시각 강조 (background full primary + bold). 상단 PM status bar가
+    # 화면에서 명확히 보이도록 정합. height=1 유지 (1행 표기 design_final Sec.10.3).
     DEFAULT_CSS = """
     PMStatusBar {
-        background: $primary 20%;
-        color: $foreground;
+        background: $primary;
+        color: $background;
+        text-style: bold;
         height: 1;
         padding: 0 1;
-        border-bottom: heavy $primary;
+        dock: top;
     }
     """
 

@@ -20,7 +20,9 @@ from .models import PersonaState
 # Boundary slot #3 — 진행률 바 8칸 4단계
 # ---------------------------------------------------------------------------
 
-PROGRESS_LEVELS: tuple = (" ", "░", "▒", "█")  # 4 단계 (empty / low / mid / full)
+# Stage 10d — idle placeholder cell ``░`` (LIGHT SHADE) 박음. 0% 시점에도 visual cell
+# 보이게 정합 (운영자 정정 — 빈 공백 0칸 표시 영역 회피).
+PROGRESS_LEVELS: tuple = ("░", "▒", "▓", "█")   # 4 단계 (idle placeholder / low / mid / full)
 PROGRESS_CELLS: int = 8                         # 8 칸
 PROGRESS_MAX_TOKEN_K: float = 80.0              # 0~80k 매핑 (cell 당 10k)
 
@@ -30,6 +32,9 @@ def progress_bar(tokens_k: float) -> str:
 
     각 cell이 percent 구간 [i/N, (i+1)/N]에 해당하며 partial cell은 fraction에 따라
     low (1) / mid (2) / full (3)로 매핑됩니다.
+
+    Stage 10d — idle (0%) cell = ``░`` placeholder. 운영자 정정 — 0% 시점에도 빈 cell
+    보이게 정합. tokens_k=0.0이면 8칸 모두 ``░░░░░░░░`` 표시.
     """
     pct = max(0.0, min(tokens_k / PROGRESS_MAX_TOKEN_K, 1.0))
     cells: List[str] = []

@@ -21,12 +21,27 @@ from .tmux_adapter import TmuxAdapter
 
 
 class TokenHook:
-    """우선순위 chain: hook JSON → capture-pane regex → 0.0 폴백 (Sec.14 에러 경로)."""
+    """우선순위 chain: hook JSON → capture-pane regex → 0.0 폴백 (Sec.14 에러 경로).
+
+    Stage 10d Fix 6 — capture-pane fallback regex 다양화. claude CLI active 화면에서
+    노출 가능한 다양 token 표시 패턴 시도. root cause(.claude/dashboard_state hook
+    파일 미작성)는 v0.6.5 본 가동 영역.
+    """
 
     HOOK_DIR_NAME = ".claude/dashboard_state"
+    # 1순위 패턴 — claude CLI session-end JSON usage block.
     REGEX = re.compile(
         r'"usage"\s*:\s*\{\s*"input_tokens"\s*:\s*(\d+)\s*,\s*"output_tokens"\s*:\s*(\d+)'
     )
+    # 2순위 fallback — claude CLI 또는 Code 데스크탑 active 화면 token 표시 패턴.
+    # 각 regex는 (pattern, is_k_unit) 튜플 — ``is_k_unit`` True 시 그대로, False 시 1000 나눔.
+    # 예: ``Tokens: 8.2k`` / ``[8.2k tokens]`` / ``Tokens: 8200`` / ``8200 tokens``.
+    FALLBACK_REGEXES = [
+        (re.compile(r'(?i)tokens?\s*:?\s*([\d,]+(?:\.\d+)?)\s*k\b'), True),    # "Tokens: 8.2k"
+        (re.compile(r'(?i)([\d,]+(?:\.\d+)?)\s*k\s+tokens?'), True),           # "8.2k tokens"
+        (re.compile(r'(?i)tokens?\s*:?\s*([\d,]+)(?!\s*[k.])'), False),        # "Tokens: 8200"
+        (re.compile(r'(?i)([\d,]+)\s+tokens?(?!\s*\.\d)'), False),             # "8200 tokens"
+    ]
 
     def __init__(
         self,
@@ -92,13 +107,31 @@ class TokenHook:
         return self._regex_from_lines(lines)
 
     def _regex_from_lines(self, lines: Optional[list]) -> Optional[float]:
-        """이미 capture된 lines 재사용 — Stage 10 M-2 fix (subprocess 호출 0건)."""
+        """이미 capture된 lines 재사용 — Stage 10 M-2 fix (subprocess 호출 0건).
+
+        Stage 10d Fix 6 — 1순위 usage JSON regex + 2순위 fallback regex 다양화.
+        match 시점에서 input+output 합산 또는 fallback 단일 token 값 반환.
+        """
         if not lines:
             return None
-        match = self.REGEX.search("\n".join(lines))
-        if match is None:
-            return None
-        try:
-            return (int(match.group(1)) + int(match.group(2))) / 1000.0
-        except (ValueError, TypeError):
-            return None
+        text = "\n".join(lines)
+        # 1순위 — claude CLI session-end JSON usage.
+        match = self.REGEX.search(text)
+        if match is not None:
+            try:
+                return (int(match.group(1)) + int(match.group(2))) / 1000.0
+            except (ValueError, TypeError):
+                pass
+        # 2순위 fallback — active 화면 token 표시 패턴 (Stage 10d Fix 6).
+        for pat, is_k_unit in self.FALLBACK_REGEXES:
+            m = pat.search(text)
+            if m is None:
+                continue
+            try:
+                raw = m.group(1).replace(",", "")
+                value = float(raw)
+                # is_k_unit=True → "Xk" 패턴 (그대로 k 단위) / False → 절대 token (1000 나눔).
+                return value if is_k_unit else value / 1000.0
+            except (ValueError, TypeError):
+                continue
+        return None

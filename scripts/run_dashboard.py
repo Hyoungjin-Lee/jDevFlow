@@ -40,7 +40,8 @@ from scripts.dashboard.status_bar import compose_pm_state
 from scripts.dashboard.tmux_adapter import TmuxAdapter
 
 REFRESH_INTERVAL_SEC: float = 1.0
-TEAM_ORDER: tuple = ("기획", "디자인", "개발")
+# Stage 10d — TEAM_ORDER 정정 (4팀 + 관리자, F-D3 = 박스 18 산식). render.py 정합.
+TEAM_ORDER: tuple = ("기획", "디자인", "개발", "관리자")
 
 
 class DashboardApp(App):
