@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # start_claude_team.sh — Orc 세션의 모든 pane에 claude --name 옵션으로 시작.
 #
+# v0.6.6 #5: pane title에서 페르소나명 추출 → 모델/effort lookup → claude 기동에 자동 주입.
+#
 # 사용법:
 #   bash scripts/start_claude_team.sh [session_name]
 #   bash scripts/start_claude_team.sh          # 현재 활성 Orc 세션 전체 자동 감지
@@ -8,7 +10,9 @@
 #   bash scripts/start_claude_team.sh bridge-064
 #
 # 동작:
-#   - 세션의 모든 pane에 `claude --dangerously-skip-permissions --name "session:w.p"` 전송.
+#   - 세션의 모든 pane에 `claude --dangerously-skip-permissions --model X --name "session:w.p"` 전송.
+#   - pane title이 "<페르소나> [<role>·<effort>]" 형태면 페르소나명 추출 + 모델 lookup.
+#   - title에서 페르소나 추출 실패 시 모델 미주입 (default 모델로 시작).
 #   - 이미 claude가 실행 중인 pane은 건너뜀 (skip).
 #   - --name 옵션으로 시작된 세션은 JSONL에 customTitle이 기록됨 → token_hook 정확 매핑.
 #
@@ -19,6 +23,17 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+
+# shellcheck disable=SC1091
+. "$ROOT/scripts/lib/personas.sh"
+
+# pane title에서 페르소나명 추출.
+# spawn_team.sh가 "이종선 [PL·high]" 포맷으로 박는다. 첫 '['앞까지가 페르소나명.
+# 호환: 단순 페르소나명만 박힌 pane도 OK.
+_extract_persona() {
+    # sed로 '[ 이후 모두 제거 + 양쪽 공백 trim.
+    printf '%s' "$1" | sed -E 's/[[:space:]]*\[.*//; s/^[[:space:]]+//; s/[[:space:]]+$//'
+}
 
 _start_pane() {
     local pane_target="$1"
@@ -42,9 +57,29 @@ _start_pane() {
         fi
     fi
 
-    printf '  ▶ %s  ← claude --name "%s"\n' "$pane_name" "$pane_name"
+    # 페르소나 / 모델 / effort lookup (title 기반).
+    local pane_title persona model effort role
+    pane_title=$(tmux display-message -t "$pane_target" -p "#{pane_title}" 2>/dev/null || echo "")
+    persona=$(_extract_persona "$pane_title")
+    model=$(persona_model "$persona")
+    effort=$(persona_effort "$persona")
+    role=$(persona_role "$persona")
+
+    # claude 기동 명령 조립 (모델 인식 시 --model 추가, effort는 환경변수로 전달).
+    local cmd_prefix=""
+    local model_flag=""
+    if [ -n "$model" ]; then
+        cmd_prefix="CLAUDE_PERSONA='${persona}' CLAUDE_PERSONA_ROLE='${role}' CLAUDE_PERSONA_EFFORT='${effort}' "
+        model_flag="--model '${model}' "
+        printf '  ▶ %s  ← claude %s--name "%s"  [persona=%s effort=%s]\n' \
+            "$pane_name" "$model_flag" "$pane_name" "$persona" "$effort"
+    else
+        printf '  ▶ %s  ← claude --name "%s"  (persona 미감지: title="%s")\n' \
+            "$pane_name" "$pane_name" "$pane_title"
+    fi
+
     tmux send-keys -t "$pane_target" \
-        "claude --dangerously-skip-permissions --name '${pane_name}'" Enter
+        "${cmd_prefix}claude --dangerously-skip-permissions ${model_flag}--name '${pane_name}'" Enter
     sleep 0.2
 }
 
