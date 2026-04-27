@@ -88,7 +88,19 @@ CEO 이형진
 | 김원훈 | 프론트 파이널리즈 | ESFJ | 사용자 경험 중심. 따뜻하고 일관된 UX 마감에 강함 |
 | 지예은 | 프론트 드래프터 | ENFP | 다양한 UI 아이디어 탐색. 사용자 공감 중심 초안에 강함 |
 
-**pptx skill 연동 영역 (안영이):** 본 프로젝트 `.skills/` 트리에 pptx skill 미구현(2026-04-27 기준). 추후 구현 시 `.skills/pptx-storyboard/SKILL.md` 위치 권고. 안영이 dispatch에 본 skill 트리거 박는 패턴은 v0.6.6 Standard 영역에서 정밀화 예정.
+**pptx skill 연동 영역 (안영이):** 본 프로젝트 `.skills/` 트리에 pptx skill 미구현(2026-04-27 기준). 추후 구현 시 `.skills/pptx-storyboard/SKILL.md` 위치 권고.
+
+권고 spec (v0.6.6 Standard에서 정밀화 — Lite MVP scope에서는 reference만):
+
+| 항목 | 권고값 |
+|------|------|
+| 호출자 | **안영이** (기획 파이널리즈, INFJ) |
+| 트리거 stage | **Stage 05** (최종 기획 확정 시점) — 마감 doc 작성과 동시 산출 |
+| 입력 형식 | `planning_index.md` final 본문 + Stage 04 review trail |
+| 산출 형식 | `.pptx` 스토리보드 (1 슬라이드 = 1 의제 단위) |
+| dispatch 박는 위치 | dispatch 자율 영역 → "Stage 05 마감 doc + pptx skill 산출 동시" 권고 박음 |
+
+> **R-6 reviewer 정정:** 호출자/트리거 stage/입력 형식 권고형 박음. 실제 skill 구현 + dispatch 자동 트리거는 v0.6.6 Standard 영역에서 결정.
 
 **MBTI 활용 가이드:**
 - **dispatch 작성 시점**: 페르소나 매핑 근거 보강 (예: "사용자 공감 중심 UI 초안 = 지예은 ENFP 강점").
@@ -295,10 +307,10 @@ v0.6.5부터 **16-stage canonical reference flow**를 도입했습니다. 기존
 | 04 | 기획 리뷰 (Quality Gate) | `plan_review.md` (개정) | 리뷰어(Opus) | — |
 | 05 | 최종 기획 확정 | `planning_index.md` final | 파이널리즈(Sonnet) + 오케(Opus) | — |
 | 06 | 운영자 승인 | (결재 행위) | 운영자 | ✅ 승인/반려 |
-| 07 | 기술 설계 | `v<X>_technical_design.md` | 오케(Opus, high) | — |
-| 08 | 디자인 초안 | `ux_design.md` + mockup | 디자인 드래프터(Haiku) | — |
-| 09 | 디자인 수정/반영 | 최종 디자인 산출 | 디자인 파이널리즈(Sonnet) | — |
-| 10 | 기술/디자인 충돌 리뷰 | 통합 이슈 해결 | Claude(Opus) | — |
+| 07 | 기술 설계 (cross-team 인수) | `v<X>_technical_design.md` | **개발 PL 공기성** (Opus, high) — 기획팀 산출 인수 | — |
+| 08 | 디자인 초안 | `ux_design.md` + mockup | 디자인 드래프터 장원영(Haiku) | — |
+| 09 | 디자인 수정/반영 | 최종 디자인 산출 (A 패턴: 리뷰어 이수지 → 파이널리즈 오해원) | 디자인 PL 우상호(Opus) + 팀 | — |
+| 10 | 기술/디자인 충돌 리뷰 | 통합 이슈 해결 | Claude(Opus) — 디자인 PL ↔ 개발 PL 협의 | — |
 | 11 | 코드 구현 | 본 코드 + 테스트 | `stage_assignments.stage11_impl` | — |
 | 12 | 코드 리뷰 (감사) | `code_review.md` | **Codex** (Strict만) | Strict만 강제 |
 | 13 | 코드 수정 반영 | 리뷰 피드백 적용 | `stage_assignments.stage13_fix` | — |
@@ -407,3 +419,7 @@ jOneFlow/
 |------|------|------|
 | 2026-04-26 | v0.6.2 M-Org | Sec.1 조직도 (5계층 + 18명 모델/effort) 신규 작성. Sec.2~6 placeholder. |
 | 2026-04-26 | v0.6.2 M-SelfEdu | Sec.2~6 본문 작성 (워크플로우 / 모델 / 페르소나·톤 / Stage 플로우 / MANDATORY STARTUP). R2 진입 순서 명시. F-X-2 / F-62-2 / F-62-3 정책 박음. |
+| 2026-04-27 | v0.6.5 인사 변경 | 박지영 CTO실장 승진 / 이종선 기획PL 신규 / 이희윤 PM 브릿지 신규 / 백현진·스티브 리 퇴사. Sec.1.1 ASCII 트리 + Sec.1.2 표 + Sec.1.5 트레일 갱신. |
+| 2026-04-27 | v0.6.5 16-stage 매트릭스 | Sec.5.0 16-stage vs 13-stage 관계도 + Sec.5.1 16-stage 매트릭스 + Sec.5.2 모드별 압축 갱신. 13-stage Sec.5.1.1 legacy 보존. Sec.3.1 Stage별 모델 정책 갱신. stage_assignments schema v0.4 동결 (v0.6.6 정밀화 예정, F-X-4). |
+| 2026-04-27 | v0.6.5 Sec.1.2.1 신규 | 18명 페르소나 MBTI + 추가 역량 표 신규. pptx skill 연동 영역(안영이) TBD 명시. |
+| 2026-04-27 | v0.6.5 R1 reviewer 정정 | Stage 07 = 개발 PL 공기성 명시(cross-team 인수) / Stage 09 디자인 A 패턴 순서 정정 / Stage 10 디자인-개발 PL 협의 명시. (reviewer 최우영) |
