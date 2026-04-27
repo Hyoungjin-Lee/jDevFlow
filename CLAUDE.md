@@ -8,7 +8,7 @@
 > 5. 이 세션에서 실제로 읽지 않았으면 "지침을 따랐다"고 절대 말하지 마라.
 > 6. **추측 진행 금지 강제 (헌법, 사고 5 변종)** — bridge push / 진단 보고 직전 `bridge_protocol.md` Sec.8 자가 점검 11항목 의무. 특히 10항(3중 검증: capture+디스크+git log) + 11항(부팅 검증 4 panes 전체) 매 응답 직전 강제. 미화 표현("양심"/"정상 진행 중") 금지 — 진단 불확실 시 "확인 필요" 명시 후 검증 진입. (세션 28 운영자 결정)
 
-> **새 세션 읽기 순서 (R2):** CLAUDE.md → **`docs/bridge_protocol.md`** (회의창 영구 지침) → **`docs/operating_manual.md`** (운영 매뉴얼 본체) → `handoffs/active/HANDOFF_v<X>.md` (현재 진행 상태).
+> **새 세션 읽기 순서 (R2):** CLAUDE.md → **`docs/bridge_protocol.md`** (회의창 영구 지침) → **`docs/operating_manual.md`** (운영 매뉴얼 본체) → `handoffs/active/HANDOFF_v<X>.md` (현재 진행 상태). **R2 후 역할별 선별 로드** = `docs/context_loading.md` Sec.2 참조.
 > Skill hook: `.skills/tool-picker/SKILL.md` — jOneFlow stage/mode/risk_level 판단용.
 > `HANDOFF.md`는 v0.6.2부터 **symlink** (직접 편집 금지, 편집 대상은 symlink target [F-62-2]).
 
@@ -32,7 +32,9 @@
 | `docs/operating_manual.md` Sec.2 | 워크플로우 모드(Lite/Standard/Strict) + 자율/승인 게이트 |
 | `docs/operating_manual.md` Sec.3 | Stage별 권장 모델 (Sonnet/Opus/Haiku) |
 | `docs/operating_manual.md` Sec.4 | 페르소나별 톤 + 회의창 본분 |
-| `docs/operating_manual.md` Sec.5 | Stage 1~13 플로우 + 모드별 압축 + handoffs/ 구조 |
+| `docs/operating_manual.md` Sec.5 | **16-stage (v0.6.5+) + 13-stage legacy** 플로우 + 모드별 압축 + Codex 감사 |
+| `docs/bridge_protocol.md` Sec.0.1 | 16-stage 페르소나 매핑 (기획팀 / 디자인팀 / 개발팀) |
+| `docs/context_loading.md` | Stage별 선별 로드 + MD 분량 임계값 가이드 |
 | `WORKFLOW.md` Sec.6 | Stage Transition Score (임계값 80%) |
 
 핵심 운영 원칙 (인라인 필수):
