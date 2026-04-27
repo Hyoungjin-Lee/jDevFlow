@@ -195,37 +195,85 @@ class TokenHook:
             pass
         return best
 
-    def _parse_usage(self, jsonl_path: Path) -> Optional[float]:
-        """JSONL에서 가장 최근 assistant.message.usage → tokens_k.
+    def get_pane_state(self, pane_name: str) -> dict:
+        """pane_name → {status, task, tokens_k, last_update}.
 
-        input + output + cache_read + cache_creation 합산.
+        터미널 상태 무관 — JSONL 파일 직접 읽기.
+        status: 'working' | 'idle'
+          - JSONL 마지막 엔트리 type==user  → working (Claude 응답 생성 중)
+          - JSONL 마지막 엔트리 type==assistant → idle (응답 완료)
+        task: 마지막 user str-content 메시지 첫 80자 (dispatch 프롬프트).
+        tokens_k: 마지막 assistant.message.usage 기준 컨텍스트 창 크기.
+        last_update: 마지막 assistant 타임스탬프 (없으면 파일 mtime).
         """
-        usage = None
+        jsonl_path = self._resolve_jsonl(pane_name)
+        if jsonl_path is None:
+            return {"status": "idle", "task": None, "tokens_k": 0.0, "last_update": None}
+        return self._parse_state(jsonl_path)
+
+    def _parse_state(self, jsonl_path: Path) -> dict:
+        """JSONL 전체 스캔 → state dict."""
+        last_type: Optional[str] = None
+        last_task: Optional[str] = None       # 마지막 user str-content
+        last_usage: Optional[dict] = None     # 마지막 assistant usage
+        last_asst_ts: Optional[datetime] = None
+
         try:
             for line in jsonl_path.open(encoding="utf-8"):
                 try:
                     d = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                if d.get("type") != "assistant":
-                    continue
-                msg = d.get("message")
-                if not isinstance(msg, dict):
-                    continue
-                u = msg.get("usage")
-                if isinstance(u, dict):
-                    usage = u
+                entry_type = d.get("type")
+                if entry_type == "user":
+                    content = (d.get("message") or {}).get("content", "")
+                    # XML 태그로 시작하는 str = 슬래시 커맨드 내부 시스템 메시지
+                    # (/exit, /clear 등). 상태 판단에서 제외.
+                    if isinstance(content, str) and content.strip().startswith("<"):
+                        continue
+                    last_type = "user"
+                    if isinstance(content, str) and content.strip():
+                        last_task = content.strip()[:80]
+                elif entry_type == "assistant":
+                    last_type = "assistant"
+                    msg = d.get("message")
+                    if isinstance(msg, dict):
+                        u = msg.get("usage")
+                        if isinstance(u, dict):
+                            last_usage = u
+                        ts = d.get("timestamp", "")
+                        if ts:
+                            try:
+                                last_asst_ts = datetime.fromisoformat(ts)
+                            except ValueError:
+                                pass
         except OSError:
-            return None
-        if usage is None:
-            return None
-        # 컨텍스트 창 크기 = input + cache_read + cache_creation (output 제외)
-        total = (
-            int(usage.get("input_tokens", 0))
-            + int(usage.get("cache_read_input_tokens", 0))
-            + int(usage.get("cache_creation_input_tokens", 0))
-        )
-        return total / 1000.0
+            pass
+
+        status = "working" if last_type == "user" else "idle"
+
+        tokens_k = 0.0
+        if last_usage:
+            total = (
+                int(last_usage.get("input_tokens", 0))
+                + int(last_usage.get("cache_read_input_tokens", 0))
+                + int(last_usage.get("cache_creation_input_tokens", 0))
+            )
+            tokens_k = total / 1000.0
+
+        last_update = last_asst_ts or datetime.fromtimestamp(jsonl_path.stat().st_mtime)
+
+        return {
+            "status": status,
+            "task": last_task if status == "working" else None,
+            "tokens_k": tokens_k,
+            "last_update": last_update,
+        }
+
+    def _parse_usage(self, jsonl_path: Path) -> Optional[float]:
+        """JSONL에서 가장 최근 assistant.message.usage → tokens_k."""
+        state = self._parse_state(jsonl_path)
+        return state["tokens_k"] if state["tokens_k"] > 0 else None
 
     # ------------------------------------------------------------------
     # 2순위 — Stop hook JSON (세션 종료 시 저장)
