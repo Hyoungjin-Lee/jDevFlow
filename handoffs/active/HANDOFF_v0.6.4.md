@@ -8,6 +8,21 @@ next_session_recommended_model: Opus 4.7 1M xhigh (운영자 정책)
 
 # v0.6.4 HANDOFF — Jonelab AI팀 운영자 대시보드
 
+## ⚠️ 작업 디렉토리 (가장 먼저 확인)
+
+```
+ROOT = /Users/geenya/projects/Jonelab_Platform/jOneFlow
+```
+
+**중요**: 새 세션 진입 시 working directory가 `/Users/geenya/projects/Jonelab_Platform/`로 박혀 있을 수 있어요. **모든 R2 / SKILL / docs 파일은 그 아래 `jOneFlow/` 서브디렉토리에 박혀 있어요**. 첫 명령으로 영역 확인 박음:
+
+```bash
+cd /Users/geenya/projects/Jonelab_Platform/jOneFlow
+pwd  # → /Users/geenya/projects/Jonelab_Platform/jOneFlow
+```
+
+이 영역에서 모든 작업 진행. R2 파일 영역 모두 본 ROOT 기준 상대 경로.
+
 ## 다음 세션 시작 시 R2 read 순서
 
 1. `CLAUDE.md` → `docs/bridge_protocol.md` → `docs/operating_manual.md`
