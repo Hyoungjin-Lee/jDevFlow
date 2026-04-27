@@ -79,7 +79,7 @@ def main() -> None:
     notify("🟢 heartbeat 데몬 가동", f"정체 감지 polling 시작 (임계 {STALL_THRESHOLD_SEC}s)")
 
     while True:
-        for session in get_orc_sessions():
+        for session in get_tracked_sessions():
             for p in get_panes(session):
                 target = f"{session}:1.{p}"
                 capture = capture_pane(target)
