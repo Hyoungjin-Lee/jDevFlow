@@ -1,15 +1,22 @@
 {
-  "_comment": "AI Workflow settings — schema v0.4 (v0.6 CLI automation layer). hybrid mode: Cowork desktop for Stage 1 Sonnet + CLI agent team Opus for Stages 2–13. CLI 실행: claude --teammate-mode tmux",
+  "_comment": "AI Workflow settings — schema v0.5 (v0.6.6 16-stage 정합). hybrid mode: Cowork desktop for Stage 1 Sonnet + CLI agent team Opus for Stages 2–16. CLI 실행: claude --teammate-mode tmux",
   "_comment_v04_fields": "workflow_mode + team_mode + stage_assignments는 POSIX grep/sed/awk로만 파싱된다. 각 키는 2-space 들여쓰기, 파일 내 유일, 1줄 1키. 수정 시 이 규약 깨지 말 것.",
+  "_comment_v05_migration": "v0.5 = 16-stage 정합 (v0.6.6). 신규 키 stage11_impl/stage12_review/stage13_fix/stage14_verify 추가. legacy 13-stage 키 4건(stage8_impl/stage9_review/stage10_fix/stage11_verify)은 하위호환 alias로 유지 — 다음 마이너 버전(v0.7) 정리 예정. read 우선순위: neo > legacy fallback (settings.sh / ai_step.sh compat helper).",
   "_comment_model_policy": "Max x5 요금제 기준. Stage 1=Sonnet(방향대화), Stage 2–4=Opus(계획투자), Stage 5=Opus(아키텍처), Stage 9/11=Opus(리뷰/검증), 나머지=Sonnet.",
-  "schema_version": "0.4",
+  "schema_version": "0.5",
   "workflow_mode": "desktop-cli",
   "team_mode": "claude-impl-codex-review",
   "stage_assignments": {
+    "_comment_legacy_v04": "다음 4 키는 13-stage flow legacy. 16-stage flow에서는 아래 stage11_impl ~ stage14_verify가 표준. read 시 neo 우선 + legacy fallback 권고 (compat helper).",
     "stage8_impl": "claude",
     "stage9_review": "codex",
     "stage10_fix": "claude",
-    "stage11_verify": "claude"
+    "stage11_verify": "claude",
+    "_comment_neo_v05": "16-stage flow neo 키 (v0.6.6 신규). dispatch가 stage11~14 마커를 사용하면 본 4 키로 lookup.",
+    "stage11_impl": "claude",
+    "stage12_review": "codex",
+    "stage13_fix": "claude",
+    "stage14_verify": "claude"
   },
   "language": "ko",
   "teammateMode": "tmux",

@@ -188,6 +188,7 @@ _ai_step_legacy_print() {
 
 # stage display marker ("stage2".."stage13") → stage_assignments key.
 # stage 2~7, 12, 13 은 None (Claude 본인 실행, dispatch 안 함).
+# 본 매핑은 13-stage flow 표준. 16-stage flow 마커는 _ai_step_assign_key_for_16 참조.
 _ai_step_assign_key_for() {
   case "$1" in
     stage8)  printf 'stage8_impl' ;;
@@ -196,6 +197,32 @@ _ai_step_assign_key_for() {
     stage11) printf 'stage11_verify' ;;
     *) printf '' ;;
   esac
+}
+
+# v0.6.6 신규 — 16-stage flow 마커 매핑 (stage11_impl ~ stage14_verify).
+# 13-stage flow 와 stage11/12/13 마커가 충돌하므로 별도 helper로 분리.
+# 호출자(ai_step run_next 등)가 16-stage flow 컨텍스트에서 명시적으로 사용.
+_ai_step_assign_key_for_16() {
+  case "$1" in
+    stage11) printf 'stage11_impl' ;;
+    stage12) printf 'stage12_review' ;;
+    stage13) printf 'stage13_fix' ;;
+    stage14) printf 'stage14_verify' ;;
+    *) printf '' ;;
+  esac
+}
+
+# v0.6.6 신규 — neo 키 우선 + legacy 키 fallback wrapper.
+# 호출 예: _ai_step_read_assign_compat stage11_impl stage8_impl
+# settings.sh의 settings_read_stage_assign_compat과 동일 의미. ai_step.sh 내부 alias.
+_ai_step_read_assign_compat() {
+  _arac_neo="${1:-}"
+  _arac_legacy="${2:-}"
+  if [ -z "$_arac_neo" ] || [ -z "$_arac_legacy" ]; then
+    printf ''
+    return 0
+  fi
+  settings_read_stage_assign_compat "$_arac_neo" "$_arac_legacy"
 }
 
 # stage marker → glob pattern으로 첫 매치 artifact 경로. 못 찾으면 빈 문자열 + return 1.
@@ -538,23 +565,37 @@ _ai_step_status_print() {
 
   _asp_workflow=$(settings_read_key workflow_mode)
   _asp_team=$(settings_read_key team_mode)
+  _asp_schema=$(settings_read_key schema_version)
   _asp_s8=$(settings_read_stage_assign stage8_impl)
   _asp_s9=$(settings_read_stage_assign stage9_review)
   _asp_s10=$(settings_read_stage_assign stage10_fix)
   _asp_s11=$(settings_read_stage_assign stage11_verify)
+  # v0.6.6 — 16-stage neo 키 (v0.5 schema에서만 채워짐).
+  _asp_n11=$(settings_read_stage_assign stage11_impl)
+  _asp_n12=$(settings_read_stage_assign stage12_review)
+  _asp_n13=$(settings_read_stage_assign stage13_fix)
+  _asp_n14=$(settings_read_stage_assign stage14_verify)
 
   _asp_cur=$(_ai_step_current_stage_marker)
   _asp_next=$(_ai_step_next_stage "$_asp_cur")
   _asp_skey=$(_ai_step_assign_key_for "${_asp_next:-}")
 
   printf 'ai_step.sh — 현재 운영 상태:\n'
+  printf '  schema_version: %s\n' "${_asp_schema:-(미설정)}"
   printf '  workflow_mode: %s\n' "${_asp_workflow:-(미설정)}"
   printf '  team_mode:    %s\n' "${_asp_team:-(미설정)}"
-  printf '  stage_assignments:\n'
+  printf '  stage_assignments (legacy 13-stage):\n'
   printf '    stage8_impl:    %s\n' "${_asp_s8:-(미설정)}"
   printf '    stage9_review:  %s\n' "${_asp_s9:-(미설정)}"
   printf '    stage10_fix:    %s\n' "${_asp_s10:-(미설정)}"
   printf '    stage11_verify: %s\n' "${_asp_s11:-(미설정)}"
+  if [ -n "$_asp_n11" ] || [ -n "$_asp_n12" ] || [ -n "$_asp_n13" ] || [ -n "$_asp_n14" ]; then
+    printf '  stage_assignments (neo 16-stage, v0.5):\n'
+    printf '    stage11_impl:   %s\n' "${_asp_n11:-(미설정)}"
+    printf '    stage12_review: %s\n' "${_asp_n12:-(미설정)}"
+    printf '    stage13_fix:    %s\n' "${_asp_n13:-(미설정)}"
+    printf '    stage14_verify: %s\n' "${_asp_n14:-(미설정)}"
+  fi
   printf '  마지막 dev_history 마커: %s\n' "${_asp_cur:-(없음)}"
   if [ -n "$_asp_skey" ]; then
     printf '  다음 stage 예정:        %s (assignments 키: %s)\n' "${_asp_next:-(없음)}" "$_asp_skey"

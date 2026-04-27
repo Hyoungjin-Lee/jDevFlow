@@ -1,13 +1,15 @@
 #!/bin/sh
-# settings.sh — POSIX reader/writer for .claude/settings.json (schema v0.4).
+# settings.sh — POSIX reader/writer for .claude/settings.json (schema v0.4 + v0.5).
 #
 # Public API (sourced by scripts/*.sh):
 #   settings_path
-#   settings_require_v04
+#   settings_require_v04            # v0.5 grace period — accepts "0.4" OR "0.5"
+#   settings_require_v05            # v0.6.6 신규 — strict "0.5" 검증
 #   settings_read_key KEY
 #   settings_read_stage_assign STAGE_KEY
+#   settings_read_stage_assign_compat NEO_KEY LEGACY_KEY  # v0.6.6 — neo 우선 + legacy fallback
 #   settings_write_key KEY VALUE
-#   settings_write_stage_assign_block TEAM_MODE
+#   settings_write_stage_assign_block TEAM_MODE  # legacy 4 + neo 4 동시 쓰기
 #
 # Constraints (tech_design.md Sec 2.3, Sec 8.1, Sec 12.3):
 #   - No jq (F-D2).
@@ -84,15 +86,31 @@ _settings_valid_value() {
 # ---- public API ----
 
 # settings_require_v04
-#   exits 3 if schema_version != "0.4" or file missing.
+#   v0.6.6 grace period — accepts schema "0.4" OR "0.5".
+#   exits 3 if schema_version is not in {0.4, 0.5} or file missing.
+#   다음 메이저 버전(v0.7+)에서 "0.4" 허용 폐기 예정.
 settings_require_v04() {
     _sr_file=$(settings_path)
     if [ ! -f "$_sr_file" ]; then
         _settings_die 3 "settings.json 없음: $_sr_file (init_project.sh 실행 필요)"
     fi
     _sr_ver=$(sed -n 's/^  "schema_version": *"\([^"]*\)".*/\1/p' "$_sr_file")
-    if [ "$_sr_ver" != "0.4" ]; then
-        _settings_die 3 "schema_version=\"$_sr_ver\" (요구: \"0.4\"). init_project.sh --force-reinit 실행."
+    case "$_sr_ver" in
+        0.4|0.5) : ;;
+        *) _settings_die 3 "schema_version=\"$_sr_ver\" (요구: \"0.4\" 또는 \"0.5\"). init_project.sh --force-reinit 실행." ;;
+    esac
+}
+
+# settings_require_v05  (v0.6.6 신규)
+#   strict "0.5" 검증. 16-stage flow 진입 의무 영역에서 호출.
+settings_require_v05() {
+    _sr5_file=$(settings_path)
+    if [ ! -f "$_sr5_file" ]; then
+        _settings_die 3 "settings.json 없음: $_sr5_file (init_project.sh 실행 필요)"
+    fi
+    _sr5_ver=$(sed -n 's/^  "schema_version": *"\([^"]*\)".*/\1/p' "$_sr5_file")
+    if [ "$_sr5_ver" != "0.5" ]; then
+        _settings_die 3 "schema_version=\"$_sr5_ver\" (16-stage flow 요구: \"0.5\"). init_project.sh --force-reinit 실행."
     fi
 }
 
@@ -125,6 +143,24 @@ settings_read_stage_assign() {
         return 0
     fi
     sed -n 's/^    "'"$_sra_key"'": *"\([^"]*\)".*/\1/p' "$_sra_file" | sed -n '1p'
+}
+
+# settings_read_stage_assign_compat NEO_KEY LEGACY_KEY  (v0.6.6 신규)
+#   16-stage neo 키 우선 read. 비어있으면 13-stage legacy 키 fallback.
+#   neo + legacy 모두 비면 빈 문자열 반환.
+#   호출 예: settings_read_stage_assign_compat stage11_impl stage8_impl
+settings_read_stage_assign_compat() {
+    _srac_neo="$1"
+    _srac_legacy="$2"
+    if [ -z "$_srac_neo" ] || [ -z "$_srac_legacy" ]; then
+        _settings_die 5 "settings_read_stage_assign_compat: NEO_KEY/LEGACY_KEY 인자 누락."
+    fi
+    _srac_v=$(settings_read_stage_assign "$_srac_neo")
+    if [ -n "$_srac_v" ]; then
+        printf '%s' "$_srac_v"
+        return 0
+    fi
+    settings_read_stage_assign "$_srac_legacy"
 }
 
 # settings_write_key KEY VALUE
@@ -201,7 +237,9 @@ settings_write_stage_assign_block() {
         _settings_die 4 "settings.json 없음: $_swsa_file"
     fi
 
-    # Verify all 5 keys exist exactly once each.
+    # Verify team_mode + legacy 4 keys exist exactly once each.
+    # neo 4 키(stage11_impl/stage12_review/stage13_fix/stage14_verify)는 v0.5 schema에서만 존재.
+    # v0.4 schema 호환을 위해 neo 키는 best-effort (있으면 함께 갱신, 없으면 스킵).
     _swsa_h=$(grep -c '^  "team_mode":' "$_swsa_file" || true)
     if [ "$_swsa_h" != "1" ]; then
         _settings_die 5 "키 'team_mode' hits=$_swsa_h (기대 1). 스키마 손상."
@@ -210,6 +248,14 @@ settings_write_stage_assign_block() {
         _swsa_h=$(grep -c '^    "'"$_swsa_k"'":' "$_swsa_file" || true)
         if [ "$_swsa_h" != "1" ]; then
             _settings_die 5 "키 'stage_assignments.$_swsa_k' hits=$_swsa_h (기대 1). 스키마 손상."
+        fi
+    done
+    # neo 키 감지 (v0.5 schema 여부 판정).
+    _swsa_has_neo=1
+    for _swsa_nk in stage11_impl stage12_review stage13_fix stage14_verify; do
+        _swsa_nh=$(grep -c '^    "'"$_swsa_nk"'":' "$_swsa_file" || true)
+        if [ "$_swsa_nh" != "1" ]; then
+            _swsa_has_neo=0
         fi
     done
 
@@ -225,6 +271,14 @@ s|^    "stage10_fix": *"[^"]*",$|    "stage10_fix": "'"$_swsa_s10"'",|
 s|^    "stage10_fix": *"[^"]*"$|    "stage10_fix": "'"$_swsa_s10"'"|
 s|^    "stage11_verify": *"[^"]*",$|    "stage11_verify": "'"$_swsa_s11"'",|
 s|^    "stage11_verify": *"[^"]*"$|    "stage11_verify": "'"$_swsa_s11"'"|
+s|^    "stage11_impl": *"[^"]*",$|    "stage11_impl": "'"$_swsa_s8"'",|
+s|^    "stage11_impl": *"[^"]*"$|    "stage11_impl": "'"$_swsa_s8"'"|
+s|^    "stage12_review": *"[^"]*",$|    "stage12_review": "'"$_swsa_s9"'",|
+s|^    "stage12_review": *"[^"]*"$|    "stage12_review": "'"$_swsa_s9"'"|
+s|^    "stage13_fix": *"[^"]*",$|    "stage13_fix": "'"$_swsa_s10"'",|
+s|^    "stage13_fix": *"[^"]*"$|    "stage13_fix": "'"$_swsa_s10"'"|
+s|^    "stage14_verify": *"[^"]*",$|    "stage14_verify": "'"$_swsa_s11"'",|
+s|^    "stage14_verify": *"[^"]*"$|    "stage14_verify": "'"$_swsa_s11"'"|
 ' "$_swsa_file" > "$_swsa_tmp" || {
         rm -f "$_swsa_tmp"
         _settings_die 5 "sed 쓰기 실패. 원본 보존."
@@ -244,6 +298,21 @@ s|^    "stage11_verify": *"[^"]*"$|    "stage11_verify": "'"$_swsa_s11"'"|
         || [ "$_swsa_got_s11" != "$_swsa_s11" ]; then
         rm -f "$_swsa_tmp"
         _settings_die 5 "team_mode/stage_assignments 블록 교체 후 값 불일치. 원본 보존."
+    fi
+
+    # neo 키 검증 (v0.5 schema에서만).
+    if [ "$_swsa_has_neo" = "1" ]; then
+        _swsa_got_n8=$(sed -n 's/^    "stage11_impl": *"\([^"]*\)".*/\1/p' "$_swsa_tmp" | sed -n '1p')
+        _swsa_got_n9=$(sed -n 's/^    "stage12_review": *"\([^"]*\)".*/\1/p' "$_swsa_tmp" | sed -n '1p')
+        _swsa_got_n10=$(sed -n 's/^    "stage13_fix": *"\([^"]*\)".*/\1/p' "$_swsa_tmp" | sed -n '1p')
+        _swsa_got_n11=$(sed -n 's/^    "stage14_verify": *"\([^"]*\)".*/\1/p' "$_swsa_tmp" | sed -n '1p')
+        if [ "$_swsa_got_n8"  != "$_swsa_s8"  ] \
+            || [ "$_swsa_got_n9"  != "$_swsa_s9"  ] \
+            || [ "$_swsa_got_n10" != "$_swsa_s10" ] \
+            || [ "$_swsa_got_n11" != "$_swsa_s11" ]; then
+            rm -f "$_swsa_tmp"
+            _settings_die 5 "stage_assignments neo(v0.5) 블록 교체 후 값 불일치. 원본 보존."
+        fi
     fi
 
     if ! mv "$_swsa_tmp" "$_swsa_file"; then
