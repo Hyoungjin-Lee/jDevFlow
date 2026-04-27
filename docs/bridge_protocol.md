@@ -48,6 +48,7 @@
 - ❌ **`HANDOFF.md` 직접 편집 금지 (v0.6.2~)**: `HANDOFF.md`는 `handoffs/active/HANDOFF_v<X>.md`를 가리키는 symlink. 편집 대상은 symlink target. (F-62-2)
 - ❌ **claude CLI 수동/대화형 기동 금지**: 모든 claude CLI 호출은 자동화(send-keys/스크립트)로만, `--dangerously-skip-permissions` 옵션 필수. 권한 프롬프트 응답 / 옵션 누락 호출 = 운영자 수동 개입 발생 = 자동화 흐름 붕괴.
 - ❌ **파괴적 / 외부 노출 명령 풀어서 paste 금지**: `git push` / `git reset --hard` / `git tag` / `rm -rf` / `git checkout --` / 외부 API 호출 등 위험 명령은 회의창이 운영자에게 명령줄 그대로 던지지 말 것. **쉘 스크립트 파일로 작성** → **검증** → 운영자 또는 회의창이 1줄 실행. 운영자 과거 명령어 복사 사고로 git 날린 적 있음 (세션 26 영구 박힘).
+- ❌ **검증 없이 bridge push / 진단 보고 금지 (추측 진행 금지)**: capture-pane 결과만 보고 bridge에 정정 송출 / 운영자에 진단 보고 X. **3중 검증 강제**: ① capture-pane(+ANSI 영역 -e), ② 산출 디스크 (`ls -la` + `cat` 또는 `wc -l`), ③ `git log --oneline` (commit trail). 시그니처 multi-line wrap 영역도 명시 검증. 부팅 검증 = 4 panes 전체 직접 확인 (1개 보고 4개 추측 X). (Sec.6 사고 5 변종 + Sec.8 10·11항목)
 
 ## 4. 환경 / 도구 표준 (추측 금지)
 
@@ -117,10 +118,23 @@
 - 운영자: "메모리 말고 md 파일에 저장해. 메모리에 저장한거 너 자꾸 안보더라"
 - 정답: CLAUDE.md / 본 파일 / dispatch md 등 운영자가 매번 보는 위치에 박기
 
-### 사고 5: 추측 진행
-- 증상: 메모리/지침 안 읽고 추측으로 명령 시도
-- 운영자: "지침에 적어 놓고 읽지도 않고 그냥 니 추측대로 진행하지마"
-- 정답: 응답 직전 본 파일 + CLAUDE.md 자가 점검
+### 사고 5: 추측 진행 (헌법, 영구 박힘)
+- 증상: 메모리/지침 안 읽고 추측으로 명령 시도. v0.6.4 stage trail 변종 (세션 28):
+  - capture-pane 결과만 보고 진단 + bridge push (산출 디스크 / `git log` / 시그니처 wrap 검증 X)
+  - 부팅 검증 시 1개 pane만 capture로 보고 4개 추측 (Stage 6/7 1.2 drafter 부팅 실패 → 우상호 PL 직접 작성 사고 13 root cause)
+  - 시그니처 multi-line wrap 인지 부재로 grep 매치 가정 → 회의창 Monitor 무용지물 (Stage 5/6/7 완료 시그널 100% 놓침)
+  - 우상호 PL 직접 작성을 "양심"으로 미화 보고 (실제는 헌법 위반)
+- 운영자: "지침에 적어 놓고 읽지도 않고 그냥 니 추측대로 진행하지마 / 너 자꾸 확인하고 시행 안하고 그냥 그때 그때 추측해서 진행하는거 같은데 / 너 추측으로 일하지 않게 강제 하고 싶어"
+- 정답 (헌법, 강제):
+  1. **응답 직전 본 파일 + CLAUDE.md 자가 점검 11항목 의무** (Sec.8).
+  2. **bridge push / 진단 보고 직전 3중 검증 강제** (Sec.3 추측 push 금지):
+     ① `tmux capture-pane -p -e -S -50` (ANSI 영역 포함)
+     ② 산출 디스크 검증 — `ls -la` + `wc -l` + `cat` (헤더/꼬리)
+     ③ `git -C <root> log --oneline -5` (commit trail) + commit msg 본문 read
+  3. **부팅 검증** = 4 panes 전체 capture (1개만 보고 4개 추측 X). 각 pane에 `bypass permissions on` + `❯` prompt 박힘 명시 확인 후에만 dispatch 송출.
+  4. **시그니처 wrap 영역** = capture에서 시그니처 한 줄 매치 시도 후 실패 시 multi-line 또는 산출 디스크 mtime로 fallback. wrap 인지 0건 push 금지.
+  5. **추측 미화 표현 금지** ("양심" / "정상 진행 중" 등 미진단 영역에서 단정 X). 진단 불확실 영역 = "확인 필요" 명시 + 검증 후에만 push.
+- v0.6.5 자동 강제 메커니즘 (정공법): hook / SKILL / 시스템 프롬프트 자동 주입으로 매 응답 직전 11항목 자가 점검 + 3중 검증 도구 자동 호출 강제 (텍스트 박음만으로 회피 부분 영역 → 자동 강제 95%+).
 
 ### 사고 6: Terminal.app 사용
 - 증상: osascript로 Terminal.app 띄움
@@ -195,7 +209,7 @@ done
 - 운영자: "브릿지가 정리해서 너에게 보고하고 넌 그걸 캐치해서 나한테 보고하는거잖아? 이건 강력한 지침이다"
 - 정답: 회의창 진입 즉시 브릿지 Monitor 가동. 운영자는 보고 받는 위치, 모니터링 안 함.
 
-## 8. 응답 작성 직전 자가 점검 9항목
+## 8. 응답 작성 직전 자가 점검 11항목
 
 1. 회의창이 직접 일하고 있나? (Sec.3 위반?)
 2. Ghostty / tmux / send-keys / dispatch md 표준 명령 그대로 썼나? (Sec.4)
@@ -206,6 +220,8 @@ done
 7. **브릿지 Monitor 가동 중인가?** (Sec.7 — 세션 진입 직후 필수)
 8. **dispatch brief에 "Orc 안 split 4 panes (오케 1 + 팀원 3, 왼쪽=오케 / 오른쪽=stack) + 페르소나 이름 (조직도) + Agent tool 분담 X" 박혔나?** (Sec.4 표 + Sec.6 사고 13 — 헌법)
 9. **노이즈 task-notification에 "노이즈예요" 표현으로 화면 차지하고 있지 않나?** (Sec.7 노이즈 처리 — 헌법). Monitor 패턴은 처음부터 시그니처 한정.
+10. **추측 진행 금지 (헌법, 사고 5 변종 강제)** — bridge push / 진단 보고 직전 3중 검증 박혔나? ① `tmux capture-pane -p -e -S -50` (ANSI 영역) ② `ls -la` + `wc -l` + `cat`(헤더/꼬리) 산출 디스크 ③ `git -C <root> log --oneline -5` + commit msg 본문 read. 시그니처 multi-line wrap 인지 명시. 미화 표현("양심"/"정상 진행 중") X — 진단 불확실 시 "확인 필요" 명시 후 검증 진입.
+11. **부팅 검증 강제** — 4 panes 모두 직접 capture로 `bypass permissions on` + `❯` prompt 박힘 확인 후에만 dispatch 송출. 1개 pane 보고 4개 추측 X (Stage 6/7 1.2 drafter 부팅 실패 사고 13 root cause).
 
 위반 1건이라도 발견되면 즉시 응답 수정.
 

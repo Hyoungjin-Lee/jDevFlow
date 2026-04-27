@@ -6,6 +6,7 @@
 > 3. 세 파일 읽기 완료 전 어떤 작업도 하지 마라.
 > 4. 읽지 못하면 "읽지 못했습니다"라고 명시하고 멈춰라.
 > 5. 이 세션에서 실제로 읽지 않았으면 "지침을 따랐다"고 절대 말하지 마라.
+> 6. **추측 진행 금지 강제 (헌법, 사고 5 변종)** — bridge push / 진단 보고 직전 `bridge_protocol.md` Sec.8 자가 점검 11항목 의무. 특히 10항(3중 검증: capture+디스크+git log) + 11항(부팅 검증 4 panes 전체) 매 응답 직전 강제. 미화 표현("양심"/"정상 진행 중") 금지 — 진단 불확실 시 "확인 필요" 명시 후 검증 진입. (세션 28 운영자 결정)
 
 > **새 세션 읽기 순서 (R2):** CLAUDE.md → **`docs/bridge_protocol.md`** (회의창 영구 지침) → **`docs/operating_manual.md`** (운영 매뉴얼 본체) → `handoffs/active/HANDOFF_v<X>.md` (현재 진행 상태).
 > Skill hook: `.skills/tool-picker/SKILL.md` — jOneFlow stage/mode/risk_level 판단용.
