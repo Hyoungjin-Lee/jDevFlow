@@ -1,10 +1,11 @@
 ---
 version: v0.6.5
-status: active
+status: released
 phase: released-lite
 date: 2026-04-27
 prev_version: v0.6.4 (Stage 10d COMPLETE, 소급 태깅 대기 — commit 5a738f0)
 next_session_recommended_model: Sonnet medium
+archived_at: 2026-04-27 (v0.6.6 reviewer Round A #1 — release 완료, active/ → archive/ 이동)
 ---
 
 ## 다음 세션 진입 즉시 할 일

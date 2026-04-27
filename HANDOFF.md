@@ -1,1 +1,1 @@
-handoffs/active/HANDOFF_v0.6.4.md
+handoffs/active/HANDOFF_v0.6.6.md
