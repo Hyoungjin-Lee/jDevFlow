@@ -103,13 +103,40 @@ class OSAScriptNotifier(Notifier):
 
 
 class WindowsNotifier(Notifier):
-    """Q4 P1 — plyer 0순위 / win10toast 1순위 (drafter 권고). v0.6.4 = noop stub."""
+    """Q4 P1 — plyer 0순위 / win10toast 1순위 (Sec.10.2 권고). v0.6.5+ 본 가동.
+
+    M5 갱신: ``platform_compat.send_windows_notification()``에 위임 — backend 호출
+    detail이 격리되며 R-11 dedupe도 OSAScriptNotifier와 동일 패턴 적용.
+    """
 
     BACKEND_PRIORITY = ("plyer", "win10toast")
+    DEDUPE_TTL = timedelta(minutes=5)
+    DEDUPE_MAX = 128
+
+    def __init__(self) -> None:
+        self._sent_keys: Dict[str, datetime] = {}
+
+    def _is_recently_sent(self, dedupe_key: str) -> bool:
+        """R-11 정합 — dict + 5분 TTL (Windows에서도 dedupe 동일 보장)."""
+        now = datetime.now()
+        last_sent = self._sent_keys.get(dedupe_key)
+        if last_sent is not None and (now - last_sent) < self.DEDUPE_TTL:
+            return True
+        self._sent_keys[dedupe_key] = now
+        if len(self._sent_keys) > self.DEDUPE_MAX:
+            oldest = min(self._sent_keys, key=lambda k: self._sent_keys[k])
+            del self._sent_keys[oldest]
+        return False
 
     def notify(self, q: PendingQuestion) -> bool:
-        # v0.6.4 = stub (운영자 결정 P1 유지). 실제 backend 채택은 Stage 8 자율.
-        return False
+        if self._is_recently_sent(q.dedupe_key()):
+            return False
+        # platform_compat 위임 — plyer/win10toast skeleton (v0.6.5+ 본 가동).
+        from .platform_compat import send_windows_notification
+        return send_windows_notification(
+            title=f"jOneFlow {q.q_id}",
+            message=q.description,
+        )
 
 
 # ---------------------------------------------------------------------------
