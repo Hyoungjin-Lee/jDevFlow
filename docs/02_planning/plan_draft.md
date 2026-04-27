@@ -145,7 +145,7 @@ Rows = stages in canonical Strict order. Columns = bundles. ✅ = complete, 🔄
 
 ## 5. Risks & mitigations
 
-### 5-1. Top 3 risks (WORKFLOW.md Stage 4 requires top-3 with mitigation each)
+### 5-1. Top 3 risks (docs/operating_manual.md Sec.2 requires top-3 with mitigation each)
 
 | # | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|------|-----------|--------|------------|-------|
@@ -244,7 +244,7 @@ Carry-over from brainstorm Sec. 9-1 through Sec. 9-6 plus new ones surfaced whil
 
 > **Draft** — baked in at Stage 2 per session-1 agreement. Will be re-reviewed in Stage 3 and filled in (✅/❌ + short note) at Stage 4 before presenting to the user for Stage 4.5.
 
-### 8-1. WORKFLOW.md Sec. 6 baseline (Stage 4 completion criteria)
+### 8-1. docs/operating_manual.md Sec.2.7 baseline (Stage 4 completion criteria)
 
 - [ ] **AC.1** — In-scope and out-of-scope are clearly separated. (Deliverables Sec. 3 vs. Non-goals Sec. 2.)
 - [ ] **AC.2** — Success criteria are measurable, not aspirational. (North star = "30-minute onboarding" is measurable by a timed dry-run. Bundle deliverables are enumerated with IDs.)

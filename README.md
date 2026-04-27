@@ -78,7 +78,7 @@ Claude will guide you from there. See [`docs/notes/session_bootstrap.md`](./docs
 ```
 your-project/
 ├── CLAUDE.md               ← Claude operating guide (read first every session)
-├── WORKFLOW.md             ← Tiered workflow model + Canonical Strict Flow (13 stages)
+├── WORKFLOW.md             ← (archived) Legacy 13-stage model — see docs/operating_manual.md Sec.5
 ├── HANDOFF.md              ← Session state, current mode, next tasks (read second)
 ├── README.md               ← This file
 │
@@ -157,7 +157,7 @@ The **Strict Flow** is the 13-stage canonical reference:
 
 **Lite** keeps only Implementation → (light) Code Review → Archive. **Standard** adds planning, design, and a required approval gate. **Strict** adds stricter conditions and Opus-level final validation at Stage 11.
 
-See [WORKFLOW.md](./WORKFLOW.md) for the full model, including stage types, execution conditions, completion criteria, and re-entry rules.
+See [`docs/operating_manual.md`](./docs/operating_manual.md) Sec.5 for the full 16-stage model, including stage types, execution conditions, completion criteria, and re-entry rules.
 
 ---
 

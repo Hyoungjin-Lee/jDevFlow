@@ -244,7 +244,7 @@ OQ.N3는 "Lean: v0.4 이월"로 commit 해결 상태 — 진짜 open question이
 
 ### 5-4. F-o4 — Sec. 8 Approval checklist 구조에 대해서는 이견 없음
 
-7개 항목 구조 (WORKFLOW 기본 4 + Strict-hybrid 추가 3)는 올바르며 WORKFLOW.md Sec. 6 Stage 4 기준에 부합. AC.1–AC.7 각각이 측정 가능. plan_final이 ✅/❌ + 한 줄 메모로 채움.
+7개 항목 구조 (WORKFLOW 기본 4 + Strict-hybrid 추가 3)는 올바르며 docs/operating_manual.md Sec.2.7 Stage 4 기준에 부합. AC.1–AC.7 각각이 측정 가능. plan_final이 ✅/❌ + 한 줄 메모로 채움.
 
 ---
 

@@ -244,7 +244,7 @@ OQ.N3 is marked as "Lean: deferred to v0.4." Since it is a committed resolution,
 
 ### 5-4. F-o4 — no finding against Sec. 8 Approval checklist structure
 
-The 7-item structure (4 WORKFLOW baseline + 3 Strict-hybrid extras) is correct and matches WORKFLOW.md Sec. 6 Stage 4 criteria. AC.1–AC.7 are each measurable. plan_final will fill them with ✅/❌ + one-line notes.
+The 7-item structure (4 WORKFLOW baseline + 3 Strict-hybrid extras) is correct and matches docs/operating_manual.md Sec.2.7 Stage 4 criteria. AC.1–AC.7 are each measurable. plan_final will fill them with ✅/❌ + one-line notes.
 
 ---
 

@@ -3,7 +3,7 @@ version: v0.6.5
 status: released
 phase: released-lite
 date: 2026-04-27
-prev_version: v0.6.4 (Stage 10d COMPLETE, 소급 태깅 대기 — commit 5a738f0)
+prev_version: v0.6.4 (Stage 10d COMPLETE, 태그 생성 완료 — commit 5a738f0)
 next_session_recommended_model: Sonnet medium
 archived_at: 2026-04-27 (v0.6.6 reviewer Round A #1 — release 완료, active/ → archive/ 이동)
 ---
@@ -86,8 +86,6 @@ pwd  # → /Users/geenya/projects/Jonelab_Platform/jOneFlow
 - **박지영** — 기획팀 PL → **CTO 실장 (승진)**
 - **이종선** — 기획팀 PL **신규 입사**
 - **이희윤** — PM 브릿지 **신규 입사**
-- **백현진** (전 CTO 실장) — **퇴사**
-- **스티브 리** (전 PM 브릿지) — **퇴사**
 
 ### 3. v0.6.4 commit 4건 인수
 

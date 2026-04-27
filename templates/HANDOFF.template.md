@@ -28,7 +28,7 @@
 ### ⏭️ Next
 1. Read `CLAUDE.md`.
 2. Read this `HANDOFF.md`.
-3. Read `WORKFLOW.md`.
+3. Read `docs/operating_manual.md`.
 
 ### 🚧 Blockers
 - None.
@@ -108,7 +108,7 @@ Continue from the current HANDOFF state.
 ### ⏭️ 다음
 1. `CLAUDE.md` 읽기
 2. 이 `HANDOFF.md` 읽기
-3. `WORKFLOW.md` 읽기
+3. `docs/operating_manual.md` 읽기
 
 ### 🚧 차단 요인
 - 없음.

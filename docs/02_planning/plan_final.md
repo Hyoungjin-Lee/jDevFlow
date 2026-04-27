@@ -174,7 +174,7 @@ Rows = stages in canonical Strict order. Columns = bundles. ✅ = complete, 🔄
 
 ## 5. Risks & mitigations
 
-### 5-1. Top 3 risks (WORKFLOW.md Stage 4 baseline requirement)
+### 5-1. Top 3 risks (docs/operating_manual.md Sec.2 baseline requirement)
 
 | # | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|------|-----------|--------|------------|-------|
@@ -271,7 +271,7 @@ Shrunk from plan_draft Sec. 7. Removed/resolved entries: **OQ.S11.2** (→ commi
 
 ## 8. Approval checklist (Stage 4 → Stage 4.5)
 
-### 8-1. WORKFLOW.md Sec. 6 baseline (Stage 4 completion criteria)
+### 8-1. docs/operating_manual.md Sec.2.7 baseline (Stage 4 completion criteria)
 
 - [x] **AC.1** — In-scope and out-of-scope are clearly separated. ✅ *Deliverables Sec. 3 (D1.a–D1.c, D1.x, D4.a–D4.c, D4.x1–x4, DC.1–DC.6) vs. Non-goals Sec. 2 (N1–N14); no overlap.*
 - [x] **AC.2** — Success criteria are measurable, not aspirational. ✅ *North-star is a timed dry-run (30 minutes); per-deliverable IDs are enumerated; milestones are a bundle × stage matrix.*
@@ -317,6 +317,6 @@ Shrunk from plan_draft Sec. 7. Removed/resolved entries: **OQ.S11.2** (→ commi
 
 **Stage 4.5 — User approval gate** (joint for Bundle 1 + 4, per M.1).
 
-Present this document to the user. Request explicit approval with reference to AC.1–AC.7 and AN.1–AN.3. On approval, proceed to pre-Stage-5 housekeeping (DC.5 + DC.6 drafting) and then Stage 5 Technical Design per bundle. On rejection, return to Stage 2 (or Stage 1 if direction is wrong), per WORKFLOW.md Sec. 7.1.
+Present this document to the user. Request explicit approval with reference to AC.1–AC.7 and AN.1–AN.3. On approval, proceed to pre-Stage-5 housekeeping (DC.5 + DC.6 drafting) and then Stage 5 Technical Design per bundle. On rejection, return to Stage 2 (or Stage 1 if direction is wrong), per docs/operating_manual.md Sec.2.
 
 ---

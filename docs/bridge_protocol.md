@@ -16,7 +16,7 @@
 에이전트팀 (tmux jdevflow:1.1 오케 + 팀원 N) — 이종선(기획PL) / 우상호(디자인PL) / 공기성(개발PL) + 팀원
 ```
 
-> **v0.6.5 인사 변경 (2026-04-27 운영자 결정):** 박지영 = 기획팀 PL → CTO 실장 승진 / 이종선 = 기획팀 PL 신규 / 이희윤 = PM 브릿지 신규 / 백현진(전 CTO 실장) + 스티브 리(전 PM 브릿지) 퇴사. 상세 = `docs/operating_manual.md` Sec.1.5.
+> **v0.6.5 인사 변경 (2026-04-27 운영자 결정):** 박지영 = 기획팀 PL → CTO 실장 승진 / 이종선 = 기획팀 PL 신규 / 이희윤 = PM 브릿지 신규.
 
 | 계층 | 역할 | 통신 방향 |
 |---|---|---|
@@ -88,7 +88,7 @@
 | claude CLI | `claude --teammate-mode tmux --dangerously-skip-permissions` (★ 자동화 호출 + 옵션 필수, 수동/대화형 기동 금지) |
 | send-keys 패턴 | `send-keys '<msg>'` → `sleep 0.3` → `send-keys Enter` (분리 필수) |
 | dispatch md 위치 | `dispatch/<YYYY-MM-DD>_<버전>_<작업명>.md` |
-| 응답 톤 | 한국어 + 부드러운 ~네요/~죠 체 |
+| 응답 톤 | 한국어 + 부드러운 ~네요/~죠 체. **"박음" / "박혀" / "박아" / "박을게요" / "박힙니다" 계열 표현 전면 금지** — "기록했어요" / "추가했어요" / "저장했어요" / "반영했어요"로 대체. |
 | 오케 안 split panes (필수) | Orc-XXX-<plan\|design\|dev> 세션 안 split panes 4개 (오케 1 + 팀원 3). **왼쪽=오케 PL** 큰 pane / **오른쪽=팀원 3명 세로 stack**. `pane-border-status top` + `pane-border-format ' #{@persona} '` + `set-option -p @persona '<페르소나명>'` (claude CLI auto-rename 면역). 페르소나 = operating_manual.md Sec.1.2 그대로 (예: 박지영-기획PL / 장그래-drafter / 김민교-reviewer / 안영이-finalizer). Agent tool 분담 옵션 폐기 (모니터링 가시성 위반). 운영자 헌법. (Sec.6 사고 13) |
 | **dispatch 작성 정책 (필수, 헌법, 모든 프로세스 동일 적용)** | **A 패턴 = drafter → reviewer → finalizer 3단계** (모든 stage / 모든 팀 동일): (1) **drafter** 초안 작성 (≤ 800줄). (2) **reviewer** 검토 + **본인이 직접 수정** (drafter 본문 정정 권한 + R-N 마커 trail, ≤ 600줄). reviewer 수정한 본문을 finalizer에 넘김. (3) **finalizer** 마감 doc (verdict + Score + AC + 검증 trail + 결정, ≤ 500줄, **본문 작성 X**) — reviewer 수정본 받아서 마감만. (4) **verbatim 흡수 강제 X** — drafter 본문 그대로 복사 + inline 정정 패턴 금지 (다음 사람이 위쪽 본문 읽으면 정정 못 보고 잘못 적용 = 본 v0.6.4 Stage 5 사고). detail은 drafter+review에 두고 final은 reference만. **적용 범위:** 기획(Stage 2~4) / 디자인(Stage 6~7) / 개발(Stage 8 구현 / Stage 9 코드 리뷰 / Stage 10 디버그 / Stage 11 검증) / QA(Stage 12) / release(Stage 13) 모두 동일. v0.6.5 이후 신규 프로세스도 동일. (Sec.6 사고 14, 세션 28 운영자 결정 — 단순함이 정공법) |
 

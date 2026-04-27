@@ -174,7 +174,7 @@ brainstorm Sec. 2 계승 (N1–N11) + Stage-2 추가 (N12–N14). F-o3로 기존
 
 ## 5. 리스크 & 완화책
 
-### 5-1. Top 3 리스크 (WORKFLOW.md Stage 4 기준 요건)
+### 5-1. Top 3 리스크 (docs/operating_manual.md Sec.2 기준 요건)
 
 | # | 리스크 | Likelihood | Impact | 완화 | 담당 |
 |---|--------|-----------|--------|------|------|
@@ -271,7 +271,7 @@ plan_draft Sec. 7에서 축소. 제거/해결: **OQ.S11.2** (→ M.5로 commit, 
 
 ## 8. Approval checklist (Stage 4 → Stage 4.5)
 
-### 8-1. WORKFLOW.md Sec. 6 기본 (Stage 4 완료 기준)
+### 8-1. docs/operating_manual.md Sec.2.7 기본 (Stage 4 완료 기준)
 
 - [x] **AC.1** — In-scope / out-of-scope가 명확히 분리. ✅ *Deliverables Sec. 3 (D1.a–D1.c, D1.x, D4.a–D4.c, D4.x1–x4, DC.1–DC.6) vs Non-goals Sec. 2 (N1–N14); 겹침 없음.*
 - [x] **AC.2** — 성공 기준이 측정 가능, 열망형이 아님. ✅ *North-star는 타임드 dry-run (30분); deliverable ID 열거; milestone은 번들 × 스테이지 매트릭스.*
@@ -317,6 +317,6 @@ plan_draft Sec. 7에서 축소. 제거/해결: **OQ.S11.2** (→ M.5로 commit, 
 
 **Stage 4.5 — 사용자 승인 게이트** (Bundle 1 + 4 공동, M.1).
 
-본 문서를 사용자에게 제시. AC.1–AC.7 및 AN.1–AN.3를 참조해 명시적 승인을 요청. 승인 시 pre-Stage-5 housekeeping(DC.5 + DC.6 드래프트)으로 진행 후 번들별 Stage 5 Technical Design. 거절 시 Stage 2로 복귀 (방향 자체가 틀리면 Stage 1), WORKFLOW.md Sec. 7.1에 따름.
+본 문서를 사용자에게 제시. AC.1–AC.7 및 AN.1–AN.3를 참조해 명시적 승인을 요청. 승인 시 pre-Stage-5 housekeeping(DC.5 + DC.6 드래프트)으로 진행 후 번들별 Stage 5 Technical Design. 거절 시 Stage 2로 복귀 (방향 자체가 틀리면 Stage 1), docs/operating_manual.md Sec.2에 따름.
 
 ---

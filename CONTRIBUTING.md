@@ -9,7 +9,7 @@ release-note discipline, or `HANDOFF.md` maintenance workflow in one place.
 ## 2. Quick start
 
 1. Clone the repository.
-2. Read `CLAUDE.md`, then `HANDOFF.md`, then `WORKFLOW.md`.
+2. Read `CLAUDE.md`, then `HANDOFF.md`, then `docs/operating_manual.md`.
 3. Open the current stage documents under `docs/`.
 4. Run project setup only through documented scripts under `scripts/`.
 5. Treat `docs/` as the source of truth for planning, design, implementation,
@@ -33,7 +33,7 @@ Key paths:
 
 ## 4. Stage flow summary
 
-`WORKFLOW.md` is canonical. In short:
+`docs/operating_manual.md` Sec.5 is canonical (16-stage v0.6.5+). In short:
 
 - Claude handles planning, design, review, validation, and QA.
 - Codex handles implementation and revision.
@@ -54,7 +54,7 @@ Stage 1-4 docs remain prose-only. Do not add YAML frontmatter to:
 - `docs/notes/dev_history.md`
 - `HANDOFF.md`
 - `CLAUDE.md`
-- `WORKFLOW.md`
+- `docs/operating_manual.md`
 - Any `README.md`
 
 Required frontmatter keys for Stage-5+ docs:
