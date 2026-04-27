@@ -9,12 +9,14 @@
 ```
 운영자(CEO, 이형진)
    ↕ 회의
-회의창 (Code 데스크탑 앱)
+회의창 (Code 데스크탑 앱) — CTO 실장 박지영 (Sonnet, medium)
    ↓ send-keys (회의창 → 브릿지)
-브릿지 (tmux bridge 세션, claude CLI)
+브릿지 (tmux bridge 세션, claude CLI) — PM 이희윤 (Opus 4.7 1M, xhigh)
    ↓ send-keys (브릿지 → 에이전트팀)
-에이전트팀 (tmux jdevflow:1.1 오케 + 팀원 N)
+에이전트팀 (tmux jdevflow:1.1 오케 + 팀원 N) — 이종선(기획PL) / 우상호(디자인PL) / 공기성(개발PL) + 팀원
 ```
+
+> **v0.6.5 인사 변경 (2026-04-27 운영자 결정):** 박지영 = 기획팀 PL → CTO 실장 승진 / 이종선 = 기획팀 PL 신규 / 이희윤 = PM 브릿지 신규 / 백현진(전 CTO 실장) + 스티브 리(전 PM 브릿지) 퇴사. 상세 = `docs/operating_manual.md` Sec.1.5.
 
 | 계층 | 역할 | 통신 방향 |
 |---|---|---|

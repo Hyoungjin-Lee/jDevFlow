@@ -1,12 +1,16 @@
 ---
 version: v0.6.4
-status: active
+status: paused
 date: 2026-04-27
 prev_session: 28 (Stage 5~9 + 헌법 hotfix 다수)
+paused_at: 2026-04-27 (Stage 9 COMPLETE 후 v0.6.5 brainstorm 진입 결정으로 정지)
+resume_after: v0.6.5 결합 설계 완료 후 release 흐름 재진입 (Stage 10/11/12/13)
 next_session_recommended_model: Opus 4.7 1M xhigh (운영자 정책)
 ---
 
-# v0.6.4 HANDOFF — Jonelab AI팀 운영자 대시보드
+# v0.6.4 HANDOFF — Jonelab AI팀 운영자 대시보드 (PAUSED)
+
+> **2026-04-27 운영자 결정:** v0.6.4 release 흐름 잠시 정지 + v0.6.5 brainstorm 정식 진입. 본 파일 = Stage 9 COMPLETE 시점 스냅샷. 재진입 시점은 v0.6.5 결합 설계(16-stage 매트릭스 + jOneFlow 헌법 결합) 완료 후. v0.6.5 진입 인계 = `handoffs/active/HANDOFF_v0.6.5.md`.
 
 ## ⚠️ 작업 디렉토리 (가장 먼저 확인)
 
