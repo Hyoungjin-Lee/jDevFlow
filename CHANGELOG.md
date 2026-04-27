@@ -7,7 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> v0.6.6 인수 영역 — R3 active/archive 디렉터리 실제 변경 (paper plan 단계만 v0.6.5 종결, 실제 mv는 별도 라운드). pptx skill 구현 (`.skills/pptx-storyboard/SKILL.md`). settings.json schema v0.5 정밀화 (16-stage stage_assignments 매핑).
+> v0.6.7 인수 영역 — pptx skill 구현 (`.skills/pptx-storyboard/SKILL.md`, v0.6.6 미진행 이관). 추가 의제는 brainstorm 영역.
+
+## [0.6.6] - 2026-04-27
+
+> v0.6.6 = Standard 모드 첫 실전 테스트 — 인프라 정밀화 5건 의제. Round A 병렬(#1+#2+#6) → Round B 순차(#4 → #5). A 패턴(drafter → reviewer → finalizer) 의제별 별도 commit 강제 (R2 단일 commit 사고 재발 방지). pptx skill = v0.6.7 이관.
+
+### Round A (병렬 #1+#2+#6)
+
+#### 의제 #1 — R3 디렉터리 실제 변경 (사전 승인)
+- `handoffs/active/` + `handoffs/archive/` 트리 정합 + `dispatch/archive/v0.6.1~v0.6.4` 신규 + 기존 completed 파일 git mv.
+- `HANDOFF_v0.6.5.md` archive 이동 + `HANDOFF.md` symlink → `handoffs/active/HANDOFF_v0.6.6.md` 갱신.
+- finalizer Score **91% PASS**.
+- **commits:** drafter `0a622ff` / reviewer `ac83dcd` / finalizer `7a9ec49`.
+
+#### 의제 #2 — Stop hook chain (hook_stop.sh → completion_signal.sh)
+- `scripts/hook_stop.sh` 끝에 `completion_signal.sh` 호출 추가 (CLAUDE_COMPLETION_STAGE/PHASE/ACTOR 환경변수 전달).
+- `completion_signal.sh` 가드 (env 미설정 세션 no-op + STAGE/PHASE 필수 + chmod 회수).
+- finalizer Score **93% PASS / halt 통과** (시그니처 실제 발화 검증).
+- **commits:** drafter `c24e7b4` / reviewer `24befca` / finalizer `dfb9245`.
+
+#### 의제 #6 — A 패턴 분리 commit 강제 메커니즘
+- `docs/guides/a_pattern_checklist.md` 신규 (196줄) — drafter/reviewer/finalizer 별도 commit 헌법 + dispatch 템플릿 권고 + R-N 마커 + verbatim 흡수 X + 출처.
+- R2 단일 commit 사고 재발 방지 — 헌법 영역 영구 박힘.
+- finalizer Score **89% PASS**.
+- **commits:** drafter `73e39d5` / reviewer `fb5cdb9` / finalizer `2b82a68`.
+
+#### Round A trail
+- PL cleanup `e563530` — HANDOFF_v0.6.6.md symlink target tracking 회복 + stash pop 충돌 해결.
+- PL Round A 마감 `8746541` — HANDOFF 본문 갱신 (Round A 완료 trail + Round B 대기 status).
+
+### Round B (순차 #4 → #5)
+
+#### 의제 #4 — settings.json schema v0.5 (13→16 stage 정합)
+- `schema_version` 0.4 → 0.5 갱신.
+- 신규 키 `stage11_impl` / `stage12_review` / `stage13_fix` / `stage14_verify` 추가 (16-stage 매핑).
+- legacy 키 `stage8_impl` / `stage9_review` / `stage10_fix` / `stage11_verify` deprecated 주석 + 하위호환 alias 유지 (breaking change 최소화).
+- `scripts/ai_step.sh` + `scripts/lib/settings.sh` fallback 로직 추가 (신규 키 우선 + legacy fallback).
+- 호환 검증: `bash scripts/ai_step.sh --status` rc=0, 8 키 정상 표시. T3/T4/T5 fallback 시나리오 PASS.
+- finalizer Score **92% PASS / halt 통과**.
+- **commits:** drafter `f5cc549` / reviewer `5ebc2fe` / finalizer `3c7a57a`.
+
+#### 의제 #5 — spawn_team.sh split panes 보강
+- 4-pane 구조 보장 (오케 1 왼쪽 큰 + 팀원 3 오른쪽 stack).
+- `@persona` set-option 자동 적용 + `pane-border-status top` + `pane-border-format` 정합.
+- `start_claude_team.sh` `@persona` lookup + 모델 자동 주입 (Opus/Sonnet/Haiku effort 분기).
+- 페르소나 이름 `docs/operating_manual.md` Sec.1.2 표 그대로 (개발팀: 공기성/카더가든/최우영/현봉식 / 기획·디자인팀별 분기).
+- finalizer Score **90% PASS**.
+- **commits:** drafter `2e1fd2b` / reviewer `77ae46d` / finalizer `709bb85`.
+
+### 헌법 박힘 (v0.6.6 trail)
+- A 패턴 분리 commit 강제 영역 = `docs/guides/a_pattern_checklist.md` (commit `73e39d5`/`fb5cdb9`/`2b82a68`).
+- Stop hook chain 활성화 = `scripts/hook_stop.sh` + `scripts/completion_signal.sh` (commit `c24e7b4`/`24befca`/`dfb9245`).
+- settings.json schema v0.5 = 16-stage stage_assignments 정합 + ai_step.sh 하위호환 (commit `f5cc549`/`5ebc2fe`/`3c7a57a`).
+- spawn_team.sh 4-pane 헌법 = `@persona` 자동 주입 (commit `2e1fd2b`/`77ae46d`/`709bb85`).
+
+### v0.6.7 이관
+- pptx skill 구현 (`.skills/pptx-storyboard/SKILL.md`) — 안영이(기획 파이널리즈) Stage 05 마감 doc 동시 산출 영역.
 
 ## [0.6.4] - 2026-04-27
 

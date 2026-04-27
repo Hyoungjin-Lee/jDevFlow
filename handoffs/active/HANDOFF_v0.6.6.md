@@ -1,10 +1,10 @@
 ---
 version: v0.6.6
-status: round_b_complete
+status: s5_complete
 mode: Standard
 date: 2026-04-27
 prev_version: v0.6.5 (released-lite, tag 박힘)
-next_session_recommended_model: Sonnet (PL S5 — CHANGELOG + bridge 보고)
+next_session_recommended_model: Sonnet (운영자 결재 — git push v0.6.4+v0.6.5+v0.6.6 묶음)
 ---
 
 # v0.6.6 HANDOFF — Standard 인프라 정밀화
@@ -124,10 +124,15 @@ f5cc549 drafter(v0.6.6 #4)   — settings.json schema v0.5 + helper 골격 (3 fi
 
 ---
 
-## PL S5 진입 — CHANGELOG + bridge 보고
+## PL S5 마감 (CHANGELOG + bridge 보고)
 
-dispatch §S5: "전체 검증 + CHANGELOG.md v0.6.6 항목 작성".
-dispatch §S6: "📡 status COMPLETE 출력 → 회의창 보고".
+dispatch §S5: "전체 검증 + CHANGELOG.md v0.6.6 항목 작성" → ✅ 완료.
+dispatch §S6: "📡 status COMPLETE 출력 → 회의창 보고" → ✅ 완료 (bridge-066 송출).
+
+### S5 산출
+- `CHANGELOG.md` [Unreleased] → [0.6.6] 승격 + Round A/B 전체 trail + 헌법 박힘 + v0.6.7 이관 영역 명시.
+- 본 HANDOFF status `round_b_complete` → `s5_complete`.
+- bridge-066 보고 시그니처: `📡 status: COMPLETE — v0.6.6 Standard`.
 
 ### 헌법 정합 (Round 진행 헌법, 의제 #6 결과)
 
