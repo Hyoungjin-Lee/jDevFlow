@@ -7,8 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-> v0.6.4 진행 중 — plugin-cc Codex 자동 호출 고도화 (BR-002 후속, 운영자 결정 #15). tmux pane-base-index 환경 호환성 보강. ~/.claude/CLAUDE.md frontmatter 일반화.
 > v0.6.6 인수 영역 — R3 active/archive 디렉터리 실제 변경 (paper plan 단계만 v0.6.5 종결, 실제 mv는 별도 라운드). pptx skill 구현 (`.skills/pptx-storyboard/SKILL.md`). settings.json schema v0.5 정밀화 (16-stage stage_assignments 매핑).
+
+## [0.6.4] - 2026-04-27
+
+> v0.6.4 = Jonelab AI팀 운영자 대시보드 (textual TUI, M1~M5 5/5 + personas_18). Stage 10~12 압축 release 영역 — PAUSED 영역에서 운영자 결정으로 release 흐름 재진입 (2026-04-27). Standard 모드 (13-stage legacy).
+
+### Stage 10 — Major R-1/R-2 압축 (옵션A 운영자 판정)
+- `docs/v0.6.4/stage10_compress.md` 신규 (54줄) — Major 2건 자율 압축 trail. closure 영향 0건, fix X. v0.6.5+ 정공법 영역에서 정밀화 이월.
+- Major R-1: `operating_manual.md` Sec.5 16단계 표기 압축.
+- Major R-2: `bridge_protocol.md` Sec.0.1 페르소나 매핑 압축.
+- **commit:** `b9aad53`.
+
+### Stage 11 — verify.md 압축 trail
+- `docs/v0.6.4/stage11_verify.md` 신규 (71줄) — Standard 모드 압축 trail (Strict 검증 X). M1~M5 마일스톤 + Stage 9 R-N 8건 (Critical 0 / Major 2 / Minor 4 / Nit 2) + 보호 영역 + 헌법 영역 박음.
+- **commit:** `0af4617`.
+
+### Stage 12 — QA Checklist (수동 시나리오)
+- `docs/v0.6.4/qa_checklist.md` 신규 (112줄) — 27 검증 항목 (산출 9건 + 보호 영역 5건 + commit trail 2건 + Stage 13 진입 3건 + verdict).
+- 운영자 + 회의창 수동 진행 영역. PASS 박힘 (2026-04-27).
+- **commit:** `8920f5b`.
+
+### Stage 13 — release
+- 본 CHANGELOG 항목 + 로컬 tag `v0.6.4` 박음 (push 보류, DEFCON 영역).
+- HANDOFF_v0.6.4.md status: paused → archived 영역 박음 (다음 세션 영역).
+
+### Stage 1~9 commit trail (이전 세션 박음, 참조)
+- Stage 1~4: `f8a2c9c` + `7c139b6` (Score 99/100, Stage 4.5 PASS).
+- Stage 5: `bf81e4f` (Score 97/100 GO).
+- Stage 6/7: `8fbbfed` (Score 95/100 GO).
+- Stage 8: `77ee684` / `3c4ade4` / `721916b` / `60c38e0` / `f5194b0` / `edef494` (M1~M5 + personas_18, 6 commits).
+- Stage 9: `c32d237` (APPROVED Score 92/100, R-N 8건).
+- 추가 fix: `a56ce7a` (token hook 정정) / `aeb922d` (Stage 10d 디자인 5건 + 본질 2건 통합 Score 95/100).
+
+### 헌법 박힘 (이전 세션 trail)
+- A 패턴 (drafter → reviewer 검토+수정 → finalizer 마감, 모든 프로세스 동일): `9902a68`.
+- 추측 진행 강제 회피 (3중 검증 + 부팅 검증 4 panes + Sec.8 11항): `0438da9`.
+- v0.6.5+ 강력 권고 정책 (버전 분할 / 병렬 Orc spawn / 추가 페르소나 / 분량 검토): `1ab33f0`.
+- push-signal-watcher SKILL + ghostty-tmux-ops SKILL: `b482394`.
 
 ## [0.6.5] - 2026-04-27
 
