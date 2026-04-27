@@ -80,7 +80,7 @@ class PersonaDataCollector:
         token_hook: Optional[TokenHook] = None,
     ) -> None:
         self.tmux = tmux or TmuxAdapter()
-        self.token_hook = token_hook or TokenHook(tmux=self.tmux)
+        self.token_hook = token_hook or TokenHook()
         # R-1 idle 폴백 last_update 보존용. R-2 A-2 last_known_task fallback도 활용.
         self._last_known_states: Dict[str, PersonaState] = {}
 

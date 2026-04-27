@@ -1,9 +1,8 @@
-"""Q2 — JSONL 트랜스크립트 직접 파싱으로 토큰 추출.
+"""Q2 — JSONL 트랜스크립트 직접 파싱으로 토큰/상태 추출.
 
-pane → claude PID (pgrep) → 프로세스 시작 시간 → JSONL 파일 매핑.
-각 응답마다 JSONL에 assistant.message.usage가 기록되므로 실시간 추적 가능.
-
-2순위 폴백: Stop hook이 저장한 dashboard_state JSON (세션 종료 시점 누적값).
+1순위: customTitle 기반 JSONL 매핑 (claude --name pane_name으로 시작 시).
+2순위: PID 시작 시간 기반 JSONL 매핑.
+3순위: Stop hook dashboard_state JSON 폴백.
 """
 from __future__ import annotations
 
@@ -15,34 +14,24 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
 
-from .tmux_adapter import TmuxAdapter
-
-# Claude Code JSONL 트랜스크립트 위치 패턴
-_TRANSCRIPT_DIR_TPL = str(Path.home() / ".claude/projects" / "{proj_hash}")
-
 # JSONL 시간 매핑 허용 오차 (초)
 _JSONL_TIME_TOLERANCE_SEC = 600
 
 
 class TokenHook:
-    """pane → JSONL 트랜스크립트 직접 파싱으로 tokens_k 반환.
+    """pane → JSONL 트랜스크립트 직접 파싱 (터미널 상태 무관).
 
     pane_name: "{session}:{window}.{pane}" (예: Orc-064-plan:1.1)
-
-    우선순위:
-      1. JSONL 파싱 — pane → claude PID → 시작 시간 → JSONL
-      2. dashboard_state JSON — Stop hook 저장 파일
-      3. 0.0 폴백
     """
 
     HOOK_DIR_NAME = ".claude/dashboard_state"
 
     def __init__(
         self,
-        tmux: Optional[TmuxAdapter] = None,
         project_root: Optional[Path] = None,
+        # 하위 호환 — 이전 tmux 파라미터 무시
+        **_kwargs,
     ) -> None:
-        self.tmux = tmux or TmuxAdapter()
         self._project_root = (project_root or Path.cwd()).resolve()
         self._hook_dir = self._project_root / self.HOOK_DIR_NAME
         self._project_hash = hashlib.sha1(
