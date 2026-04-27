@@ -7,12 +7,23 @@ Telegram 통합은 v0.6.5 영역 (운영자 명시: 우선순위 최하).
 """
 
 import os
+import platform
 import re
+import shutil
 import subprocess
+import tempfile
 import time
 from datetime import datetime
 
-LOG_DIR = os.environ.get("LOG_DIR", "/tmp/jOneFlow_heartbeat")
+OS_NAME = platform.system()  # "Darwin" / "Linux" / "Windows"
+
+# Log dir — OS별 기본값 분기 (Windows = TEMP, 그 외 = /tmp)
+DEFAULT_LOG_DIR = (
+    os.path.join(tempfile.gettempdir(), "jOneFlow_heartbeat")
+    if OS_NAME == "Windows"
+    else "/tmp/jOneFlow_heartbeat"
+)
+LOG_DIR = os.environ.get("LOG_DIR", DEFAULT_LOG_DIR)
 LOG_FILE = os.path.join(LOG_DIR, "heartbeat.log")
 STALL_THRESHOLD_SEC = int(os.environ.get("STALL_THRESHOLD_SEC", "180"))
 POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "20"))
@@ -31,11 +42,49 @@ def log(msg: str) -> None:
         pass
 
 
-def notify(title: str, message: str) -> None:
+def _notify_macos(title: str, message: str) -> None:
     safe_msg = message.replace('"', '\\"')
     safe_title = title.replace('"', '\\"')
     script = f'display notification "{safe_msg}" with title "{safe_title}" sound name "Submarine"'
     subprocess.run(["osascript", "-e", script], check=False, capture_output=True)
+
+
+def _notify_linux(title: str, message: str) -> None:
+    # libnotify (notify-send) 우선, 없으면 zenity fallback, 그것도 없으면 stdout만
+    if shutil.which("notify-send"):
+        subprocess.run(["notify-send", "-u", "critical", title, message], check=False, capture_output=True)
+    elif shutil.which("zenity"):
+        subprocess.run(["zenity", "--notification", "--text", f"{title}\\n{message}"], check=False, capture_output=True)
+
+
+def _notify_windows(title: str, message: str) -> None:
+    # 1) win10toast (Python lib) 우선, 없으면 2) PowerShell MessageBox fallback
+    try:
+        from win10toast import ToastNotifier  # type: ignore
+        ToastNotifier().show_toast(title, message, duration=5, threaded=True)
+        return
+    except ImportError:
+        pass
+    safe_msg = message.replace('"', '`"')
+    safe_title = title.replace('"', '`"')
+    ps_cmd = (
+        f'Add-Type -AssemblyName System.Windows.Forms; '
+        f'[System.Windows.Forms.MessageBox]::Show("{safe_msg}", "{safe_title}") | Out-Null'
+    )
+    subprocess.run(["powershell", "-NoProfile", "-Command", ps_cmd], check=False, capture_output=True)
+
+
+def notify(title: str, message: str) -> None:
+    """OS 자동 분기 — macOS / Linux / Windows."""
+    try:
+        if OS_NAME == "Darwin":
+            _notify_macos(title, message)
+        elif OS_NAME == "Linux":
+            _notify_linux(title, message)
+        elif OS_NAME == "Windows":
+            _notify_windows(title, message)
+    except Exception as e:
+        log(f"NOTIFY-ERR ({OS_NAME}): {e}")
     log(f"NOTIFY: {title} — {message}")
 
 
