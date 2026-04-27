@@ -10,8 +10,11 @@ HOOK_DIR="${PROJECT_ROOT}/.claude/dashboard_state"
 _exit_ok() { exit 0; }
 trap _exit_ok ERR
 
+# 디버그 — hook 호출 여부 + stdin 내용 기록
+echo "[$(date +%H:%M:%S)] hook_stop called TMUX_PANE=${TMUX_PANE:-NONE}" >> /tmp/joneflow_hook_debug.log
 # stdin 읽기 (Claude Code가 JSON으로 넘겨줌).
 STDIN_DATA="$(cat)"
+echo "[$(date +%H:%M:%S)] stdin: ${STDIN_DATA:0:200}" >> /tmp/joneflow_hook_debug.log
 
 # tmux 세션명 추출 — hook은 claude CLI 실행 pane 컨텍스트에서 돌아감.
 if [ -n "${TMUX_PANE:-}" ]; then

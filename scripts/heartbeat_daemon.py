@@ -30,6 +30,11 @@ POLL_INTERVAL = int(os.environ.get("POLL_INTERVAL", "20"))
 
 THOUGHT_RE = re.compile(r"thought for \d+s|\d+m \d+s · thought")
 
+# 완료/중단/승인 시그널 패턴 — bridge/Orc capture에서 회의창이 자발적 캐치 못 하는 영역 보강
+SIGNAL_RE = re.compile(
+    r"📡 status .+? (COMPLETE|APPROVED|FAIL|PASS|GO|REJECTED|WAITING)"
+)
+
 
 def log(msg: str) -> None:
     ts = datetime.now().strftime("%H:%M:%S")

@@ -143,7 +143,6 @@ class TeamRenderer(Vertical):
             lines.append(f"║   {first.task}")
         lines.append(f"║   {TOKEN_FORMAT.format(first.tokens_k)}")
         lines.append(f"║   {progress_bar(first.tokens_k)}")
-        lines.append(f"║   {sparkline([first.tokens_k])}")  # M2/M4 history 인입 영역
 
         # MAX_SUB_ROWS = 1 — 다중 버전 sub-row.
         truncated = states[1:1 + MAX_SUB_ROWS]
@@ -154,4 +153,5 @@ class TeamRenderer(Vertical):
             lines.append(f"║   {TOKEN_FORMAT.format(sub.tokens_k)}")
         if overflow > 0:
             lines.append(f"║   ... 외 {overflow}개 버전")
+        lines.append("║")  # 사람 간 구분 공백
         return lines

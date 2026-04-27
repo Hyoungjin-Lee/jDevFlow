@@ -1,47 +1,41 @@
-"""Q2 정확 hook — claude CLI session-end hook 인입 + capture-pane regex fallback.
+"""Q2 — JSONL 트랜스크립트 직접 파싱으로 토큰 추출.
 
-design_final Sec.7.3 + R-10 정정:
+pane → claude PID (pgrep) → 프로세스 시작 시간 → JSONL 파일 매핑.
+각 응답마다 JSONL에 assistant.message.usage가 기록되므로 실시간 추적 가능.
 
-- 글로벌 ``~/.claude/`` → 프로젝트 ``.claude/dashboard_state/`` 이전 (F-62-4 글로벌
-  영역 침범 회피).
-- 파일명 namespace prefix ``joneflow_<project_path_hash>_<session>.json`` 추가 →
-  다른 jOneFlow 프로젝트 인스턴스 간 isolation.
-- ``TmuxAdapter`` 위임으로 subprocess 직접 import 0건 (R-5 정정 정합 — 모듈 경계
-  #4 더 강함, AC-T-4 = 2).
+2순위 폴백: Stop hook이 저장한 dashboard_state JSON (세션 종료 시점 누적값).
 """
 from __future__ import annotations
 
 import hashlib
 import json
-import re
+import subprocess
+import time
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from .tmux_adapter import TmuxAdapter
 
+# Claude Code JSONL 트랜스크립트 위치 패턴
+_TRANSCRIPT_DIR_TPL = str(Path.home() / ".claude/projects" / "{proj_hash}")
+
+# JSONL 시간 매핑 허용 오차 (초)
+_JSONL_TIME_TOLERANCE_SEC = 600
+
 
 class TokenHook:
-    """우선순위 chain: hook JSON → capture-pane regex → 0.0 폴백 (Sec.14 에러 경로).
+    """pane → JSONL 트랜스크립트 직접 파싱으로 tokens_k 반환.
 
-    Stage 10d Fix 6 — capture-pane fallback regex 다양화. claude CLI active 화면에서
-    노출 가능한 다양 token 표시 패턴 시도. root cause(.claude/dashboard_state hook
-    파일 미작성)는 v0.6.5 본 가동 영역.
+    pane_name: "{session}:{window}.{pane}" (예: Orc-064-plan:1.1)
+
+    우선순위:
+      1. JSONL 파싱 — pane → claude PID → 시작 시간 → JSONL
+      2. dashboard_state JSON — Stop hook 저장 파일
+      3. 0.0 폴백
     """
 
     HOOK_DIR_NAME = ".claude/dashboard_state"
-    # 1순위 패턴 — claude CLI session-end JSON usage block.
-    REGEX = re.compile(
-        r'"usage"\s*:\s*\{\s*"input_tokens"\s*:\s*(\d+)\s*,\s*"output_tokens"\s*:\s*(\d+)'
-    )
-    # 2순위 fallback — claude CLI 또는 Code 데스크탑 active 화면 token 표시 패턴.
-    # 각 regex는 (pattern, is_k_unit) 튜플 — ``is_k_unit`` True 시 그대로, False 시 1000 나눔.
-    # 예: ``Tokens: 8.2k`` / ``[8.2k tokens]`` / ``Tokens: 8200`` / ``8200 tokens``.
-    FALLBACK_REGEXES = [
-        (re.compile(r'(?i)tokens?\s*:?\s*([\d,]+(?:\.\d+)?)\s*k\b'), True),    # "Tokens: 8.2k"
-        (re.compile(r'(?i)([\d,]+(?:\.\d+)?)\s*k\s+tokens?'), True),           # "8.2k tokens"
-        (re.compile(r'(?i)tokens?\s*:?\s*([\d,]+)(?!\s*[k.])'), False),        # "Tokens: 8200"
-        (re.compile(r'(?i)([\d,]+)\s+tokens?(?!\s*\.\d)'), False),             # "8200 tokens"
-    ]
 
     def __init__(
         self,
@@ -51,38 +45,193 @@ class TokenHook:
         self.tmux = tmux or TmuxAdapter()
         self._project_root = (project_root or Path.cwd()).resolve()
         self._hook_dir = self._project_root / self.HOOK_DIR_NAME
-        # R-10 namespace prefix — sha1(project_root)[:8].
         self._project_hash = hashlib.sha1(
             str(self._project_root).encode("utf-8")
         ).hexdigest()[:8]
+        # transcript 디렉토리 — project root → Claude 정규화 경로
+        # Claude Code: '/' → '-', '_' → '-', leading '-' 유지
+        _slug = str(self._project_root).replace("/", "-").replace("_", "-")
+        self._transcript_dir = Path.home() / ".claude/projects" / _slug
+
+        # 캐시: pane_name → (jsonl_path, cached_at)
+        self._jsonl_cache: Dict[str, tuple] = {}
+        self._cache_ttl = 15.0  # 15초마다 PID/파일 재검색
+
+    # ------------------------------------------------------------------
+    # 공개 API
+    # ------------------------------------------------------------------
 
     def get_tokens_k(
         self,
         pane_name: str,
-        prefetched_lines: Optional[list] = None,
+        prefetched_lines: Optional[list] = None,  # 호환성 유지 (미사용)
     ) -> float:
-        """1순위 hook JSON / 2순위 capture-pane regex / 3순위 0.0.
-
-        Stage 10 M-2 fix — ``prefetched_lines`` 인입 시 capture-pane 호출 0건
-        (PersonaDataCollector batch 결과 재사용). None일 때만 기존 폴백 호출.
-        """
+        """tokens_k 반환. 1순위 JSONL / 2순위 hook JSON / 3순위 0.0."""
+        jsonl_value = self._read_jsonl(pane_name)
+        if jsonl_value is not None:
+            return jsonl_value
         session = pane_name.split(":")[0] if ":" in pane_name else pane_name
         hook_value = self._read_hook(session)
-        if hook_value is not None:
-            return hook_value
-        regex_value = self._regex_from_lines(prefetched_lines) if prefetched_lines else None
-        if regex_value is None and prefetched_lines is None:
-            regex_value = self._regex_capture(pane_name)
-        if regex_value is not None:
-            return regex_value
-        return 0.0
+        return hook_value if hook_value is not None else 0.0
 
     # ------------------------------------------------------------------
-    # 1순위 — 프로젝트 hook JSON 인입
+    # 1순위 — JSONL 파싱
+    # ------------------------------------------------------------------
+
+    def _read_jsonl(self, pane_name: str) -> Optional[float]:
+        jsonl_path = self._resolve_jsonl(pane_name)
+        if jsonl_path is None:
+            return None
+        return self._parse_usage(jsonl_path)
+
+    def _resolve_jsonl(self, pane_name: str) -> Optional[Path]:
+        """캐시된 JSONL 경로 반환. TTL 초과 시 재검색.
+
+        1순위: customTitle 기반 (claude --name pane_name 으로 시작한 경우).
+        2순위: PID 시작 시간 기반 폴백.
+        """
+        now = time.monotonic()
+        cached = self._jsonl_cache.get(pane_name)
+        if cached and (now - cached[1]) < self._cache_ttl:
+            return cached[0]
+
+        jsonl = self._find_jsonl_by_title(pane_name)
+        if jsonl is None:
+            cpid = self._claude_pid_for_pane(pane_name)
+            if cpid:
+                start_epoch = self._pid_start_epoch(cpid)
+                if start_epoch is not None:
+                    jsonl = self._match_jsonl_by_time(start_epoch)
+
+        self._jsonl_cache[pane_name] = (jsonl, now)
+        return jsonl
+
+    def _find_jsonl_by_title(self, pane_name: str) -> Optional[Path]:
+        """JSONL 파일의 customTitle == pane_name 매칭.
+
+        ``claude --name pane_name``으로 시작한 세션은 JSONL 첫 엔트리에
+        ``{"type":"custom-title","customTitle":"pane_name"}``이 기록됨.
+        최신 파일부터 검색하여 가장 최근 매칭 반환.
+        """
+        if not self._transcript_dir.exists():
+            return None
+        try:
+            candidates = sorted(
+                self._transcript_dir.glob("*.jsonl"),
+                key=lambda p: p.stat().st_mtime,
+                reverse=True,
+            )[:50]
+        except Exception:
+            return None
+        for f in candidates:
+            try:
+                for i, line in enumerate(f.open(encoding="utf-8")):
+                    if i >= 4:
+                        break
+                    d = json.loads(line)
+                    if d.get("customTitle") == pane_name or d.get("agentName") == pane_name:
+                        return f
+            except (json.JSONDecodeError, OSError):
+                continue
+        return None
+
+    def _claude_pid_for_pane(self, pane_name: str) -> Optional[str]:
+        """tmux pane → pane PID → 자식 claude PID.
+
+        list-panes는 window 전체를 반환하므로 display-message로 특정 pane PID 획득.
+        """
+        try:
+            r = subprocess.run(
+                ["tmux", "display-message", "-t", pane_name, "-p", "#{pane_pid}"],
+                capture_output=True, text=True, timeout=2,
+            )
+            pane_pid = r.stdout.strip() or None
+        except Exception:
+            return None
+        if not pane_pid:
+            return None
+        try:
+            r2 = subprocess.run(
+                ["pgrep", "-P", pane_pid],
+                capture_output=True, text=True, timeout=2,
+            )
+            for cpid in r2.stdout.strip().split():
+                comm = subprocess.run(
+                    ["ps", "-p", cpid, "-o", "comm="],
+                    capture_output=True, text=True, timeout=2,
+                ).stdout.strip()
+                if "claude" in comm:
+                    return cpid
+        except Exception:
+            pass
+        return None
+
+    def _pid_start_epoch(self, pid: str) -> Optional[float]:
+        """프로세스 시작 시간 → epoch (float)."""
+        try:
+            r = subprocess.run(
+                ["ps", "-p", pid, "-o", "lstart="],
+                capture_output=True, text=True, timeout=2,
+            )
+            lstart = r.stdout.strip()
+            if not lstart:
+                return None
+            return datetime.strptime(lstart, "%a %b %d %H:%M:%S %Y").timestamp()
+        except Exception:
+            return None
+
+    def _match_jsonl_by_time(self, start_epoch: float) -> Optional[Path]:
+        """claude 시작 시간과 가장 가까운 JSONL 파일 (허용 오차 내)."""
+        if not self._transcript_dir.exists():
+            return None
+        best: Optional[Path] = None
+        best_diff = float("inf")
+        try:
+            for f in self._transcript_dir.glob("*.jsonl"):
+                diff = abs(f.stat().st_mtime - start_epoch)
+                if diff < best_diff and diff < _JSONL_TIME_TOLERANCE_SEC:
+                    best, best_diff = f, diff
+        except Exception:
+            pass
+        return best
+
+    def _parse_usage(self, jsonl_path: Path) -> Optional[float]:
+        """JSONL에서 가장 최근 assistant.message.usage → tokens_k.
+
+        input + output + cache_read + cache_creation 합산.
+        """
+        usage = None
+        try:
+            for line in jsonl_path.open(encoding="utf-8"):
+                try:
+                    d = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if d.get("type") != "assistant":
+                    continue
+                msg = d.get("message")
+                if not isinstance(msg, dict):
+                    continue
+                u = msg.get("usage")
+                if isinstance(u, dict):
+                    usage = u
+        except OSError:
+            return None
+        if usage is None:
+            return None
+        # 컨텍스트 창 크기 = input + cache_read + cache_creation (output 제외)
+        total = (
+            int(usage.get("input_tokens", 0))
+            + int(usage.get("cache_read_input_tokens", 0))
+            + int(usage.get("cache_creation_input_tokens", 0))
+        )
+        return total / 1000.0
+
+    # ------------------------------------------------------------------
+    # 2순위 — Stop hook JSON (세션 종료 시 저장)
     # ------------------------------------------------------------------
 
     def _read_hook(self, session: str) -> Optional[float]:
-        """``.claude/dashboard_state/joneflow_<hash>_<session>.json`` → tokens_k."""
         f = self._hook_dir / f"joneflow_{self._project_hash}_{session}.json"
         if not f.is_file():
             return None
@@ -93,45 +242,3 @@ class TokenHook:
         except (json.JSONDecodeError, OSError, ValueError, TypeError):
             return None
         return (input_tokens + output_tokens) / 1000.0
-
-    # ------------------------------------------------------------------
-    # 2순위 — capture-pane regex (TmuxAdapter 위임 — subprocess 0건)
-    # ------------------------------------------------------------------
-
-    def _regex_capture(self, pane_name: str) -> Optional[float]:
-        """capture-pane 마지막 100줄에서 ``"usage": {...}`` 매치 → tokens_k."""
-        try:
-            lines = self.tmux.capture_pane(pane_name, lines=100)
-        except Exception:
-            return None
-        return self._regex_from_lines(lines)
-
-    def _regex_from_lines(self, lines: Optional[list]) -> Optional[float]:
-        """이미 capture된 lines 재사용 — Stage 10 M-2 fix (subprocess 호출 0건).
-
-        Stage 10d Fix 6 — 1순위 usage JSON regex + 2순위 fallback regex 다양화.
-        match 시점에서 input+output 합산 또는 fallback 단일 token 값 반환.
-        """
-        if not lines:
-            return None
-        text = "\n".join(lines)
-        # 1순위 — claude CLI session-end JSON usage.
-        match = self.REGEX.search(text)
-        if match is not None:
-            try:
-                return (int(match.group(1)) + int(match.group(2))) / 1000.0
-            except (ValueError, TypeError):
-                pass
-        # 2순위 fallback — active 화면 token 표시 패턴 (Stage 10d Fix 6).
-        for pat, is_k_unit in self.FALLBACK_REGEXES:
-            m = pat.search(text)
-            if m is None:
-                continue
-            try:
-                raw = m.group(1).replace(",", "")
-                value = float(raw)
-                # is_k_unit=True → "Xk" 패턴 (그대로 k 단위) / False → 절대 token (1000 나눔).
-                return value if is_k_unit else value / 1000.0
-            except (ValueError, TypeError):
-                continue
-        return None

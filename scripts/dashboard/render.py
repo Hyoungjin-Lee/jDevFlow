@@ -20,7 +20,7 @@ from .models import PersonaState
 from .status_bar import PMStatusBar
 from .team_renderer import TeamRenderer
 
-# F-D3 산식 (Stage 10d 정정) — dashboard 가시화 박스 18 = 4팀 15 + PM 1 + CTO 1 + CEO 1.
+# F-D3 산식 — dashboard 가시화 박스 17 = 4팀 15 + PM 1 + CTO 1. CEO(이형진) 제외.
 # HR만 미표시 placeholder. PM(스티브 리) bridge-064 트래킹 / CTO·CEO 정적 idle (tracking X).
 TEAM_ORDER: tuple = ("기획", "디자인", "개발", "관리자")
 

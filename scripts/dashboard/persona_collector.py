@@ -21,7 +21,7 @@ from .tmux_adapter import TmuxAdapter
 from .token_hook import TokenHook
 
 
-# F-D3 산식 (Stage 10d 정정) — dashboard 가시화 박스 18 = 4팀 15 + PM 1 + CTO 1 + CEO 1.
+# F-D3 산식 — dashboard 가시화 박스 17 = 4팀 15 + PM 1 + CTO 1. CEO(이형진)는 운영자이므로 제외.
 # HR만 미표시. CTO/CEO는 정적 idle 박스 (tokens / 진행률 / 시그널 추적 0건).
 # operating_manual.md Sec.1.2 정규명 그대로.
 PERSONAS_18: List[Tuple[str, str]] = [
@@ -32,8 +32,8 @@ PERSONAS_18: List[Tuple[str, str]] = [
     # 개발팀 7
     ("공기성", "개발"), ("최우영", "개발"), ("현봉식", "개발"), ("카더가든", "개발"),
     ("백강혁", "개발"), ("김원훈", "개발"), ("지예은", "개발"),
-    # 관리자 3 (Stage 10d 추가) — PM bridge-064 트래킹 / CTO·CEO 정적 idle (tracking X)
-    ("스티브 리", "관리자"), ("백현진", "관리자"), ("이형진", "관리자"),
+    # 관리자 2 — PM bridge-064 트래킹 / CTO 정적 idle. CEO(이형진)는 운영자이므로 제외.
+    ("스티브 리", "관리자"), ("백현진", "관리자"),
 ]
 
 
@@ -58,8 +58,8 @@ _PERSONA_TO_PANE_INDEX: Dict[str, str] = {
     "우상호": "1.1", "장원영": "1.2", "이수지": "1.3", "오해원": "1.4",
     # 개발팀 BE 트리오
     "공기성": "1.1", "카더가든": "1.2", "최우영": "1.3", "현봉식": "1.4",
-    # 개발팀 FE 트리오 — M5 진입 시 별도 Orc 세션 / pane 매핑 갱신 영역.
-    "백강혁": "2.3", "지예은": "2.2", "김원훈": "2.4",
+    # 개발팀 FE 트리오 — Orc-064-dev window 2 (2.1/2.2/2.3).
+    "백강혁": "2.1", "지예은": "2.2", "김원훈": "2.3",
     # 관리자 PM (Stage 10d) — bridge-064:1.1
     "스티브 리": "1.1",
     # CTO/CEO 미매핑 — _persona_to_pane None → idle yield 정합
