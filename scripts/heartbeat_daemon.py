@@ -47,9 +47,10 @@ def tmux(args: list[str]) -> str:
         return ""
 
 
-def get_orc_sessions() -> list[str]:
+def get_tracked_sessions() -> list[str]:
+    """jOneFlow 프레임워크 영역 = Orc-* + bridge-* 모두 추적."""
     out = tmux(["list-sessions", "-F", "#{session_name}"])
-    return [s for s in out.split("\n") if s.startswith("Orc-")]
+    return [s for s in out.split("\n") if s.startswith("Orc-") or s.startswith("bridge-")]
 
 
 def get_panes(session: str) -> list[str]:
